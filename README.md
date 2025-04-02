@@ -1,6 +1,8 @@
 # MÆV
 
+## Authors
 
+  Ethan Hoyt, Dawson Ochs, Dayne Pefley, Sterling Davis
 
 ## Getting started
 
