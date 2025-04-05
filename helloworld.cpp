@@ -22,7 +22,6 @@ int main(void)
         window.draw(shape);
         window.display();
     }
-
     return 0;
 }
 
