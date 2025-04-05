@@ -1,2 +1,8 @@
+# Compiled object files
+*.o
+
+# Executables
+engine
 helloworld
 *.exe
+*.out

@@ -1,35 +1,43 @@
 #include <GLFW/glfw3.h>
+#include <Python.h>
 
 // Example code from https://www.glfw.org/documentation.html
 
-int main(void)
-{
-    GLFWwindow* window;
+int main(int argc, char* argv[]) {
+    // Python init
+	wchar_t* program = Py_DecodeLocale(argv[0], NULL);
+	if (program == NULL) {
+		fprintf(stderr, "Fatal error: cannot decode argv[0]\n");
+		exit(1);
+	}
 
-    /* Initialize the library */
-    if (!glfwInit())
+	Py_Initialize();
+
+	#if 1
+	PyRun_SimpleString("print('Python initialized!')");
+	#endif
+
+	GLFWwindow* window;
+    if (!glfwInit()) {
         return -1;
+	}
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-    if (!window)
-    {
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+    window = glfwCreateWindow(640, 480, "Game Engine Moment", NULL, NULL);
+    if (!window) {
         glfwTerminate();
         return -1;
     }
 
-    /* Make the window's context current */
+	// Main loop for GLFW graphics
     glfwMakeContextCurrent(window);
-
-    /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        /* Swap front and back buffers */
         glfwSwapBuffers(window);
-
         /* Poll for and process events */
         glfwPollEvents();
     }
