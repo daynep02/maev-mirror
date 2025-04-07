@@ -1,40 +1,28 @@
-#include <GLFW/glfw3.h>
+#include <SFML/Audio.hpp>
+#include <SFML/Graphics.hpp>
 
 // Example code from https://www.glfw.org/documentation.html
 
 int main(void)
 {
-    GLFWwindow* window;
+    sf::RenderWindow window(sf::VideoMode(400, 400), "Hello World!");
+    sf::CircleShape shape(200.f);
+    shape.setFillColor(sf::Color::Green);
 
-    /* Initialize the library */
-    if (!glfwInit())
-        return -1;
-
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-    if (!window)
+    while (window.isOpen())
     {
-        glfwTerminate();
-        return -1;
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        window.clear();
+        window.draw(shape);
+        window.display();
     }
 
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
-
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
-    {
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
-
-        /* Poll for and process events */
-        glfwPollEvents();
-    }
-
-    glfwTerminate();
     return 0;
 }
 
