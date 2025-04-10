@@ -5,7 +5,7 @@ INCLUDE_SFML_EXTRAS = -lsfml-audio -lsfml-network
 
 .PHONY: all clean
 
-all: engine.cpp
+all: engine
 
 engine: engine.cpp
 	g++ -o engine *.cpp $(INCLUDE_PYTHON) $(INCLUDE_SFML) $(INCLUDE_SFML_EXTRAS)
