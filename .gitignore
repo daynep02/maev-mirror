@@ -1,6 +1,7 @@
 # Compiled object files
 *.o
 __pycache__/*
+*.swp
 
 # Executables
 engine
