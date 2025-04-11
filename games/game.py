@@ -13,6 +13,7 @@ class Game:
 
 game = None
 
+# Key Functions for Game
 def init():
     global game
     game = Game()
