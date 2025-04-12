@@ -1,3 +1,4 @@
+#include "keyboard.h"
 #include <Python.h>
 #include <SFML/Graphics.hpp>
 
@@ -41,6 +42,7 @@ static PyObject *engine_draw_circle(PyObject *self, PyObject *args) {
 
 static PyMethodDef EngineMethods[] = {
     {"draw_circle", engine_draw_circle, METH_VARARGS, engine_draw_circle_doc},
+    keyPressed,
     {NULL, NULL, 0, NULL}};
 
 static PyModuleDef EngineModule = {PyModuleDef_HEAD_INIT,

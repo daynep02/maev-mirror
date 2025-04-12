@@ -12,23 +12,27 @@ class Game:
         self.ball = Ball()
 
 game = None
-first = True
 
 def init():
-    global gam
+    global game
     game = Game()
 
+first = True
+
 def update():
-    global game
     global first
+    global game
+
     t = time.time()
 
     game.ball.x = math.cos(t) * 50 + 200
     game.ball.y = math.sin(t) * 59 + 200
-    
+
     if first and engine.key_is_pressed(0):
-        first = False
         print("A was pressed")
+        first = False
+
+    
 
 def draw():
     global game

@@ -7,8 +7,11 @@ INCLUDE_SFML_EXTRAS = -lsfml-audio -lsfml-network
 
 all: engine
 
-engine: ../src/engine.cpp
-	g++ -o engine ../src/*.cpp $(INCLUDE_PYTHON) $(INCLUDE_SFML) $(INCLUDE_SFML_EXTRAS)
+engine: ../src/engine.cpp keyboard.o
+	g++ -o engine ../src/engine.cpp keyboard.o $(INCLUDE_PYTHON) $(INCLUDE_SFML) $(INCLUDE_SFML_EXTRAS)
+
+keyboard.o: ../src/keyboard.cpp
+	g++ -o keyboard.o -c ../src/keyboard.cpp $(INCLUDE_PYTHON) $(INCLUDE_SFML) $(INCLUDE_SFML_EXTRAS)
 		
 run:
 	./engine

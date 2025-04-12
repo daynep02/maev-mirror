@@ -8,3 +8,4 @@ helloworld
 .vscode/*
 *.exe
 *.out
+build/__pycache__
