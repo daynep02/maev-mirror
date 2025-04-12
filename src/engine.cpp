@@ -1,50 +1,24 @@
 #include <Python.h>
 #include <SFML/Graphics.hpp>
 
+#include "object_handler.h"
+
 sf::RenderWindow *window;
-sf::CircleShape *circle;
 
-// corresponding documentation for engine_draw_circle
-PyDoc_STRVAR(
-	engine_draw_circle_doc,
-	".. function:: draw_circle(x, y)\n"
-	"\n"
-	"  Draws a circle centered at (x, y) with radius 10 in th window.\n"
-	"\n"
-	"  :return: Nothing.\n");
-
-// given (x,y) positions tuple, set & draw a circle
-static PyObject *engine_draw_circle(PyObject *self, PyObject *args) {
-	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
-	if (nargs != 2) {
-		printf("engine.draw_circle expects 2 longs as arguments\n");
-		PyErr_BadArgument();
-	}
-	PyObject *pX = PyTuple_GetItem(args, 0);
-	if (!PyLong_Check(pX)) {
-		Py_XDECREF(pX);
-		printf("engine.draw_circle expects 2 longs as arguments\n");
-		PyErr_BadArgument();
-	}
-	PyObject *pY = PyTuple_GetItem(args, 1);
-	if (!PyLong_Check(pY)) {
-		Py_XDECREF(pY);
-		printf("engine.draw_circle expects 2 longs as arguments\n");
-		PyErr_BadArgument();
-	}
-
-	long x = PyLong_AsLong(pX);
-	long y = PyLong_AsLong(pY);
-
-	circle->setPosition(sf::Vector2f(x, y));
-	window->draw(*circle);
-
-	Py_RETURN_NONE;
-}
+ObjectHandler* g_object_handler;
 
 // Python methods built into engine
 static PyMethodDef EngineMethods[] = {
-	{"draw_circle", engine_draw_circle, METH_VARARGS, engine_draw_circle_doc},
+	{"create_sprite", ObjectHandler::CreateSprite, METH_VARARGS, engine_create_sprite_doc},
+	{"set_sprite_position", ObjectHandler::SetSpritePosition, METH_VARARGS, engine_set_sprite_position_doc},
+	{"set_sprite_scale", ObjectHandler::SetSpriteScale, METH_VARARGS, engine_set_sprite_scale_doc},
+	{"draw_sprite", ObjectHandler::DrawSprite, METH_VARARGS, engine_draw_sprite_doc},
+	{"free_sprite", ObjectHandler::FreeSprite, METH_VARARGS, engine_free_sprite_doc},
+	{"create_circle", ObjectHandler::CreateCircle, METH_VARARGS, engine_create_circle_doc},
+	{"set_circle_fill_color", ObjectHandler::SetCircleFillColor, METH_VARARGS, engine_set_circle_fill_color_doc},
+	{"set_circle_position", ObjectHandler::SetCirclePosition, METH_VARARGS, engine_set_circle_position_doc},
+	{"set_circle_scale", ObjectHandler::SetCircleScale, METH_VARARGS, engine_set_circle_scale_doc},
+	{"draw_circle", ObjectHandler::DrawCircle, METH_VARARGS, engine_draw_circle_doc},
 	{NULL, NULL, 0, NULL}};
 
 // initialization values
@@ -132,10 +106,10 @@ int main(int argc, char *argv[]) {
 	}
 
 	// assign globals
-	window = new sf::RenderWindow(sf::VideoMode({400, 400}), "Engine!");
-	circle = new sf::CircleShape(10.f);
+	window = new sf::RenderWindow(sf::VideoMode({1024, 640}), "Engine!");
 
-	circle->setFillColor(sf::Color::Green);
+	//create object handler
+	g_object_handler = new ObjectHandler(window);
 
 	// loads in the init Key Function of Python Game
 	pValue = PyObject_CallNoArgs(pFuncInit);
@@ -181,15 +155,23 @@ int main(int argc, char *argv[]) {
 		window->display();
 	}
 
+	delete g_object_handler;
+
+	printf("engine: Tearing Down\n");
+
 	// Teardown
 	Py_XDECREF(pFuncDraw);
 	Py_XDECREF(pFuncUpdate);
 	Py_XDECREF(pFuncInit);
 	Py_XDECREF(pModule);
 
+	//printf("engine: Finished Tearing Down\n");
+
 	if (Py_FinalizeEx() < 0) {
 		return 120;
 	}
+
+	printf("engine: Finished Tearing Down\n");
 
 	return 0;
 }

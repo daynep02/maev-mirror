@@ -1,11 +1,7 @@
-# Compiled object files
-*.o
-__pycache__/*
-*.swp
+# ignore build/run artifacts, except the Makefile
+build/*
+!build/Makefile
 
-# Executables
-engine
-helloworld
+# miscellaneous
 .vscode/*
-*.exe
-*.out
+*.swp
