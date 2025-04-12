@@ -35,6 +35,9 @@ class ObjectHandler {
     static PyObject* SetCirclePosition(PyObject *self, PyObject *args);
     static PyObject* SetCircleScale(PyObject *self, PyObject *args);
     static PyObject* DrawCircle(PyObject *self, PyObject *args);
+
+	///// Physics Engine /////
+	static PyObject* CollidesWith(PyObject *self, PyObject *args);
     
     private:
 };
@@ -130,5 +133,13 @@ PyDoc_STRVAR(
 	"  Draws the circle with the given id.\n"
 	"\n"
 	"  :return: Nothing.\n");
+
+PyDoc_STRVAR(
+	engine_collides_with_doc,
+	".. function:: collides_with(id1, id2)\n"
+	"\n"
+	"  Tests whether two shapes collide or not.\n"
+	"\n"
+	"  :return: bool of whether the two shapes collided.\n");
 
 #endif //_OBJECT_HANDLER_H_

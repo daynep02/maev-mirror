@@ -19,6 +19,7 @@ static PyMethodDef EngineMethods[] = {
 	{"set_circle_position", ObjectHandler::SetCirclePosition, METH_VARARGS, engine_set_circle_position_doc},
 	{"set_circle_scale", ObjectHandler::SetCircleScale, METH_VARARGS, engine_set_circle_scale_doc},
 	{"draw_circle", ObjectHandler::DrawCircle, METH_VARARGS, engine_draw_circle_doc},
+	{"collides_with", ObjectHandler::CollidesWith, METH_VARARGS, engine_collides_with_doc},
 	{NULL, NULL, 0, NULL}};
 
 // initialization values

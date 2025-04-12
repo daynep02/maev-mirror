@@ -1,6 +1,7 @@
 #include "object_handler.h"
 #include <vector>
 #include <algorithm>
+#include <cmath>
 
 sf::RenderWindow* window_;
 
@@ -390,4 +391,52 @@ ObjectHandler::~ObjectHandler(){
     //printf("engine.draw_sprite: Returning\n");
 
     Py_RETURN_NONE;
+}
+
+PyObject* ObjectHandler::CollidesWith(PyObject* self, PyObject* args) {
+    Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 2) {
+		printf("engine.collides_with expects a two ids as arguments\n");
+		PyErr_BadArgument();
+	}
+
+	PyObject* pId1 = PyTuple_GetItem(args, 0);
+    PyObject* pId2 = PyTuple_GetItem(args, 1);
+
+	if (!PyLong_Check(pId1)) {
+		Py_XDECREF(pId1);
+		printf("engine.collides_with expects a long and a long as an argument\n");
+		PyErr_BadArgument();
+	}
+
+    if (!PyLong_Check(pId2)) {
+		Py_XDECREF(pId2);
+		printf("engine.collides_with expects a long and a long as an argument\n");
+		PyErr_BadArgument();
+	}
+
+    long id1 = PyLong_AsLong(pId1);
+    long id2 = PyLong_AsLong(pId2);
+
+    if(circles.size()<=id1) {
+        Py_XDECREF(pId1);
+		printf("engine.collides_with got a circle id out of range\n");
+		PyErr_BadArgument();
+    }
+
+    if(circles.size()<=id2) {
+        Py_XDECREF(pId2);
+		printf("engine.collides_with got a circle id out of range\n");
+		PyErr_BadArgument();
+    }
+
+    sf::Vector2f center1 = circles[id1]->getPosition();
+    sf::Vector2f center2 = circles[id2]->getPosition();
+
+    // printf("%f, %f; %f %f\n", center1.x, center1.y, center2.x, center2.y);
+    double distanceBetween = std::sqrt(std::pow(center1.x-center2.x, 2)+std::pow(center1.y-center2.y, 2));
+    
+    double combinedRadius = circles[id1]->getRadius()+circles[id2]->getRadius();
+
+    return PyBool_FromLong(distanceBetween <= combinedRadius);
 }
