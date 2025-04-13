@@ -6,7 +6,9 @@
 #ifndef keyboard_cpp
 #define keyboard_cpp
 #include "keyboard.h"
+#include "unicodeobject.h"
 #include <SFML/Graphics.hpp>
+#include <string.h>
 
 PyObject *Keyboard::key_is_pressed(PyObject *self, PyObject *args) {
   Py_ssize_t nargs = PyTuple_GET_SIZE(args);
@@ -15,13 +17,15 @@ PyObject *Keyboard::key_is_pressed(PyObject *self, PyObject *args) {
     PyErr_BadArgument();
   }
   PyObject *pKey = PyTuple_GetItem(args, 0);
-  if (!PyLong_Check(pKey)) {
+
+  std::string keyStr = PyUnicode_AsUTF8(pKey);
+
+  if (keyStr.size() > 1) {
     Py_XDECREF(pKey);
-    printf("engine.key_is_pressed expects 1 long as argumen");
+    printf("engine.key_is_pressed expects 1 char as argument");
     PyErr_BadArgument();
   }
-
-  if (isPressed(PyLong_AsLong(pKey))) {
+  if (isPressed(keyStr[0])) {
 
     printf("Key Pressed!\n");
     return Py_True;
@@ -30,7 +34,16 @@ PyObject *Keyboard::key_is_pressed(PyObject *self, PyObject *args) {
 }
 
 bool Keyboard::isPressed(int key) {
-  return sf::Keyboard::isKeyPressed(sf::Keyboard::Key(key));
+
+  return sf::Keyboard::isKeyPressed(UnicodeToSFML(key));
+}
+
+sf::Keyboard::Key Keyboard::UnicodeToSFML(char key) {
+  if (key >= 'a' && key <= 'z')
+    key = 'A' + (key - 'a');
+  if (key >= 'A' && key <= 'Z')
+    key = key - 'A';
+  return sf::Keyboard::Key(key);
 }
 
 #endif // keyboard_cpp

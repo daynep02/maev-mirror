@@ -6,6 +6,7 @@
 #ifndef keyboard_h
 #define keyboard_h
 #include <Python.h>
+#include <SFML/Window.hpp>
 
 class Keyboard {
 public:
@@ -16,6 +17,8 @@ public:
   typedef struct {
     PyObject_HEAD const char *data;
   } keys;
+
+  static sf::Keyboard::Key UnicodeToSFML(char key);
 };
 
 PyDoc_STRVAR(key_is_pressed_doc,

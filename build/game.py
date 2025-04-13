@@ -42,7 +42,7 @@ def update():
     if engine.collides_with(game.ball.circle,game.ball2.circle):
         print("Balls are colliding")
 
-    if first and engine.key_is_pressed(0):
+    if first and engine.key_is_pressed("A"):
         first = False
         print("A has been pressed")
     # print(engine.collides_with(game.ball.circle,game.ball2.circle))
