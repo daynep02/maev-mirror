@@ -2,26 +2,39 @@
 #include <Python.h>
 #include <SFML/Graphics.hpp>
 
+#include "keyboard.h"
 #include "object_handler.h"
 
 sf::RenderWindow *window;
 
-ObjectHandler* g_object_handler;
+ObjectHandler *g_object_handler;
 
 // Python methods built into engine
 static PyMethodDef EngineMethods[] = {
-	{"create_sprite", ObjectHandler::CreateSprite, METH_VARARGS, engine_create_sprite_doc},
-	{"set_sprite_position", ObjectHandler::SetSpritePosition, METH_VARARGS, engine_set_sprite_position_doc},
-	{"set_sprite_scale", ObjectHandler::SetSpriteScale, METH_VARARGS, engine_set_sprite_scale_doc},
-	{"draw_sprite", ObjectHandler::DrawSprite, METH_VARARGS, engine_draw_sprite_doc},
-	{"free_sprite", ObjectHandler::FreeSprite, METH_VARARGS, engine_free_sprite_doc},
-	{"create_circle", ObjectHandler::CreateCircle, METH_VARARGS, engine_create_circle_doc},
-	{"set_circle_fill_color", ObjectHandler::SetCircleFillColor, METH_VARARGS, engine_set_circle_fill_color_doc},
-	{"set_circle_position", ObjectHandler::SetCirclePosition, METH_VARARGS, engine_set_circle_position_doc},
-	{"set_circle_scale", ObjectHandler::SetCircleScale, METH_VARARGS, engine_set_circle_scale_doc},
-	{"draw_circle", ObjectHandler::DrawCircle, METH_VARARGS, engine_draw_circle_doc},
-	{"collides_with", ObjectHandler::CollidesWith, METH_VARARGS, engine_collides_with_doc},
-	{NULL, NULL, 0, NULL}};
+    {"create_sprite", ObjectHandler::CreateSprite, METH_VARARGS,
+     engine_create_sprite_doc},
+    {"set_sprite_position", ObjectHandler::SetSpritePosition, METH_VARARGS,
+     engine_set_sprite_position_doc},
+    {"set_sprite_scale", ObjectHandler::SetSpriteScale, METH_VARARGS,
+     engine_set_sprite_scale_doc},
+    {"draw_sprite", ObjectHandler::DrawSprite, METH_VARARGS,
+     engine_draw_sprite_doc},
+    {"free_sprite", ObjectHandler::FreeSprite, METH_VARARGS,
+     engine_free_sprite_doc},
+    {"create_circle", ObjectHandler::CreateCircle, METH_VARARGS,
+     engine_create_circle_doc},
+    {"set_circle_fill_color", ObjectHandler::SetCircleFillColor, METH_VARARGS,
+     engine_set_circle_fill_color_doc},
+    {"set_circle_position", ObjectHandler::SetCirclePosition, METH_VARARGS,
+     engine_set_circle_position_doc},
+    {"set_circle_scale", ObjectHandler::SetCircleScale, METH_VARARGS,
+     engine_set_circle_scale_doc},
+    {"draw_circle", ObjectHandler::DrawCircle, METH_VARARGS,
+     engine_draw_circle_doc},
+    {"collides_with", ObjectHandler::CollidesWith, METH_VARARGS,
+     engine_collides_with_doc},
+    keyPressed,
+    {NULL, NULL, 0, NULL}};
 
 // initialization values
 static PyModuleDef EngineModule = {PyModuleDef_HEAD_INIT,
@@ -38,142 +51,142 @@ static PyModuleDef EngineModule = {PyModuleDef_HEAD_INIT,
 PyMODINIT_FUNC PyInit_engine(void) { return PyModule_Create(&EngineModule); }
 
 int main(int argc, char *argv[]) {
-	// Setup
-	PyObject *pName, *pModule, *pFuncInit, *pFuncUpdate, *pFuncDraw;
-	PyObject *pArgs, *pValue;
-	PyObject *pErr;
-	int i;
+  // Setup
+  PyObject *pName, *pModule, *pFuncInit, *pFuncUpdate, *pFuncDraw;
+  PyObject *pArgs, *pValue;
+  PyObject *pErr;
+  int i;
 
-	if (argc != 2) {
-		fprintf(stderr, "Usage: engine pythongame.py\n");
-		return 1;
-	}
+  if (argc != 2) {
+    fprintf(stderr, "Usage: engine pythongame.py\n");
+    return 1;
+  }
 
-	// Engine initialization
-	PyImport_AppendInittab("engine", PyInit_engine);
+  // Engine initialization
+  PyImport_AppendInittab("engine", PyInit_engine);
 
-	// obtain Python game
-	Py_Initialize();
-	char *pythonfilename = argv[1];
-	char *extension = strstr(pythonfilename, ".py\0");
+  // obtain Python game
+  Py_Initialize();
+  char *pythonfilename = argv[1];
+  char *extension = strstr(pythonfilename, ".py\0");
 
-	// normalize filename by removing file extension
-	if (extension) {
-		strncpy(extension, "\0", 1);
-	}
-	pName = PyUnicode_DecodeFSDefault(pythonfilename);
+  // normalize filename by removing file extension
+  if (extension) {
+    strncpy(extension, "\0", 1);
+  }
+  pName = PyUnicode_DecodeFSDefault(pythonfilename);
 
-	PyRun_SimpleString("import sys\n"
+  PyRun_SimpleString("import sys\n"
                      "sys.path.insert(0, \".\")");
 
-	// load local instance of pName
-	pModule = PyImport_Import(pName);
-	Py_DECREF(pName);	// dereferences object, thus no longer using it
+  // load local instance of pName
+  pModule = PyImport_Import(pName);
+  Py_DECREF(pName); // dereferences object, thus no longer using it
 
-	if (pModule == NULL) {
-		PyErr_Print();
-		fprintf(stderr, "Failed to load \"%s\"\n", argv[1]);
-		return 1;
-	}
+  if (pModule == NULL) {
+    PyErr_Print();
+    fprintf(stderr, "Failed to load \"%s\"\n", argv[1]);
+    return 1;
+  }
 
-	// Look for Key Functions in Python Game
-	// Init
-	pFuncInit = PyObject_GetAttrString(pModule, "init");
-	if (!pFuncInit || !PyCallable_Check(pFuncInit)) {
-		if (PyErr_Occurred()) {		// doesn't exist
-			PyErr_Print();
-		}
-		fprintf(stderr, "Cannot find function \"init\"\n");
-		return 1;
-	}
-	
-	// Update
-	pFuncUpdate = PyObject_GetAttrString(pModule, "update");
-	if (!pFuncUpdate || !PyCallable_Check(pFuncUpdate)) {
-		if (PyErr_Occurred()) {		// doesn't exist
-			PyErr_Print();
-		}
-		fprintf(stderr, "Cannot find function \"update\"\n");
-		return 1;
-	}
+  // Look for Key Functions in Python Game
+  // Init
+  pFuncInit = PyObject_GetAttrString(pModule, "init");
+  if (!pFuncInit || !PyCallable_Check(pFuncInit)) {
+    if (PyErr_Occurred()) { // doesn't exist
+      PyErr_Print();
+    }
+    fprintf(stderr, "Cannot find function \"init\"\n");
+    return 1;
+  }
 
-	// Draw
-	pFuncDraw = PyObject_GetAttrString(pModule, "draw");
-	if (!pFuncDraw || !PyCallable_Check(pFuncDraw)) {
-		if (PyErr_Occurred()) {		// doesn't exist
-			PyErr_Print();
-		}
-		fprintf(stderr, "Cannot find function \"draw\"\n");
-		return 1;
-	}
+  // Update
+  pFuncUpdate = PyObject_GetAttrString(pModule, "update");
+  if (!pFuncUpdate || !PyCallable_Check(pFuncUpdate)) {
+    if (PyErr_Occurred()) { // doesn't exist
+      PyErr_Print();
+    }
+    fprintf(stderr, "Cannot find function \"update\"\n");
+    return 1;
+  }
 
-	// assign globals
-	window = new sf::RenderWindow(sf::VideoMode({1024, 640}), "Engine!");
+  // Draw
+  pFuncDraw = PyObject_GetAttrString(pModule, "draw");
+  if (!pFuncDraw || !PyCallable_Check(pFuncDraw)) {
+    if (PyErr_Occurred()) { // doesn't exist
+      PyErr_Print();
+    }
+    fprintf(stderr, "Cannot find function \"draw\"\n");
+    return 1;
+  }
 
-	//create object handler
-	g_object_handler = new ObjectHandler(window);
+  // assign globals
+  window = new sf::RenderWindow(sf::VideoMode({1024, 640}), "Engine!");
 
-	// loads in the init Key Function of Python Game
-	pValue = PyObject_CallNoArgs(pFuncInit);
-	Py_DECREF(pValue);
+  // create object handler
+  g_object_handler = new ObjectHandler(window);
 
-	// SFML loop (ver. 3.0.0)
-	while (window->isOpen()) {
-		while (std::optional event = window->pollEvent()) {
-			if (event->is<sf::Event::Closed>()) {
-				window->close();
-				break;
-			}
-		}
+  // loads in the init Key Function of Python Game
+  pValue = PyObject_CallNoArgs(pFuncInit);
+  Py_DECREF(pValue);
 
-		if (!window->isOpen()) {
-			break;
-		}
+  // SFML loop (ver. 3.0.0)
+  while (window->isOpen()) {
+    while (std::optional event = window->pollEvent()) {
+      if (event->is<sf::Event::Closed>()) {
+        window->close();
+        break;
+      }
+    }
 
-		// loads in update Key Function of Python Game
-		pValue = PyObject_CallNoArgs(pFuncUpdate);
-		pErr = PyErr_Occurred();
-		// catch-all for errors that game causes
-		if (pErr) {
-			printf("An error occurred!\n");
-			window->close();
-			break;
-		}
-		Py_XDECREF(pValue);		// dereferences, but pValue can already be NULL
+    if (!window->isOpen()) {
+      break;
+    }
 
-		window->clear();
+    // loads in update Key Function of Python Game
+    pValue = PyObject_CallNoArgs(pFuncUpdate);
+    pErr = PyErr_Occurred();
+    // catch-all for errors that game causes
+    if (pErr) {
+      printf("An error occurred!\n");
+      window->close();
+      break;
+    }
+    Py_XDECREF(pValue); // dereferences, but pValue can already be NULL
 
-		// loads in draw Key Function of Python Game
-		pValue = PyObject_CallNoArgs(pFuncDraw);
-		pErr = PyErr_Occurred();
-		// catch-all for errors that game causes
-		if (pErr) {
-			printf("An error has occurred\n");
-			window->close();
-			break;
-		}
-		Py_XDECREF(pValue);		// dereferences, but pValue can already be NULL
-		
-		window->display();
-	}
+    window->clear();
 
-	delete g_object_handler;
+    // loads in draw Key Function of Python Game
+    pValue = PyObject_CallNoArgs(pFuncDraw);
+    pErr = PyErr_Occurred();
+    // catch-all for errors that game causes
+    if (pErr) {
+      printf("An error has occurred\n");
+      window->close();
+      break;
+    }
+    Py_XDECREF(pValue); // dereferences, but pValue can already be NULL
 
-	printf("engine: Tearing Down\n");
+    window->display();
+  }
 
-	// Teardown
-	Py_XDECREF(pFuncDraw);
-	Py_XDECREF(pFuncUpdate);
-	Py_XDECREF(pFuncInit);
-	Py_XDECREF(pModule);
+  delete g_object_handler;
 
-	//printf("engine: Finished Tearing Down\n");
+  printf("engine: Tearing Down\n");
 
-	if (Py_FinalizeEx() < 0) {
-		return 120;
-	}
+  // Teardown
+  Py_XDECREF(pFuncDraw);
+  Py_XDECREF(pFuncUpdate);
+  Py_XDECREF(pFuncInit);
+  Py_XDECREF(pModule);
 
-	printf("engine: Finished Tearing Down\n");
+  // printf("engine: Finished Tearing Down\n");
 
-	return 0;
+  if (Py_FinalizeEx() < 0) {
+    return 120;
+  }
+
+  printf("engine: Finished Tearing Down\n");
+
+  return 0;
 }

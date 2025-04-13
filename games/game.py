@@ -13,7 +13,7 @@ class Game:
     def __init__(self):
         self.ball = Ball()
         self.ball2 = Ball()
-        self.background = engine.create_sprite("inspiration.jpg")
+        self.background = engine.create_sprite("../inspiration.jpg")
         engine.set_sprite_position(self.background,(0,0))
 
 game = None
@@ -21,7 +21,7 @@ first = True
 
 # Key Functions for Game
 def init():
-    global gam
+    global game
     game = Game()
     #engine.free_sprite(game.background)
 
@@ -41,6 +41,10 @@ def update():
     # engine.collides_with(game.ball.circle,game.ball2.circle)
     if engine.collides_with(game.ball.circle,game.ball2.circle):
         print("Balls are colliding")
+
+    if first and engine.key_is_pressed(0):
+        first = False
+        print("A has been pressed")
     # print(engine.collides_with(game.ball.circle,game.ball2.circle))
 
 def draw():
@@ -51,3 +55,4 @@ def draw():
     engine.draw_sprite(game.background)
     engine.draw_circle(ball.circle)
     engine.draw_circle(game.ball2.circle)
+
