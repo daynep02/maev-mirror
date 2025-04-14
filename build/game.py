@@ -28,6 +28,7 @@ def init():
 def update():
     global game
     global first
+    key = "NUM0"
     t = time.time()
 
     game.ball.x = math.cos(t) * 50 + 200
@@ -42,9 +43,9 @@ def update():
     if engine.collides_with(game.ball.circle,game.ball2.circle):
         print("Balls are colliding")
 
-    if first and engine.key_is_pressed("A"):
+    if first and engine.key_is_pressed(key):
         first = False
-        print("A has been pressed")
+        print(f"{key} has been pressed")
     # print(engine.collides_with(game.ball.circle,game.ball2.circle))
 
 def draw():

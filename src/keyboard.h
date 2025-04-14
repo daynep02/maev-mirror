@@ -5,20 +5,25 @@
  */
 #ifndef keyboard_h
 #define keyboard_h
+#include "SFML/Window/Keyboard.hpp"
 #include <Python.h>
 #include <SFML/Window.hpp>
+#include <unordered_map>
 
 class Keyboard {
 public:
   static PyObject *key_is_pressed(PyObject *self, PyObject *args);
 
-  static bool isPressed(int key);
+  static bool isPressed(std::string keyName);
 
+  /*
   typedef struct {
     PyObject_HEAD const char *data;
   } keys;
+*/
 
-  static sf::Keyboard::Key UnicodeToSFML(char key);
+  using kb = sf::Keyboard::Key;
+  static const std::unordered_map<std::string, kb> keys;
 };
 
 PyDoc_STRVAR(key_is_pressed_doc,
@@ -31,4 +36,5 @@ PyDoc_STRVAR(key_is_pressed_doc,
 
 static PyMethodDef keyPressed = {"key_is_pressed", Keyboard::key_is_pressed,
                                  METH_VARARGS, key_is_pressed_doc};
+
 #endif // keyboard_h
