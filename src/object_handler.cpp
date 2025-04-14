@@ -21,16 +21,58 @@ ObjectHandler::~ObjectHandler() {
 
   std::for_each(sprites.begin(), sprites.end(), delete_ptr());
   sprites.clear();
+
+  std::for_each(circles.begin(), circles.end(), delete_ptr());
+  circles.clear();
 }
 
 /*static*/ PyObject *ObjectHandler::CreateSprite(PyObject *self,
                                                  PyObject *args) {
 
-    std::for_each(sprites.begin(), sprites.end(), delete_ptr());
-    sprites.clear();
+  Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+  if (nargs != 1) {
+    printf("engine.create_sprite expects a single string as an argument\n");
+    PyErr_BadArgument();
+  }
+  PyObject *pName = PyTuple_GetItem(args, 0);
 
-    std::for_each(circles.begin(), circles.end(), delete_ptr());
-    circles.clear();
+  printf("engine.create_sprite: Creating String\n");
+
+  std::string name = PyUnicode_AsUTF8(pName);
+
+  printf("engine.create_sprite: Creating Texture from %s\n", name.c_str());
+  sf::Texture *texture = new sf::Texture;
+  bool res = texture->loadFromFile(name.c_str());
+  if (!res) {
+    printf("engine.create_sprite: Could not load file %s\n", name.c_str());
+    PyErr_BadArgument();
+  }
+
+  printf("engine.create_sprite: Checking for Free Sprites\n");
+  long loc;
+  if (!free_sprites.empty()) {
+    printf("engine.create_sprite: Using Free Sprites\n");
+    loc = free_sprites.back();
+    free_sprites.pop_back();
+    printf("engine.create_sprite: Adding to Vector\n");
+    sf::Sprite *sprite = new sf::Sprite(*textures.at(loc));
+    sprite->setPosition({0, 0});
+    delete sprites.at(loc);
+    sprites.at(loc) = sprite;
+  } else {
+    textures.push_back(texture);
+    loc = textures.size() - 1;
+    printf("engine.create_sprite: Adding to Vector\n");
+    sf::Sprite *sprite = new sf::Sprite(*textures.at(loc));
+    sprite->setPosition({0, 0});
+    sprites.push_back(sprite);
+  }
+
+  printf("engine.create_sprite: Returning ID\n");
+
+  // Py_XDECREF(pName);
+
+  return PyLong_FromLong(loc);
 }
 
 /*static*/ PyObject *ObjectHandler::SetSpritePosition(PyObject *self,
@@ -218,8 +260,7 @@ ObjectHandler::~ObjectHandler() {
 
   if (circles.size() <= id) {
     Py_XDECREF(pId);
-    printf("engine.set_circle_fill_color got a sprite id out of range (%ld)\n",
-           id);
+    printf("engine.set_circle_fill_color got a sprite id out of range\n");
     PyErr_BadArgument();
   }
 
