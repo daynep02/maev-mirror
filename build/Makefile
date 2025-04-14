@@ -7,6 +7,8 @@ INCLUDE_PYTHON_LAB = -lpython3.10 -I/usr/include/python3.10
 INCLUDE_SFML = -Wl,-rpath=$(previous_dir)/sfml/lib -I$(previous_dir)/sfml/include/ -L$(previous_dir)/sfml/lib -lsfml-graphics -lsfml-window -lsfml-system 
 INCLUDE_SFML_EXTRAS = -lsfml-audio -lsfml-network
 
+FLAGS = -Wall -Wpedantic -Wextra
+
 .PHONY: all clean
 
 all: engine
@@ -25,7 +27,7 @@ debug: $(previous_dir)/src/engine.cpp
 	g++ -g -o engine $(previous_dir)/src/*.cpp $(INCLUDE_PYTHON) $(INCLUDE_SFML) $(INCLUDE_SFML_EXTRAS)
 
 lab: $(previous_dir)/src/engine.cpp
-	g++ -o engine $(previous_dir)/src/*.cpp $(INCLUDE_PYTHON_LAB) $(INCLUDE_SFML) $(INCLUDE_SFML_EXTRAS)
+	g++ -o engine $(previous_dir)/src/*.cpp $(FLAGS) $(INCLUDE_PYTHON_LAB) $(INCLUDE_SFML) $(INCLUDE_SFML_EXTRAS)
 
 run:
 	./engine game.py

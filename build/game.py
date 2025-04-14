@@ -14,7 +14,7 @@ class Game:
         self.ball = Ball()
         self.ball2 = Ball()
         self.background = engine.create_sprite("../inspiration.jpg")
-        engine.set_sprite_position(self.background,(0,0))
+        #engine.set_sprite_position(self.background,(0,0))
 
 game = None
 first = True
