@@ -22,6 +22,9 @@ ObjectHandler::~ObjectHandler(){
 
     std::for_each(sprites.begin(), sprites.end(), delete_ptr());
     sprites.clear();
+
+    std::for_each(circles.begin(), circles.end(), delete_ptr());
+    circles.clear();
 }
 
 /*static*/ PyObject* ObjectHandler::CreateSprite(PyObject *self, PyObject *args){
