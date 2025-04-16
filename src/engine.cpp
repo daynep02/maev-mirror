@@ -3,6 +3,10 @@
 
 #include "object_handler.h"
 
+#include "box_collider.hpp"
+
+#include <iostream>
+
 sf::RenderWindow *window;
 
 ObjectHandler* g_object_handler;
@@ -108,6 +112,8 @@ int main(int argc, char *argv[]) {
 
 	// assign globals
 	window = new sf::RenderWindow(sf::VideoMode({1024, 640}), "Engine!");
+	BoxCollider bc1 = BoxCollider();
+	BoxCollider bc2 = BoxCollider(sf::Vector2f(5, 5), sf::Vector2f(15, 15));
 
 	//create object handler
 	g_object_handler = new ObjectHandler(window);
@@ -152,6 +158,11 @@ int main(int argc, char *argv[]) {
 			break;
 		}
 		Py_XDECREF(pValue);		// dereferences, but pValue can already be NULL
+
+		window->draw(*bc1.getRect());
+		window->draw(*bc2.getRect());
+
+		std::cout << bc1.CollidesWith(&bc2) << std::endl;
 		
 		window->display();
 	}

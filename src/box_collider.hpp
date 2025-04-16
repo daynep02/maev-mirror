@@ -11,10 +11,10 @@ class BoxCollider {
         ~BoxCollider();
 
         bool CollidesWith(BoxCollider* other);
-        sf::RectangleShape& getRect();
+        sf::RectangleShape* getRect();
 
     private:
-        sf::RectangleShape box;
+        sf::RectangleShape* box;
         long id;
 };
 
