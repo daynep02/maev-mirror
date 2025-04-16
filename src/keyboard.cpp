@@ -29,7 +29,7 @@ PyObject *Keyboard::key_is_pressed(PyObject *self, PyObject *args) {
   }
   */
   if (isPressed(keyStr)) {
-    printf("Key Pressed!\n");
+    // printf("Key Pressed!\n");
     Py_RETURN_TRUE;
     return Py_True;
   }
@@ -42,6 +42,7 @@ bool Keyboard::isPressed(std::string key) {
 
   if (sample == keys.end())
     return false;
+  // printf("Testing %s\n", sample->first.c_str());
   return sf::Keyboard::isKeyPressed(sample->second);
 }
 
@@ -114,6 +115,9 @@ const std::unordered_map<std::string, kb> Keyboard::keys = {
     {"HOME", kb::Home},
     {"INSERT", kb::Insert},
     {"DELETE", kb::Delete},
-};
+    {"Left", kb::Left},
+    {"Right", kb::Right},
+    {"Up", kb::Up},
+    {"Down", kb::Down}};
 
 #endif // keyboard_cpp
