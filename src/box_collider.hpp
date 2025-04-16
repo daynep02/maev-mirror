@@ -3,6 +3,7 @@
 
 #include <Python.h>
 #include <SFML/Graphics.hpp>
+#include <vector>
 
 class BoxCollider {
     public:
@@ -14,8 +15,8 @@ class BoxCollider {
         sf::RectangleShape* getRect();
 
     private:
+        static std::vector<BoxCollider*> 
         sf::RectangleShape* box;
-        long id;
 };
 
 #endif
