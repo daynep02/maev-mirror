@@ -14,7 +14,9 @@ class Game:
         self.ball = Ball()
         self.ball2 = Ball()
         self.background = engine.create_sprite("../inspiration.jpg")
-        #engine.set_sprite_position(self.background,(0,0))
+        print("made it 1")
+        engine.set_sprite_position(self.background,(0,0))
+        print("made it 2")
 
 game = None
 first = True
@@ -44,9 +46,9 @@ def update():
     if engine.collides_with(game.ball.circle,game.ball2.circle):
         print("Balls are colliding")
 
-    if first and engine.key_is_pressed(key):
-        first = False
-        print(f"{key} has been pressed")
+    #if first and engine.key_is_pressed(key):
+    #    first = False
+    #    print(f"{key} has been pressed")
     # print(engine.collides_with(game.ball.circle,game.ball2.circle))
 
 def draw():

@@ -70,7 +70,7 @@ ObjectHandler::~ObjectHandler() {
 
   printf("engine.create_sprite: Returning ID\n");
 
-  // Py_XDECREF(pName);
+  //Py_XDECREF(pName);
 
   return PyLong_FromLong(loc);
 }
@@ -106,16 +106,17 @@ ObjectHandler::~ObjectHandler() {
   double x = PyFloat_AsDouble(pX);
   double y = PyFloat_AsDouble(pY);
 
-  // printf("engine.set_sprite_position: setting position\n");
+  printf("engine.set_sprite_position: setting position\n");
 
   sprites.at(id)->setPosition(sf::Vector2f(x, y));
 
-  // printf("engine.set_sprite_position: done setting position\n");
+  printf("engine.set_sprite_position: done setting position\n");
 
-  // Py_XDECREF(pId);
-  // Py_XDECREF(pPosition);
-  // Py_XDECREF(pX);
-  // Py_XDECREF(pY);
+	// TODO: free() getting invalid pointer somewhere here?
+  //Py_XDECREF(pId);
+  //Py_XDECREF(pPosition);
+  //Py_XDECREF(pX);
+  //Py_XDECREF(pY);
 
   Py_RETURN_NONE;
 }

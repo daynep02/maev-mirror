@@ -14,7 +14,7 @@ FLAGS = -Wall -Wpedantic -Wextra
 all: engine
 
 engine: $(previous_dir)/src/engine.cpp object_handler.o keyboard.o
-	g++ -o engine $(previous_dir)/src/engine.cpp object_handler.o keyboard.o $(INCLUDE_PYTHON) $(INCLUDE_SFML) $(INCLUDE_SFML_EXTRAS)
+	g++ -o engine $(previous_dir)/src/engine.cpp object_handler.o keyboard.o vector.o $(INCLUDE_PYTHON) $(INCLUDE_SFML) $(INCLUDE_SFML_EXTRAS)
 
 object_handler.o: $(previous_dir)/src/object_handler.cpp
 	g++ -o object_handler.o -c $(previous_dir)/src/object_handler.cpp $(INCLUDE_PYTHON) $(INCLUDE_SFML) $(INCLUDE_SFML_EXTRAS)
@@ -22,6 +22,8 @@ object_handler.o: $(previous_dir)/src/object_handler.cpp
 keyboard.o: $(previous_dir)/src/keyboard.cpp
 	g++ -o keyboard.o -c $(previous_dir)/src/keyboard.cpp $(INCLUDE_PYTHON) $(INCLUDE_SFML) $(INCLUDE_SFML_EXTRAS)
 
+vector.o: $(previous_dir)/src/vector.cpp
+	g++ -o vector.o -c $(previous_dir)/src/vector.cpp $(INCLUDE_PYTHON) $(INCLUDE_SFML) $(INCLUDE_SFML_EXTRAS)
 
 debug: $(previous_dir)/src/engine.cpp
 	g++ -g -o engine $(previous_dir)/src/*.cpp $(INCLUDE_PYTHON) $(INCLUDE_SFML) $(INCLUDE_SFML_EXTRAS)
