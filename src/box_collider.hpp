@@ -7,9 +7,11 @@
 class BoxCollider {
     public:
         BoxCollider();
+        BoxCollider(sf::Vector2f position, sf::Vector2f size);
         ~BoxCollider();
 
         bool CollidesWith(BoxCollider* other);
+        sf::RectangleShape& getRect();
 
     private:
         sf::RectangleShape box;
