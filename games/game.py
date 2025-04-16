@@ -13,7 +13,7 @@ class Game:
     def __init__(self):
         self.ball = Ball()
         self.ball2 = Ball()
-        self.background = engine.create_sprite("../inspiration.jpg")
+        self.background = engine.create_sprite("./inspiration.jpg")
         engine.set_sprite_position(self.background,(0,0))
 
 game = None

@@ -7,11 +7,8 @@
 #define keyboard_cpp
 #include "keyboard.h"
 #include "SFML/Window/Keyboard.hpp"
-#include "unicodeobject.h"
 #include <SFML/Graphics.hpp>
-#include <string.h>
 #include <unordered_map>
-#include <vector>
 
 PyObject *Keyboard::key_is_pressed(PyObject *self, PyObject *args) {
   Py_ssize_t nargs = PyTuple_GET_SIZE(args);
@@ -23,6 +20,7 @@ PyObject *Keyboard::key_is_pressed(PyObject *self, PyObject *args) {
 
   std::string keyStr = PyUnicode_AsUTF8(pKey);
 
+  // Py_XDECREF(pKey);
   /*
   if (keyStr.size() > 1) {
     Py_XDECREF(pKey);
@@ -32,9 +30,11 @@ PyObject *Keyboard::key_is_pressed(PyObject *self, PyObject *args) {
   */
   if (isPressed(keyStr)) {
     printf("Key Pressed!\n");
+    Py_RETURN_TRUE;
     return Py_True;
-  } else
-    return Py_False;
+  }
+  Py_RETURN_FALSE;
+  return Py_False;
 }
 
 bool Keyboard::isPressed(std::string key) {
@@ -42,7 +42,6 @@ bool Keyboard::isPressed(std::string key) {
 
   if (sample == keys.end())
     return false;
-
   return sf::Keyboard::isKeyPressed(sample->second);
 }
 

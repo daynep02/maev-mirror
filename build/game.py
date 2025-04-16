@@ -30,7 +30,6 @@ def update():
     global first
     key = "NUM0"
     t = time.time()
-
     game.ball.x = math.cos(t) * 50 + 200
     game.ball.y = math.sin(t) * 59 + 200
     engine.set_circle_position(game.ball.circle,(game.ball.x,game.ball.y))
@@ -38,6 +37,8 @@ def update():
     game.ball2.x = math.cos(0) * 50 + 200
     game.ball2.y = math.sin(0) * 59 + 200
     engine.set_circle_position(game.ball2.circle,(game.ball2.x,game.ball2.y))
+
+    
 
     # engine.collides_with(game.ball.circle,game.ball2.circle)
     if engine.collides_with(game.ball.circle,game.ball2.circle):
