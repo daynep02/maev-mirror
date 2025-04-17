@@ -4,6 +4,7 @@
 #include "object_handler.h"
 
 #include "box_collider.hpp"
+#include "box_collider_handler.hpp"
 
 #include <iostream>
 
@@ -24,6 +25,8 @@ static PyMethodDef EngineMethods[] = {
 	{"set_circle_scale", ObjectHandler::SetCircleScale, METH_VARARGS, engine_set_circle_scale_doc},
 	{"draw_circle", ObjectHandler::DrawCircle, METH_VARARGS, engine_draw_circle_doc},
 	{"collides_with", ObjectHandler::CollidesWith, METH_VARARGS, engine_collides_with_doc},
+  {"create_box_collider", BoxColliderHandler::createBoxCollider, METH_VARARGS, engine_create_box_collider_doc},
+  {"free_box_collider", BoxColliderHandler::freeBoxCollider, METH_VARARGS, engine_free_box_collider_doc},
 	{NULL, NULL, 0, NULL}};
 
 // initialization values
@@ -162,7 +165,7 @@ int main(int argc, char *argv[]) {
 		window->draw(*bc1.getRect());
 		window->draw(*bc2.getRect());
 
-		std::cout << bc1.CollidesWith(&bc2) << std::endl;
+		// std::cout << bc1.CollidesWith(&bc2) << std::endl;
 		
 		window->display();
 	}

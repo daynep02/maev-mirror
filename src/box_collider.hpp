@@ -15,7 +15,6 @@ class BoxCollider {
         sf::RectangleShape* getRect();
 
     private:
-        static std::vector<BoxCollider*> 
         sf::RectangleShape* box;
 };
 
