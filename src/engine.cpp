@@ -68,10 +68,8 @@ int main(int argc, char *argv[]) {
   // obtain Python game
   Py_Initialize();
   char *module_path = argv[1];
-  char simple_str[2048];
-  sprintf(simple_str,"import sys\nimport os\n"
-                     "path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + \"/games\"\n"
-                     //"print(\"%s\")\n"
+  char simple_str[1024];
+  sprintf(simple_str,"import sys\n"
                      "sys.path.insert(0, \"%s\")\n"
                      "sys.path.insert(0, \".\")",module_path);
                      
