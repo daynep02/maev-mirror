@@ -57,8 +57,8 @@ int main(int argc, char *argv[]) {
   PyObject *pErr;
   int i;
 
-  if (argc != 2) {
-    fprintf(stderr, "Usage: engine pythongame.py\n");
+  if (argc != 3) {
+    fprintf(stderr, "Usage: engine /full/path/to/pythongame/dir pythongame.py\n");
     return 1;
   }
 
@@ -67,7 +67,16 @@ int main(int argc, char *argv[]) {
 
   // obtain Python game
   Py_Initialize();
-  char *pythonfilename = argv[1];
+  char *module_path = argv[1];
+  char simple_str[2048];
+  sprintf(simple_str,"import sys\nimport os\n"
+                     "path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + \"/games\"\n"
+                     //"print(\"%s\")\n"
+                     "sys.path.insert(0, \"%s\")\n"
+                     "sys.path.insert(0, \".\")",module_path);
+                     
+
+  char *pythonfilename = argv[2];
   char *extension = strstr(pythonfilename, ".py\0");
 
   // normalize filename by removing file extension
@@ -76,8 +85,9 @@ int main(int argc, char *argv[]) {
   }
   pName = PyUnicode_DecodeFSDefault(pythonfilename);
 
-  PyRun_SimpleString("import sys\n"
-                     "sys.path.insert(0, \".\")");
+  //PyRun_SimpleString("import sys\n"            "import os");
+  //PyRun_SimpleString("sys.path.append( os.path.dirname(os.getcwd()) +'/project_name/')");
+  PyRun_SimpleString(simple_str);
 
   // load local instance of pName
   pModule = PyImport_Import(pName);
@@ -85,7 +95,7 @@ int main(int argc, char *argv[]) {
 
   if (pModule == NULL) {
     PyErr_Print();
-    fprintf(stderr, "Failed to load \"%s\"\n", argv[1]);
+    fprintf(stderr, "Failed to load \"%s\"\n", argv[2]);
     return 1;
   }
 

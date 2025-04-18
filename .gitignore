@@ -4,6 +4,6 @@ build/*
 
 # miscellaneous
 .vscode/*
+*__pycache__*
 *.exe
 *.out
-build/__pycache__

@@ -28,8 +28,7 @@ lab: $(previous_dir)/src/engine.cpp
 	g++ -o engine $(previous_dir)/src/*.cpp $(INCLUDE_PYTHON_LAB) $(INCLUDE_SFML) $(INCLUDE_SFML_EXTRAS)
 
 run:
-	./engine game.py
-#	 ./engine $(previous_dir)/games/game.py
+	./engine $(previous_dir)/games game.py
 
 clean:
 	rm -f engine 
