@@ -5,6 +5,11 @@
 #include "keyboard.h"
 #include "object_handler.h"
 
+#include "box_collider.hpp"
+#include "box_collider_handler.hpp"
+
+#include <iostream>
+
 sf::RenderWindow *window;
 
 ObjectHandler *g_object_handler;
@@ -34,6 +39,8 @@ static PyMethodDef EngineMethods[] = {
     {"collides_with", ObjectHandler::CollidesWith, METH_VARARGS,
      engine_collides_with_doc},
     keyPressed,
+    {"create_box_collider", BoxColliderHandler::createBoxCollider, METH_VARARGS, engine_create_box_collider_doc},
+    {"free_box_collider", BoxColliderHandler::freeBoxCollider, METH_VARARGS, engine_free_box_collider_doc},
     {NULL, NULL, 0, NULL}};
 
 // initialization values
