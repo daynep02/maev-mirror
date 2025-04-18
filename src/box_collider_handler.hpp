@@ -26,7 +26,7 @@ class BoxColliderHandler {
 
 PyDoc_STRVAR(
     engine_create_box_collider_doc,
-    ".. function:: create_box_collider()\n"
+    ".. function:: create_box_collider(tuple (x y), tuple (width, height))\n"
     "\n"
     ""
     "\n"

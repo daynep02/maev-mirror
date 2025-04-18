@@ -21,12 +21,24 @@ PyObject* BoxColliderHandler::createBoxCollider(PyObject* self, PyObject* args) 
     //parse python arguments
     Py_ssize_t nargs = PyTuple_GET_SIZE(args);
     if (nargs != 2) {
-        printf("engine.create_box_collider expects a tuple and a tuple as an argument\n");
+        printf("engine.create_box_collider expects a two tuples of size 2 as an argument\n");
         PyErr_BadArgument();
     }
 
     PyObject* pPos = PyTuple_GetItem(args, 0);
+    Py_ssize_t pPos_nargs = PyTuple_GET_SIZE(pPos);
+    if (pPos_nargs != 2) {
+        printf("engine.create_box_collider expects a two tuples of size 2 as an argument\n");
+        PyErr_BadArgument();
+    }
+    
     PyObject* pSize = PyTuple_GetItem(args, 1);
+    Py_ssize_t pSize_nargs = PyTuple_GET_SIZE(pSize);
+    if (pPos_nargs != 2) {
+        printf("engine.create_box_collider expects a two tuples of size 2 as an argument\n");
+        PyErr_BadArgument();
+    }
+
     PyObject* pX = PyTuple_GetItem(pPos, 0);
     PyObject* pY = PyTuple_GetItem(pPos, 1);
     PyObject* pWidth = PyTuple_GetItem(pSize, 0);
