@@ -25,8 +25,8 @@ def init():
     game = Game()
     #engine.free_sprite(game.background)
 
-    print(engine.create_box_collider())
-    print(engine.free_box_collider(0))
+    engine.create_box_collider((1, 167.5), (100, 100))
+    # print(engine.free_box_collider(0))
     # print(engine.create_box_collider())
     # print(engine.create_box_collider())
     # print(engine.create_box_collider())

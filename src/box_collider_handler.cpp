@@ -18,7 +18,26 @@ BoxColliderHandler::~BoxColliderHandler() {
 PyObject* BoxColliderHandler::createBoxCollider(PyObject* self, PyObject* args) {
     long loc; // address in array to store box collider
 
-    BoxCollider* temp_box_collider = new BoxCollider();
+    //parse python arguments
+    Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+    if (nargs != 2) {
+        printf("engine.create_box_collider expects a tuple and a tuple as an argument\n");
+        PyErr_BadArgument();
+    }
+
+    PyObject* pPos = PyTuple_GetItem(args, 0);
+    PyObject* pSize = PyTuple_GetItem(args, 1);
+    PyObject* pX = PyTuple_GetItem(pPos, 0);
+    PyObject* pY = PyTuple_GetItem(pPos, 1);
+    PyObject* pWidth = PyTuple_GetItem(pSize, 0);
+    PyObject* pHeight = PyTuple_GetItem(pSize, 1);
+
+    double x = PyFloat_AsDouble(pX);
+    double y = PyFloat_AsDouble(pY);
+    double width = PyFloat_AsDouble(pWidth);
+    double height = PyFloat_AsDouble(pHeight);
+
+    BoxCollider* temp_box_collider = new BoxCollider(sf::Vector2f(x, y), sf::Vector2f(width, height));
 
     if (!free_box_colliders.empty()) {
         loc = free_box_colliders.back();
@@ -30,7 +49,7 @@ PyObject* BoxColliderHandler::createBoxCollider(PyObject* self, PyObject* args) 
     }
 
 
-    std::clog << "Engine: createBoxCollider returning " << loc << std::endl;
+    std::clog << "Engine:\n\tcreateBoxCollider:\n\t\tCreating Box Collider at " << x << ", " << y << "\n\t\treturning " << loc << std::endl;
     return PyLong_FromLong(loc);
 }
 
