@@ -4,4 +4,6 @@ build/*
 
 # miscellaneous
 .vscode/*
-*.swp
+*__pycache__*
+*.exe
+*.out

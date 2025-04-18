@@ -16,7 +16,7 @@ Ethan Hoyt, Dawson Ochs, Dayne Pefley, Sterling Davis
 The MAEV (Mass-Velocity) Engine
 
 ## Description
-A game engine weitten in C++ that intends to think of everything in terms of sprites and vectors. This allows for robust collision detection and kinematics-based physics that is simple to implement.
+A game engine written in C++ that intends to think of everything in terms of sprites and vectors. This allows for robust collision detection and kinematics-based physics that is simple to implement.
 These features will be represented with several examples:
 	- A top-down racing game that can use vectors to simulate velocity, acceleration, car collision, etc.
 	- A side-scrolling 2D platformer that can use vectors to invert gravity and forces
