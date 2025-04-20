@@ -3,7 +3,7 @@
 #include <cmath>
 #include <vector>
 
-sf::RenderWindow *window_;
+sf::RenderWindow* object_window;
 
 // possible bug: vectors could technically change the address of the contents,
 // so be careful
@@ -13,7 +13,7 @@ std::vector<long> free_sprites;
 std::vector<sf::CircleShape *> circles;
 
 // stores the window to be accessible from the static Python functions
-ObjectHandler::ObjectHandler(sf::RenderWindow *window) { window_ = window; }
+ObjectHandler::ObjectHandler(sf::RenderWindow *window) { object_window = window; }
 
 ObjectHandler::~ObjectHandler() {
   std::for_each(textures.begin(), textures.end(), delete_ptr());
@@ -55,6 +55,8 @@ ObjectHandler::~ObjectHandler() {
     loc = free_sprites.back();
     free_sprites.pop_back();
     printf("engine.create_sprite: Adding to Vector\n");
+    delete textures.at(loc);
+    textures.at(loc) = texture;
     sf::Sprite *sprite = new sf::Sprite(*textures.at(loc));
     sprite->setPosition({0, 0});
     delete sprites.at(loc);
@@ -184,7 +186,7 @@ ObjectHandler::~ObjectHandler() {
 
   // printf("engine.draw_sprite: Drawing Sprite %lu\n",id);
 
-  window_->draw(*sprites.at(id));
+  object_window->draw(*sprites.at(id));
 
   // Py_XDECREF(pId);
   // printf("engine.draw_sprite: Returning\n");
@@ -402,7 +404,7 @@ ObjectHandler::~ObjectHandler() {
 
   // printf("engine.draw_sprite: Drawing Sprite %lu\n",id);
 
-  window_->draw(*circles.at(id));
+  object_window->draw(*circles.at(id));
 
   // Py_XDECREF(pId);
   // printf("engine.draw_sprite: Returning\n");

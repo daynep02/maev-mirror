@@ -13,6 +13,10 @@ class BoxCollider {
 
         bool CollidesWith(BoxCollider* other);
         sf::RectangleShape* getRect();
+        sf::Vector2f getPosition();
+        void setPosition(float x, float y);
+        sf::Vector2f getSize();
+        void setSize(float w, float h);
 
     private:
         sf::RectangleShape* box;

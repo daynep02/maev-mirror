@@ -19,6 +19,18 @@ sf::RectangleShape* BoxCollider::getRect() {
     return box;
 }
 
+sf::Vector2f BoxCollider::getPosition() {return box->getPosition();}
+
+void BoxCollider::setPosition(float x, float y){
+    box->setPosition({x,y});
+}
+
+sf::Vector2f BoxCollider::getSize() {return box->getSize();}
+
+void BoxCollider::setSize(float w, float h){
+    box->setSize({w,h});
+}
+
 bool BoxCollider::CollidesWith(BoxCollider* other) {
     sf::RectangleShape* other_box = other->getRect();
     sf::Vector2f pos1 = box->getPosition();

@@ -4,15 +4,9 @@
 #include <Python.h>
 #include <SFML/Graphics.hpp>
 
-#define MAX_FILENAME_LEN 1024
+#include "common_helpers.h"
 
-//// HELPERS ////
-struct delete_ptr { // Helper function to ease cleanup of container
-    template <typename P>
-    void operator () (P p) {
-        delete p;
-    }
-};
+#define MAX_FILENAME_LEN 1024
 
 //// CLASS DEF ////
 

@@ -15,6 +15,11 @@ class Game:
         self.ball2 = Ball()
         self.background = engine.create_sprite("../inspiration.jpg")
         engine.set_sprite_position(self.background,(0,0))
+        self.test_block = engine.create_rigid_body((125,0),(25,25))
+        engine.set_rigid_body_gravity(self.test_block,True)
+        self.platform = engine.create_rigid_body((0,300),(500,20))
+        engine.set_rigid_body_static(self.platform,True)
+        #print(engine.get_rigid_body_size(self.platform))
 
 game = None
 first = True
@@ -26,6 +31,7 @@ def init():
     #engine.free_sprite(game.background)
 
     engine.create_box_collider((1, 167.5), (100, 100))
+    
     # print(engine.free_box_collider(0))
     # print(engine.create_box_collider())
     # print(engine.create_box_collider())
@@ -45,6 +51,7 @@ def update():
     game.ball2.y = math.sin(0) * 59 + 200
     engine.set_circle_position(game.ball2.circle,(game.ball2.x,game.ball2.y))
     
+    #print(engine.get_rigid_body_position(game.platform))
 
     # engine.collides_with(game.ball.circle,game.ball2.circle)
     # if engine.collides_with(game.ball.circle,game.ball2.circle):
@@ -63,4 +70,6 @@ def draw():
     engine.draw_sprite(game.background)
     engine.draw_circle(ball.circle)
     engine.draw_circle(game.ball2.circle)
+    engine.draw_rigid_body_collider(game.test_block)
+    engine.draw_rigid_body_collider(game.platform)
 

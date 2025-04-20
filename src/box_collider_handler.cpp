@@ -2,12 +2,12 @@
 #include <algorithm>
 #include <iostream>
 
-sf::RenderWindow* _window;
+sf::RenderWindow* collider_window;
 std::vector<BoxCollider*> box_colliders;
 std::vector<long> free_box_colliders;
 
 BoxColliderHandler::BoxColliderHandler(sf::RenderWindow* window) {
-    _window = window;
+    collider_window = window;
 }
 
 BoxColliderHandler::~BoxColliderHandler() {
@@ -54,10 +54,11 @@ PyObject* BoxColliderHandler::createBoxCollider(PyObject* self, PyObject* args) 
     if (!free_box_colliders.empty()) {
         loc = free_box_colliders.back();
         free_box_colliders.pop_back();
-        box_colliders[loc] = temp_box_collider;
+        delete box_colliders.at(loc);
+        box_colliders.at(loc) = temp_box_collider;
     } else {
-        loc = box_colliders.size();
         box_colliders.push_back(temp_box_collider);
+        loc = box_colliders.size()-1;
     }
 
 

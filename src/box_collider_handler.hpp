@@ -5,9 +5,8 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 
-
-#include "object_handler.h"
 #include "box_collider.hpp"
+#include "common_helpers.h"
 
 class BoxColliderHandler {
     private:

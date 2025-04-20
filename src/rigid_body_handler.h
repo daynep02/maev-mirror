@@ -1,0 +1,138 @@
+#ifndef _RIGID_BODY_HANDLER_H_
+#define _RIGID_BODY_HANDLER_H_
+
+#include "Python.h"
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+
+#include "rigid_body.h"
+#include "common_helpers.h"
+
+class RigidBodyHandler {
+    public:
+    RigidBodyHandler(sf::RenderWindow* window);
+    ~RigidBodyHandler();
+
+    void UpdateAllBodies(float gravity_const);
+
+    //// PYTHON API ////
+    static PyObject* CreateRigidBody(PyObject *self, PyObject *args);
+
+    static PyObject* IsRigidBodyStatic(PyObject *self, PyObject *args);
+    static PyObject* SetRigidBodyStatic(PyObject *self, PyObject *args);
+    static PyObject* IsRigidBodyGravity(PyObject *self, PyObject *args);
+    static PyObject* SetRigidBodyGravity(PyObject *self, PyObject *args);
+
+    static PyObject* GetRigidBodyPosition(PyObject *self, PyObject *args);
+    static PyObject* SetRigidBodyPosition(PyObject *self, PyObject *args);
+
+    static PyObject* SetRigidBodySize(PyObject *self, PyObject *args);
+    static PyObject* GetRigidBodySize(PyObject *self, PyObject *args);
+
+    static PyObject* DrawRigidBodyCollider(PyObject *self, PyObject *args);
+    static PyObject* FreeRigidBody(PyObject *self, PyObject *args);
+
+    private:
+};
+
+//// PYTHON DOCS ////
+// corresponding documentation for engine_create_sprite
+PyDoc_STRVAR(
+	engine_create_rigid_body_doc,
+	".. function:: create_rigid_body((posx,posy),(width,height))\n"
+	"\n"
+	"  Creates a rigid body with the specified position (first arg) and size (second arg).\n"
+	"\n"
+	"  :return: an integer representing the rigid body's id.\n");
+
+// corresponding documentation for engine_is_rigid_body_static
+PyDoc_STRVAR(
+	engine_is_rigid_body_static_doc,
+	".. function:: is_rigid_body_static(id)\n"
+	"\n"
+	"  Checks if the rigid body with the specified id is static.\n"
+	"\n"
+	"  :return: A boolean.\n");
+
+// corresponding documentation for engine_set_rigid_body_static
+PyDoc_STRVAR(
+	engine_set_rigid_body_static_doc,
+	".. function:: set_rigid_body_static(id, bool)\n"
+	"\n"
+	"  Sets the rigid body to be static or not with the specified id the passed bool.\n"
+	"\n"
+	"  :return: Nothing.\n");
+
+// corresponding documentation for engine_is_rigid_body_gravity
+PyDoc_STRVAR(
+	engine_is_rigid_body_gravity_doc,
+	".. function:: is_rigid_body_gravity(id)\n"
+	"\n"
+	"  Checks if the rigid body with the specified id has gravity.\n"
+	"\n"
+	"  :return: A boolean.\n");
+
+// corresponding documentation for engine_set_rigid_body_gravity
+PyDoc_STRVAR(
+	engine_set_rigid_body_gravity_doc,
+	".. function:: set_rigid_body_gravity(id, bool)\n"
+	"\n"
+	"  Sets the rigid body to have gravity or not with the specified id the passed bool.\n"
+	"\n"
+	"  :return: Nothing.\n");
+
+// corresponding documentation for engine_get_rigid_body_position
+PyDoc_STRVAR(
+	engine_get_rigid_body_position_doc,
+	".. function:: get_rigid_body_position(id)\n"
+	"\n"
+	"  Gets the position of the a rigid body with the specified id.\n"
+	"\n"
+	"  :return: A tuple of floats (x,y).\n");
+
+// corresponding documentation for engine_set_rigid_body_position
+PyDoc_STRVAR(
+	engine_set_rigid_body_position_doc,
+	".. function:: set_rigid_body_position(id,(x,y))\n"
+	"\n"
+	"  Sets the position of the a rigid body with the specified id to the new x and y.\n"
+	"\n"
+	"  :return: Nothing.\n");
+
+// corresponding documentation for engine_set_rigid_body_size
+PyDoc_STRVAR(
+	engine_get_rigid_body_size_doc,
+	".. function:: get_rigid_body_size(id)\n"
+	"\n"
+	"  Gets the size of the a rigid body with the specified id.\n"
+	"\n"
+	"  :return: A tuple of floats (width,height).\n");
+
+// corresponding documentation for engine_set_rigid_body_size
+PyDoc_STRVAR(
+	engine_set_rigid_body_size_doc,
+	".. function:: set_rigid_body_size(id,(width,height))\n"
+	"\n"
+	"  Sets the size of the a rigid body with the specified id to the new width and height.\n"
+	"\n"
+	"  :return: Nothing.\n");
+
+// corresponding documentation for engine_draw_rigid_body_collider
+PyDoc_STRVAR(
+	engine_draw_rigid_body_collider_doc,
+	".. function:: draw_rigid_body_collider(id)\n"
+	"\n"
+	"  Given an id of a rigid body, draw a neon green box outline of the box collider\n"
+	"\n"
+	"  :return: Nothing.\n");
+
+// corresponding documentation for engine_free_rigid_body
+PyDoc_STRVAR(
+	engine_free_rigid_body_doc,
+	".. function:: free_rigid_body(id)\n"
+	"\n"
+	"  Given an id of a rigid body, free the memory being used, and allow the id to be used for a new rigid body\n"
+	"\n"
+	"  :return: Nothing.\n");
+
+#endif //_RIGID_BODY_HANDLER_H_

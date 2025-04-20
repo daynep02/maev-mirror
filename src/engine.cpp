@@ -8,11 +8,18 @@
 #include "box_collider.hpp"
 #include "box_collider_handler.hpp"
 
+#include "rigid_body.h"
+#include "rigid_body_handler.h"
+
 #include <iostream>
 
-sf::RenderWindow *window;
 
+sf::RenderWindow *g_window;
 ObjectHandler *g_object_handler;
+BoxColliderHandler *g_box_collider_handler;
+RigidBodyHandler *g_rigid_body_handler;
+float g_gravity = 0.1f;
+
 
 // Python methods built into engine
 static PyMethodDef EngineMethods[] = {
@@ -41,6 +48,18 @@ static PyMethodDef EngineMethods[] = {
     keyPressed,
     {"create_box_collider", BoxColliderHandler::createBoxCollider, METH_VARARGS, engine_create_box_collider_doc},
     {"free_box_collider", BoxColliderHandler::freeBoxCollider, METH_VARARGS, engine_free_box_collider_doc},
+    {"create_rigid_body", RigidBodyHandler::CreateRigidBody, METH_VARARGS, engine_create_rigid_body_doc},
+    {"is_rigid_body_static", RigidBodyHandler::IsRigidBodyStatic, METH_VARARGS, engine_is_rigid_body_static_doc},
+    {"set_rigid_body_static", RigidBodyHandler::SetRigidBodyStatic, METH_VARARGS, engine_set_rigid_body_static_doc},
+    {"is_rigid_body_gravity", RigidBodyHandler::IsRigidBodyGravity, METH_VARARGS, engine_is_rigid_body_gravity_doc},
+    {"set_rigid_body_gravity", RigidBodyHandler::SetRigidBodyGravity, METH_VARARGS, engine_set_rigid_body_gravity_doc},
+    {"get_rigid_body_position", RigidBodyHandler::GetRigidBodyPosition, METH_VARARGS, engine_get_rigid_body_position_doc},
+    {"set_rigid_body_position", RigidBodyHandler::SetRigidBodyPosition, METH_VARARGS, engine_set_rigid_body_position_doc},
+    {"set_rigid_body_position", RigidBodyHandler::SetRigidBodyPosition, METH_VARARGS, engine_set_rigid_body_position_doc},
+    {"get_rigid_body_size", RigidBodyHandler::GetRigidBodySize, METH_VARARGS, engine_get_rigid_body_size_doc},
+    {"set_rigid_body_size", RigidBodyHandler::SetRigidBodySize, METH_VARARGS, engine_set_rigid_body_size_doc},
+    {"draw_rigid_body_collider", RigidBodyHandler::DrawRigidBodyCollider, METH_VARARGS, engine_draw_rigid_body_collider_doc},
+    {"free_rigid_body", RigidBodyHandler::FreeRigidBody, METH_VARARGS, engine_free_rigid_body_doc},
     {NULL, NULL, 0, NULL}};
 
 // initialization values
@@ -136,27 +155,31 @@ int main(int argc, char *argv[]) {
   }
 
   // assign globals
-  window = new sf::RenderWindow(sf::VideoMode({1024, 640}), "Engine!");
+  g_window = new sf::RenderWindow(sf::VideoMode({1024, 640}), "Engine!");
 
-  // create object handler
-  g_object_handler = new ObjectHandler(window);
+  // create object handlers
+  g_object_handler = new ObjectHandler(g_window);
+  g_box_collider_handler = new BoxColliderHandler(g_window);
+  g_rigid_body_handler = new RigidBodyHandler(g_window);
 
   // loads in the init Key Function of Python Game
   pValue = PyObject_CallNoArgs(pFuncInit);
   Py_DECREF(pValue);
 
   // SFML loop (ver. 3.0.0)
-  while (window->isOpen()) {
-    while (std::optional event = window->pollEvent()) {
+  while (g_window->isOpen()) {
+    while (std::optional event = g_window->pollEvent()) {
       if (event->is<sf::Event::Closed>()) {
-        window->close();
+        g_window->close();
         break;
       }
     }
 
-    if (!window->isOpen()) {
+    if (!g_window->isOpen()) {
       break;
     }
+
+    g_rigid_body_handler->UpdateAllBodies(g_gravity);
 
     // loads in update Key Function of Python Game
     pValue = PyObject_CallNoArgs(pFuncUpdate);
@@ -164,12 +187,12 @@ int main(int argc, char *argv[]) {
     // catch-all for errors that game causes
     if (pErr) {
       printf("An error occurred!\n");
-      window->close();
+      g_window->close();
       break;
     }
     Py_XDECREF(pValue); // dereferences, but pValue can already be NULL
 
-    window->clear();
+    g_window->clear();
 
     // loads in draw Key Function of Python Game
     pValue = PyObject_CallNoArgs(pFuncDraw);
@@ -177,15 +200,18 @@ int main(int argc, char *argv[]) {
     // catch-all for errors that game causes
     if (pErr) {
       printf("An error has occurred\n");
-      window->close();
+      g_window->close();
       break;
     }
     Py_XDECREF(pValue); // dereferences, but pValue can already be NULL
 
-    window->display();
+    g_window->display();
   }
 
+  delete g_window;
   delete g_object_handler;
+  delete g_box_collider_handler;
+  delete g_rigid_body_handler;
 
   printf("engine: Tearing Down\n");
 
