@@ -38,7 +38,7 @@ class ObjectHandler {
 
 	///// Physics Engine /////
 	static PyObject* CollidesWith(PyObject *self, PyObject *args);
-    
+
     private:
 };
 

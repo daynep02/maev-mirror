@@ -29,6 +29,7 @@ class Vectori {
 class Vectorf {
 	public:
 	// Constructors / Destructors
+	static PyObject* createVector(PyObject* self, PyObject* args);
 	explicit Vectorf();
 	explicit Vectorf(float x, float y);
 	~Vectorf();
@@ -52,9 +53,35 @@ class Vectorf {
 };
 
 
+// Vectorf Docs
+PyDoc_STRVAR(
+	create_vector_doc,
+	".. function:: create_vectorf()\n"
+	"\n"
+	"  Creates a linear algebra vector that handles floating point types."
+	"\n"
+	"  :return: Nothing."
+);
 
-//PyDoc_STRVAR(
-//	engine_
-//);
+PyDoc_STRVAR(
+	engine_get_magnitude_doc,
+	".. function:: magnitude(const Vectorf& v) const\n"
+	"\n"
+	"  Calculates and returns the magnitude of a given Vectorf. Can be seen as a given Vectorf's absolute length."
+	"\n"
+	"  :return: A given Vectorf's magnitude as a floating point type."
+);
+
+PyDoc_STRVAR(
+	engine_get_normalize_doc,
+	".. function:: normalize(Vectorf& v)\n"
+	"\n"
+	"  Calculates and return's the normalized version of a given Vectorf."
+	"\n"
+	"  :return: a new Vectorf."
+);
+
+static PyMethodDef createVector = {"create_vector", Vectorf::createVector,
+				METH_VARARGS, create_vector_doc};
 
 #endif // _VECTOR_H_

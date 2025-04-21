@@ -51,6 +51,10 @@ Vectori Vectori::normalize(Vectori& v) {
 
 ///////////////////////////////////////////
 // Constructors
+PyObject* Vectorf::createVector(PyObject* self, PyObject* args) {
+	Py_RETURN_NONE;
+}
+
 Vectorf::Vectorf() = default;
 
 Vectorf::Vectorf(float x, float y) {

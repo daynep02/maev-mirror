@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "keyboard.h"
+#include "vector.h"
 #include "object_handler.h"
 
 sf::RenderWindow *window;
@@ -21,6 +22,7 @@ static PyMethodDef EngineMethods[] = {
      engine_draw_sprite_doc},
     {"free_sprite", ObjectHandler::FreeSprite, METH_VARARGS,
      engine_free_sprite_doc},
+    
     {"create_circle", ObjectHandler::CreateCircle, METH_VARARGS,
      engine_create_circle_doc},
     {"set_circle_fill_color", ObjectHandler::SetCircleFillColor, METH_VARARGS,
@@ -33,6 +35,8 @@ static PyMethodDef EngineMethods[] = {
      engine_draw_circle_doc},
     {"collides_with", ObjectHandler::CollidesWith, METH_VARARGS,
      engine_collides_with_doc},
+    
+    createVector,
     keyPressed,
     {NULL, NULL, 0, NULL}};
 
