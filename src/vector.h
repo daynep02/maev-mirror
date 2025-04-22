@@ -29,7 +29,7 @@ class Vectori {
 class Vectorf {
 	public:
 	// Constructors / Destructors
-	static PyObject* createVector(PyObject* self, PyObject* args);
+	static PyObject* create_vector(PyObject* self, PyObject* args);
 	explicit Vectorf();
 	explicit Vectorf(float x, float y);
 	~Vectorf();
@@ -81,7 +81,7 @@ PyDoc_STRVAR(
 	"  :return: a new Vectorf."
 );
 
-static PyMethodDef createVector = {"create_vector", Vectorf::createVector,
+static PyMethodDef createVector = {"create_vector", Vectorf::create_vector,
 				METH_VARARGS, create_vector_doc};
 
 #endif // _VECTOR_H_

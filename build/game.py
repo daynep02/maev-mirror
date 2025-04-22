@@ -13,7 +13,8 @@ class Game:
     def __init__(self):
         self.ball = Ball()
         self.ball2 = Ball()
-        self.vec1 = Vectorf()
+        #self.vec1 = Vectorf()
+        self.vec1 = engine.create_vector()
         self.background = engine.create_sprite("../inspiration.jpg")
         print("made it 1")
         engine.set_sprite_position(self.background,(0,0))
@@ -24,8 +25,10 @@ first = True
 
 # Key Functions for Game
 def init():
+    print("made init 1")
     global game
     game = Game()
+    print("made init 2")
     #engine.free_sprite(game.background)
 
 def update():

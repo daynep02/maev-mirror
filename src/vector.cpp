@@ -51,7 +51,12 @@ Vectori Vectori::normalize(Vectori& v) {
 
 ///////////////////////////////////////////
 // Constructors
-PyObject* Vectorf::createVector(PyObject* self, PyObject* args) {
+PyObject* Vectorf::create_vector(PyObject* self, PyObject* args) {
+	sf::Vector2f();
+	printf("engine.create_vector: Creating Vector\n");
+
+	//sf::Vector2f(args[0], args[1])
+
 	Py_RETURN_NONE;
 }
 
