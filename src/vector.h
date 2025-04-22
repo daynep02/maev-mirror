@@ -14,6 +14,8 @@ class Vector {
 	static PyObject* normalize(PyObject* self, PyObject* args);
 
 	// Extra-Vector methods
+	static PyObject* dot(PyObject* self, PyObject* args);
+	static PyObject* cross(PyObject* self, PyObject* args);
 };
 
 
@@ -31,7 +33,7 @@ PyDoc_STRVAR(
 	length_doc,
 	".. function:: length(long id)\n"
 	"\n"
-	"  Calculates and returns the magnitude of a given Vector. Can be seen as a given Vector's absolute length."
+	"  Calculates and returns the magnitude of a Vector given its id. Can be seen as a given Vector's absolute length."
 	"\n"
 	"  :return: A given Vector's magnitude as a double type."
 );
@@ -40,13 +42,33 @@ PyDoc_STRVAR(
 	normalize_doc,
 	".. function:: normalize(long id)\n"
 	"\n"
-	"  Calculates and returns the normalized version of a given Vector."
+	"  Calculates and returns the normalized version of a Vector given its id."
 	"\n"
 	"  :return: a new Vector."
+);
+
+PyDoc_STRVAR(
+	dot_doc,
+	".. function:: dot(long id, long id)\n"
+	"\n"
+	"  Calculates and returns the dot product of two Vectors given their ids."
+	"\n"
+	"  :return: two given Vector's dot product result as a double type."
+);
+
+PyDoc_STRVAR(
+	cross_doc,
+	".. function:: cross(long id, long id)\n"
+	"\n"
+	"  Calculates and returns the cross product of two Vectors given their ids."
+	"\n"
+	"  :return: two given Vector's cross product result as a double type."
 );
 
 static PyMethodDef createVector = {"create_vector", Vector::create_vector, METH_VARARGS, create_vector_doc};
 static PyMethodDef length = {"length", Vector::length, METH_VARARGS, length_doc};
 static PyMethodDef normalize = {"normalize", Vector::normalize, METH_VARARGS, normalize_doc};
+static PyMethodDef dot = {"dot", Vector::dot, METH_VARARGS, dot_doc};
+static PyMethodDef cross = {"cross", Vector::cross, METH_VARARGS, cross_doc};
 
 #endif // _VECTOR_H_

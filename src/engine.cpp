@@ -39,7 +39,9 @@ static PyMethodDef EngineMethods[] = {
     createVector,
 	length,
 	normalize,
-    keyPressed,
+	dot,
+	cross,
+	keyPressed,
     {NULL, NULL, 0, NULL}};
 
 // initialization values

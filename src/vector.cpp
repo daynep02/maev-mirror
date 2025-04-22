@@ -74,3 +74,44 @@ PyObject* Vector::normalize(PyObject* self, PyObject* args) {
 	return PyLong_FromLong(id);
 }
 
+// Returns dot product of two vectors
+PyObject* Vector::dot(PyObject* self, PyObject* args) {
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 2) {
+		printf("engine.dot expects two longs as arguments\n");
+		PyErr_BadArgument();
+	}
+	// obtain argument contents
+	PyObject* id1o = PyTuple_GetItem(args, 0);
+	PyObject* id2o = PyTuple_GetItem(args, 1);
+	
+	long id1 = PyLong_AsLong(id1o);
+	long id2 = PyLong_AsLong(id2o);
+
+	// calculate dot product
+	float d = (*(vectors.at(id1))).dot((*(vectors.at(id2))));
+
+	printf("engine.dot: returning dot product of two Vectors\n");
+	return PyFloat_FromDouble(d);
+}
+
+PyObject* Vector::cross(PyObject* self, PyObject* args) {
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 2) {
+		printf("engine.cross expects two longs as arguments\n");
+		PyErr_BadArgument();
+	}
+	// obtain argument contents
+	PyObject* id1o = PyTuple_GetItem(args, 0);
+	PyObject* id2o = PyTuple_GetItem(args, 1);
+	
+	long id1 = PyLong_AsLong(id1o);
+	long id2 = PyLong_AsLong(id2o);
+
+	// calculate dot product
+	float d = (*(vectors.at(id1))).cross((*(vectors.at(id2))));
+
+	printf("engine.cross: returning cross product of two Vectors\n");
+	return PyFloat_FromDouble(d);
+}
+

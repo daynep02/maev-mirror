@@ -20,6 +20,10 @@ class Game:
         print(engine.length(self.vec2))
         self.vec3 = engine.normalize(self.vec2)
         print(engine.length(self.vec3))
+
+        self.vec4 = engine.create_vector(4, 6.5)
+        print(engine.dot(self.vec2, self.vec4))
+        print(engine.cross(self.vec2, self.vec4))
         
         self.background = engine.create_sprite("../inspiration.jpg")
         engine.set_sprite_position(self.background,(0,0))
