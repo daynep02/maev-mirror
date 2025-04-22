@@ -52,3 +52,25 @@ PyObject* Vector::length(PyObject* self, PyObject* args) {
 	return PyFloat_FromDouble((v.length()));
 }
 
+// Returns normalized version of vector
+PyObject* Vector::normalize(PyObject* self, PyObject* args) {
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 1) {
+		printf("engine.length expects a single long as an argument\n");
+		PyErr_BadArgument();
+	}
+	// obtain argument contents
+	PyObject* ido = PyTuple_GetItem(args, 0);
+
+	long id = PyLong_AsLong(ido);
+	
+	// obtain new normalized vector
+	sf::Vector2<float> v = ((*(vectors.at(id))).normalized());
+	
+	vectors.push_back(new sf::Vector2f(v.x, v.y));
+	id = vectors.size() - 1;
+
+	printf("engine.normalize: returning normalized Vector\n");
+	return PyLong_FromLong(id);
+}
+

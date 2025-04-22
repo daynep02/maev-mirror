@@ -18,6 +18,8 @@ class Game:
         self.vec2 = engine.create_vector(3, 5)
         #print(self.vec2, type(self.vec2), type(1))
         print(engine.length(self.vec2))
+        self.vec3 = engine.normalize(self.vec2)
+        print(engine.length(self.vec3))
         
         self.background = engine.create_sprite("../inspiration.jpg")
         engine.set_sprite_position(self.background,(0,0))

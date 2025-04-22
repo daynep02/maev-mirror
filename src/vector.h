@@ -6,9 +6,14 @@
 
 class Vector {
 	public:
-	// Constructors / Destructors
+	// Constructor
 	static PyObject* create_vector(PyObject* self, PyObject* args);
+
+	// Intra-Vector methods
 	static PyObject* length(PyObject* self, PyObject* args);
+	static PyObject* normalize(PyObject* self, PyObject* args);
+
+	// Extra-Vector methods
 };
 
 
@@ -24,7 +29,7 @@ PyDoc_STRVAR(
 
 PyDoc_STRVAR(
 	length_doc,
-	".. function:: length()\n"
+	".. function:: length(long id)\n"
 	"\n"
 	"  Calculates and returns the magnitude of a given Vector. Can be seen as a given Vector's absolute length."
 	"\n"
@@ -32,16 +37,16 @@ PyDoc_STRVAR(
 );
 
 PyDoc_STRVAR(
-	engine_get_normalize_doc,
-	".. function:: normalize(Vectorf& v)\n"
+	normalize_doc,
+	".. function:: normalize(long id)\n"
 	"\n"
-	"  Calculates and return's the normalized version of a given Vectorf."
+	"  Calculates and returns the normalized version of a given Vector."
 	"\n"
-	"  :return: a new Vectorf."
+	"  :return: a new Vector."
 );
 
 static PyMethodDef createVector = {"create_vector", Vector::create_vector, METH_VARARGS, create_vector_doc};
 static PyMethodDef length = {"length", Vector::length, METH_VARARGS, length_doc};
-//static PyMethodDef createVector = {"create_vector", Vectorf::create_vector, METH_VARARGS, create_vector_doc};
+static PyMethodDef normalize = {"normalize", Vector::normalize, METH_VARARGS, normalize_doc};
 
 #endif // _VECTOR_H_
