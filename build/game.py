@@ -13,22 +13,23 @@ class Game:
     def __init__(self):
         self.ball = Ball()
         self.ball2 = Ball()
-        #self.vec1 = Vectorf()
+        
         self.vec1 = engine.create_vector()
+        self.vec2 = engine.create_vector(3, 5)
+        #print(self.vec2, type(self.vec2), type(1))
+        print(engine.length(self.vec2))
+        
         self.background = engine.create_sprite("../inspiration.jpg")
-        print("made it 1")
         engine.set_sprite_position(self.background,(0,0))
-        print("made it 2")
+        print("end of Game class")
 
 game = None
 first = True
 
 # Key Functions for Game
 def init():
-    print("made init 1")
     global game
     game = Game()
-    print("made init 2")
     #engine.free_sprite(game.background)
 
 def update():
@@ -47,7 +48,7 @@ def update():
     
 
     # engine.collides_with(game.ball.circle,game.ball2.circle)
-    if engine.collides_with(game.ball.circle,game.ball2.circle):
+    if engine.collides_with(game.ball.circle, game.ball2.circle):
         print("Balls are colliding")
 
     #if first and engine.key_is_pressed(key):

@@ -1,116 +1,54 @@
-#include <cmath>
 #include "vector.h"
+#include <vector>
+#include <cmath>
 
-///////////////////////////////////////////
-// Constructors
-Vectori::Vectori() = default;
+std::vector<sf::Vector2<float>*> vectors;
 
-Vectori::Vectori(int x, int y) {
-	this->x = x;
-	this->y = y;
+// Makes either empty or x, y Vector based on whether or not arguments are given
+PyObject* Vector::create_vector(PyObject* self, PyObject* args) {
+	long id = -1;
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs == 0) {
+		printf("engine.create_vector: Creating Vector of 0 0\n");
+		vectors.push_back(new sf::Vector2f());
+		id = vectors.size() - 1;
+	}
+	else if (nargs == 2) {
+		// obtain argument contents
+		PyObject* xo = PyTuple_GetItem(args, 0);
+		PyObject* yo = PyTuple_GetItem(args, 1);
+
+		float x = PyFloat_AsDouble(xo);
+		float y = PyFloat_AsDouble(yo);
+		
+		printf("engine.create_vector: Creating Vector of %f %f\n", x, y);
+		vectors.push_back(new sf::Vector2f(x, y));
+		id = vectors.size() - 1;
+	}
+	else {
+		printf("engine.create_vector expects either two ints/floats or no arguments");
+		PyErr_BadArgument();
+	}
+
+	return PyLong_FromLong(id);
 }
 
-// Destructor
-Vectori::~Vectori() = default;
+// Returns length of vector
+PyObject* Vector::length(PyObject* self, PyObject* args) {
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 1) {
+		printf("engine.length expects a single long as an argument\n");
+		PyErr_BadArgument();
+	}
+	// obtain argument contents
+	PyObject* ido = PyTuple_GetItem(args, 0);
 
-// Magnitude
-Vectori& Vectori::operator *= (int s) {
-	this->x *= s;
-	this->y *= s;
-	return *this;
+	long id = PyLong_AsLong(ido);
+	
+	// return length
+	sf::Vector2<float> v = *(vectors.at(id));
+
+	printf("engine.length: returning length\n");
+	return PyFloat_FromDouble((v.length()));
 }
 
-Vectori& Vectori::operator /= (int s) {
-	s = 1.0F / s;
-	this->x *= s;
-	this->y *= s;
-	return *this;
-}
-
-Vectori Vectori::operator * (int s) {
-	return (Vectori(this->x * s, this->y * s));
-}
-
-Vectori Vectori::operator / (int s) {
-	s = 1.0F / s;
-	return (Vectori(this->x * s, this->y * s));
-}
-
-// negative
-Vectori Vectori::operator - () {
-	return (Vectori(-this->x, -this->y));
-}
-
-float Vectori::magnitude(const Vectori& v) const {
-	return (sqrt((v.x * v.x) + (v.y * v.y)));
-}
-
-Vectori Vectori::normalize(Vectori& v) {
-	return (v / magnitude(v));
-}
-
-///////////////////////////////////////////
-// Constructors
-PyObject* Vectorf::create_vector(PyObject* self, PyObject* args) {
-	sf::Vector2f();
-	printf("engine.create_vector: Creating Vector\n");
-
-	//sf::Vector2f(args[0], args[1])
-
-	Py_RETURN_NONE;
-}
-
-Vectorf::Vectorf() = default;
-
-Vectorf::Vectorf(float x, float y) {
-	this->x = x;
-	this->y = y;
-}
-
-// Destructor
-Vectorf::~Vectorf() = default;
-
-// Accessors
-//float& operator [] (int i) {
-//	return ((this->x) [i]);
-//}
-
-//const float& operator [] (int i) const {
-//	return ((this->x) [i]);
-//}
-
-// Magnitude
-Vectorf& Vectorf::operator *= (float s) {
-	this->x *= s;
-	this->y *= s;
-	return *this;
-}
-
-Vectorf& Vectorf::operator /= (float s) {
-	s = 1.0F / s;
-	this->x *= s;
-	this->y *= s;
-	return *this;
-}
-
-Vectorf Vectorf::operator * (float s) {
-	return (Vectorf(this->x * s, this->y * s));
-}
-
-Vectorf Vectorf::operator / (float s) {
-	s = 1.0F / s;
-	return (Vectorf(this->x * s, this->y * s));
-}
-
-// negative
-Vectorf Vectorf::operator - () {
-	return (Vectorf(-this->x, -this->y));
-}
-
-float Vectorf::magnitude(const Vectorf& v) const {
-	return (sqrt((v.x * v.x) + (v.y * v.y)));
-}
-
-Vectorf Vectorf::normalize(Vectorf& v) {
-	return (v / magnitude(v));
-}

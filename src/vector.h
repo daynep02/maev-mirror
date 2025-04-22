@@ -4,72 +4,31 @@
 #include <Python.h>
 #include <SFML/Graphics.hpp>
 
-// Class Definition
-class Vectori {
-	public:
-	// Constructors / Destructors
-	explicit Vectori();
-	explicit Vectori(int x, int y);
-	~Vectori();
-
-	// Magnitude
-	Vectori& operator *= (int s);
-	Vectori& operator /= (int s);
-	inline Vectori operator * (int s);
-	inline Vectori operator / (int s);
-	inline Vectori operator - ();
-	inline float magnitude(const Vectori& v) const;
-	inline Vectori normalize(Vectori& v);
-
-	private:
-	int x;
-	int y;
-};
-
-class Vectorf {
+class Vector {
 	public:
 	// Constructors / Destructors
 	static PyObject* create_vector(PyObject* self, PyObject* args);
-	explicit Vectorf();
-	explicit Vectorf(float x, float y);
-	~Vectorf();
-
-	// Accessors
-	//float& operator [] (int i);
-	//const float& operator [] (int i) const;
-
-	// Magnitude
-	Vectorf& operator *= (float s);
-	Vectorf& operator /= (float s);
-	inline Vectorf operator * (float s);
-	inline Vectorf operator / (float s);
-	inline Vectorf operator - ();
-	inline float magnitude(const Vectorf& v) const;
-	inline Vectorf normalize(Vectorf& v);
-	
-	private:
-	float x;
-	float y;
+	static PyObject* length(PyObject* self, PyObject* args);
 };
 
 
 // Vectorf Docs
 PyDoc_STRVAR(
 	create_vector_doc,
-	".. function:: create_vectorf()\n"
+	".. function:: create_vector()\n"
 	"\n"
-	"  Creates a linear algebra vector that handles floating point types."
+	"  Creates a linear algebra vector that handles integer and floating point types."
 	"\n"
 	"  :return: Nothing."
 );
 
 PyDoc_STRVAR(
-	engine_get_magnitude_doc,
-	".. function:: magnitude(const Vectorf& v) const\n"
+	length_doc,
+	".. function:: length()\n"
 	"\n"
-	"  Calculates and returns the magnitude of a given Vectorf. Can be seen as a given Vectorf's absolute length."
+	"  Calculates and returns the magnitude of a given Vector. Can be seen as a given Vector's absolute length."
 	"\n"
-	"  :return: A given Vectorf's magnitude as a floating point type."
+	"  :return: A given Vector's magnitude as a double type."
 );
 
 PyDoc_STRVAR(
@@ -81,7 +40,8 @@ PyDoc_STRVAR(
 	"  :return: a new Vectorf."
 );
 
-static PyMethodDef createVector = {"create_vector", Vectorf::create_vector,
-				METH_VARARGS, create_vector_doc};
+static PyMethodDef createVector = {"create_vector", Vector::create_vector, METH_VARARGS, create_vector_doc};
+static PyMethodDef length = {"length", Vector::length, METH_VARARGS, length_doc};
+//static PyMethodDef createVector = {"create_vector", Vectorf::create_vector, METH_VARARGS, create_vector_doc};
 
 #endif // _VECTOR_H_

@@ -37,6 +37,7 @@ static PyMethodDef EngineMethods[] = {
      engine_collides_with_doc},
     
     createVector,
+	length,
     keyPressed,
     {NULL, NULL, 0, NULL}};
 
