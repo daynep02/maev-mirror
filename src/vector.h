@@ -9,6 +9,10 @@ class Vector {
 	// Constructor
 	static PyObject* create_vector(PyObject* self, PyObject* args);
 
+	// Attributes
+	static PyObject* x(PyObject* self, PyObject* args);
+	static PyObject* y(PyObject* self, PyObject* args);
+
 	// Intra-Vector methods
 	static PyObject* length(PyObject* self, PyObject* args);
 	static PyObject* normalize(PyObject* self, PyObject* args);
@@ -66,6 +70,8 @@ PyDoc_STRVAR(
 );
 
 static PyMethodDef createVector = {"create_vector", Vector::create_vector, METH_VARARGS, create_vector_doc};
+static PyMethodDef x = {"x", Vector::x, METH_VARARGS, length_doc};
+static PyMethodDef y = {"y", Vector::y, METH_VARARGS, length_doc};
 static PyMethodDef length = {"length", Vector::length, METH_VARARGS, length_doc};
 static PyMethodDef normalize = {"normalize", Vector::normalize, METH_VARARGS, normalize_doc};
 static PyMethodDef dot = {"dot", Vector::dot, METH_VARARGS, dot_doc};

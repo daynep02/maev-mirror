@@ -56,7 +56,7 @@ class Game:
         self.vec1 = engine.create_vector()
         self.vec2 = engine.create_vector(3, 5)
         #print(self.vec2, type(self.vec2), type(1))
-        print(engine.length(self.vec2))
+        print(engine.length(self.vec2), engine.x(self.vec2), engine.y(self.vec2))
         self.vec3 = engine.normalize(self.vec2)
         print(engine.length(self.vec3))
 
