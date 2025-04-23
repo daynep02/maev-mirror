@@ -41,7 +41,7 @@ rigid_body.o: $(previous_dir)/src/rigid_body.cpp
 rigid_body_handler.o: $(previous_dir)/src/rigid_body_handler.cpp
 	g++ -g -o rigid_body_handler.o -c $(previous_dir)/src/rigid_body_handler.cpp $(INCLUDE_PYTHON) $(INCLUDE_SFML) $(INCLUDE_SFML_EXTRAS)
 
-run:
+run: all
 	./engine $(previous_dir)/games game.py
 
 clean:
