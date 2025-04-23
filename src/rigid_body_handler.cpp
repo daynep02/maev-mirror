@@ -83,6 +83,8 @@ void RigidBodyHandler::UpdateAllBodies(float gravity_const) {
       }
     }
   }
+
+  delete prev_positions;
 }
 
 /*static*/ PyObject *RigidBodyHandler::GetCurrentTime(PyObject *self,
