@@ -13,6 +13,8 @@ endif
 INCLUDE_SFML = -Wl,-rpath=$(previous_dir)/sfml/lib -I$(previous_dir)/sfml/include/ -L$(previous_dir)/sfml/lib -lsfml-graphics -lsfml-window -lsfml-system 
 INCLUDE_SFML_EXTRAS = -lsfml-audio -lsfml-network
 
+FLAGS = -Wall -Wpedantic -Wextra
+
 .PHONY: all clean
 
 all: engine
@@ -31,6 +33,9 @@ keyboard.o: $(previous_dir)/src/keyboard.cpp
 
 box_collider.o: $(previous_dir)/src/box_collider.cpp
 	g++ -g -o box_collider.o -c $(previous_dir)/src/box_collider.cpp $(INCLUDE_PYTHON) $(INCLUDE_SFML) $(INCLUDE_SFML_EXTRAS)
+
+vector.o: $(previous_dir)/src/vector.cpp
+	g++ -o vector.o -c $(previous_dir)/src/vector.cpp $(INCLUDE_PYTHON) $(INCLUDE_SFML) $(INCLUDE_SFML_EXTRAS)
 
 box_collider_handler.o: $(previous_dir)/src/box_collider_handler.cpp
 	g++ -g -o box_collider_handler.o -c $(previous_dir)/src/box_collider_handler.cpp $(INCLUDE_PYTHON) $(INCLUDE_SFML) $(INCLUDE_SFML_EXTRAS)

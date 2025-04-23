@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "keyboard.h"
+#include "vector.h"
 #include "object_handler.h"
 
 #include "box_collider.hpp"
@@ -32,6 +33,7 @@ static PyMethodDef EngineMethods[] = {
      engine_draw_sprite_doc},
     {"free_sprite", ObjectHandler::FreeSprite, METH_VARARGS,
      engine_free_sprite_doc},
+    
     {"create_circle", ObjectHandler::CreateCircle, METH_VARARGS,
      engine_create_circle_doc},
     {"set_circle_fill_color", ObjectHandler::SetCircleFillColor, METH_VARARGS,
@@ -45,7 +47,8 @@ static PyMethodDef EngineMethods[] = {
     {"collides_with", ObjectHandler::CollidesWith, METH_VARARGS,
      engine_collides_with_doc},
     keyPressed,
-    {"create_box_collider", BoxColliderHandler::createBoxCollider, METH_VARARGS, engine_create_box_collider_doc},
+    
+	{"create_box_collider", BoxColliderHandler::createBoxCollider, METH_VARARGS, engine_create_box_collider_doc},
     {"free_box_collider", BoxColliderHandler::freeBoxCollider, METH_VARARGS, engine_free_box_collider_doc},
     {"current_time", RigidBodyHandler::GetCurrentTime, METH_VARARGS, engine_current_time_doc},
     {"delta_time", RigidBodyHandler::GetDeltaTime, METH_VARARGS, engine_delta_time_doc},
@@ -61,6 +64,12 @@ static PyMethodDef EngineMethods[] = {
     {"set_rigid_body_size", RigidBodyHandler::SetRigidBodySize, METH_VARARGS, engine_set_rigid_body_size_doc},
     {"draw_rigid_body_collider", RigidBodyHandler::DrawRigidBodyCollider, METH_VARARGS, engine_draw_rigid_body_collider_doc},
     {"free_rigid_body", RigidBodyHandler::FreeRigidBody, METH_VARARGS, engine_free_rigid_body_doc},
+    
+    createVector,
+	length,
+	normalize,
+	dot,
+	cross,
     {NULL, NULL, 0, NULL}};
 
 // initialization values
