@@ -12,10 +12,17 @@ class RigidBodyHandler {
     public:
     RigidBodyHandler(sf::RenderWindow* window);
     ~RigidBodyHandler();
-
+	void UpdateCurrentAndTimeDelta();
+	void UpdatePreviousTime();
     void UpdateAllBodies(float gravity_const);
 
     //// PYTHON API ////
+
+	// Time specific
+	static PyObject* GetCurrentTime(PyObject *self, PyObject *args);
+	static PyObject* GetDeltaTime(PyObject *self, PyObject *args);
+
+	// RigidBody specific
     static PyObject* CreateRigidBody(PyObject *self, PyObject *args);
 
     static PyObject* IsRigidBodyStatic(PyObject *self, PyObject *args);
@@ -36,6 +43,24 @@ class RigidBodyHandler {
 };
 
 //// PYTHON DOCS ////
+// corresponding documentation for engine_delta_time
+PyDoc_STRVAR(
+	engine_delta_time_doc,
+	".. function:: delta_time()\n"
+	"\n"
+	"  Returns the delta time (essentially how many seconds has passed since the last frame) of the engine.\n"
+	"\n"
+	"  :return: a float representing the delta time in seconds.\n");
+
+// corresponding documentation for engine_current_time
+PyDoc_STRVAR(
+	engine_current_time_doc,
+	".. function:: current_time()\n"
+	"\n"
+	"  Returns the current time (relevant to the engine) in seconds.\n"
+	"\n"
+	"  :return: a float representing the current time in seconds.\n");
+
 // corresponding documentation for engine_create_sprite
 PyDoc_STRVAR(
 	engine_create_rigid_body_doc,

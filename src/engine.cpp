@@ -13,12 +13,11 @@
 
 #include <iostream>
 
-
 sf::RenderWindow *g_window;
 ObjectHandler *g_object_handler;
 BoxColliderHandler *g_box_collider_handler;
 RigidBodyHandler *g_rigid_body_handler;
-float g_gravity = 0.1f;
+float g_gravity = 50.0f;
 
 
 // Python methods built into engine
@@ -48,6 +47,8 @@ static PyMethodDef EngineMethods[] = {
     keyPressed,
     {"create_box_collider", BoxColliderHandler::createBoxCollider, METH_VARARGS, engine_create_box_collider_doc},
     {"free_box_collider", BoxColliderHandler::freeBoxCollider, METH_VARARGS, engine_free_box_collider_doc},
+    {"current_time", RigidBodyHandler::GetCurrentTime, METH_VARARGS, engine_current_time_doc},
+    {"delta_time", RigidBodyHandler::GetDeltaTime, METH_VARARGS, engine_delta_time_doc},
     {"create_rigid_body", RigidBodyHandler::CreateRigidBody, METH_VARARGS, engine_create_rigid_body_doc},
     {"is_rigid_body_static", RigidBodyHandler::IsRigidBodyStatic, METH_VARARGS, engine_is_rigid_body_static_doc},
     {"set_rigid_body_static", RigidBodyHandler::SetRigidBodyStatic, METH_VARARGS, engine_set_rigid_body_static_doc},
@@ -162,6 +163,10 @@ int main(int argc, char *argv[]) {
   g_box_collider_handler = new BoxColliderHandler(g_window);
   g_rigid_body_handler = new RigidBodyHandler(g_window);
 
+  // Doing this so things don't fly off the screen in the first frame
+  g_rigid_body_handler->UpdateCurrentAndTimeDelta();
+  g_rigid_body_handler->UpdatePreviousTime();
+
   // loads in the init Key Function of Python Game
   pValue = PyObject_CallNoArgs(pFuncInit);
   Py_DECREF(pValue);
@@ -179,6 +184,8 @@ int main(int argc, char *argv[]) {
       break;
     }
 
+    // Update the rigid bodies and time delta
+    g_rigid_body_handler->UpdateCurrentAndTimeDelta();
     g_rigid_body_handler->UpdateAllBodies(g_gravity);
 
     // loads in update Key Function of Python Game
@@ -191,6 +198,9 @@ int main(int argc, char *argv[]) {
       break;
     }
     Py_XDECREF(pValue); // dereferences, but pValue can already be NULL
+
+    // Update previous time before drawing, for an iOS friendly delta time
+    g_rigid_body_handler->UpdatePreviousTime();
 
     g_window->clear();
 

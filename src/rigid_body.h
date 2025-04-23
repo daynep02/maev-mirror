@@ -20,7 +20,7 @@ class RigidBody {
     void SetVelocity(sf::Vector2f new_velocity);
     void ModifyVelocity(float x, float y);
     void ModifyVelocity(sf::Vector2f new_velocity);
-    void UpdateByVelocity(float gravity_const);
+    void UpdateByVelocity(float gravity_const, double delta);
 
     sf::Vector2f GetPosition();
     void SetPosition(sf::Vector2f new_position);

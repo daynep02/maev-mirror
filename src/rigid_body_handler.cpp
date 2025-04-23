@@ -2,9 +2,14 @@
 
 #include <algorithm>
 #include <vector>
+#include <chrono>
 #include <iostream>
 
 sf::RenderWindow* rigid_window;
+
+std::chrono::_V2::steady_clock::time_point current_time;
+std::chrono::_V2::steady_clock::time_point previous_time;
+std::chrono::duration<double> delta_time;
 
 std::vector<RigidBody*> rigid_bodies;
 std::vector<long> free_rigid_bodies;
@@ -18,7 +23,18 @@ RigidBodyHandler::~RigidBodyHandler(){
     rigid_bodies.clear();
 }
 
-//bool first_collision = false;
+void RigidBodyHandler::UpdateCurrentAndTimeDelta(){
+    using namespace std::chrono;
+    current_time = steady_clock::now();
+    // we don't want the first frame to teleport items
+    delta_time = current_time - previous_time;
+    
+}
+
+void RigidBodyHandler::UpdatePreviousTime(){
+    previous_time = current_time;
+}
+
 
 void RigidBodyHandler::UpdateAllBodies(float gravity_const){
     sf::Vector2f* prev_positions = (sf::Vector2f*)calloc(rigid_bodies.size(),sizeof(sf::Vector2f));
@@ -26,7 +42,7 @@ void RigidBodyHandler::UpdateAllBodies(float gravity_const){
     //Update by the rigid body's velocity
     for (int i = 0; i < rigid_bodies.size(); i++){
         prev_positions[i] = rigid_bodies.at(i)->GetPosition();
-        rigid_bodies.at(i)->UpdateByVelocity(gravity_const);
+        rigid_bodies.at(i)->UpdateByVelocity(gravity_const,delta_time.count());
     }
 
     //check for collisions
@@ -59,12 +75,6 @@ void RigidBodyHandler::UpdateAllBodies(float gravity_const){
                 }
                 // j shouldn't move, but i should
                 else if(!body_i->IsStatic() && body_j->IsStatic()) {
-                    //if(!first_collision) {
-                    //    printf("Prev: (%f,%f) -> Current: (%f,%f)\n",prev_positions[i].x,prev_positions[i].y,
-                    //    body_i->GetPosition().x,body_i->GetPosition().y);
-                    //    std::cout << std::flush;
-                    //    first_collision = true;
-                    //}
                     body_i->SetPosition(prev_positions[i]);
                 }
                 else {
@@ -75,6 +85,16 @@ void RigidBodyHandler::UpdateAllBodies(float gravity_const){
             
         }
     }
+}
+
+
+/*static*/ PyObject* RigidBodyHandler::GetCurrentTime(PyObject *self, PyObject *args) {
+    auto time = std::chrono::duration_cast<std::chrono::duration<double>>(current_time.time_since_epoch());
+    return PyFloat_FromDouble(time.count());
+}
+
+/*static*/ PyObject* RigidBodyHandler::GetDeltaTime(PyObject *self, PyObject *args){ 
+    return PyFloat_FromDouble(delta_time.count());
 }
 
 /*static*/ PyObject* RigidBodyHandler::CreateRigidBody(PyObject *self, PyObject *args) {

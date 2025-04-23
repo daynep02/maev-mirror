@@ -42,7 +42,9 @@ def update():
     global game
     global first
     key = "NUM0"
-    t = time.time()
+    t = engine.current_time()
+    delta = engine.delta_time()
+    #print(delta)
     game.ball.x = math.cos(t) * 50 + 200
     game.ball.y = math.sin(t) * 59 + 200
     engine.set_circle_position(game.ball.circle,(game.ball.x,game.ball.y))
