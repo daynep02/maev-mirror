@@ -19,6 +19,19 @@ class Game:
         engine.set_rigid_body_gravity(self.test_block,True)
         self.platform = engine.create_rigid_body((0,300),(500,20))
         engine.set_rigid_body_static(self.platform,True)
+
+        self.vec1 = engine.create_vector()
+        self.vec2 = engine.create_vector(3, 5)
+        #print(self.vec2, type(self.vec2), type(1))
+        print(engine.length(self.vec2))
+        self.vec3 = engine.normalize(self.vec2)
+        print(engine.length(self.vec3))
+
+        self.vec4 = engine.create_vector(4, 6.5)
+        print(engine.dot(self.vec2, self.vec4))
+        print(engine.cross(self.vec2, self.vec4))
+
+
         #print(engine.get_rigid_body_size(self.platform))
 
 game = None
