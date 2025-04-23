@@ -68,6 +68,7 @@ ObjectHandler::~ObjectHandler() {
     sf::Sprite *sprite = new sf::Sprite(*textures.at(loc));
     sprite->setPosition({0, 0});
     sprites.push_back(sprite);
+    loc = textures.size() - 1;
   }
 
   printf("engine.create_sprite: Returning ID\n");

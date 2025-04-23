@@ -74,7 +74,7 @@ PyDoc_STRVAR(
 	"\n"
 	"  :return: Nothing.\n");
 
-// corresponding documentation for engine_draw_sprite
+// corresponding documentation for engine_free_sprite
 PyDoc_STRVAR(
 	engine_free_sprite_doc,
 	".. function:: free_sprite(id)\n"
