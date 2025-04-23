@@ -4,6 +4,7 @@
 Ethan Hoyt, Dawson Ochs, Dayne Pefley, Sterling Davis
 
 ## Getting started
+Check out our [wiki on Gitlab](https://repo.cse.taylor.edu/dpefley/maev/-/wikis/home)!
 
 ## Integrate with your tools
 - [ ] [Set up project integrations](https://repo.cse.taylor.edu/dpefley/maev/-/settings/integrations)
