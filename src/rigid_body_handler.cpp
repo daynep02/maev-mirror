@@ -312,6 +312,58 @@ void RigidBodyHandler::UpdateAllBodies(float gravity_const) {
   Py_RETURN_NONE;
 }
 
+PyObject* RigidBodyHandler::SetRigidBodyVelocity(PyObject* self, PyObject* args) {
+  Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+  if (nargs != 2) {
+    printf("engine.set_rigid_body_velocity expects a long and a tuple of length two as arguments\n");
+    PyErr_BadArgument();
+  }
+
+  PyObject *pId = PyTuple_GetItem(args, 0);
+  if (!PyLong_Check(pId)) {
+    Py_XDECREF(pId);
+    printf("engine.set_rigid_body_velocity expects a long and a tuple of length two as arguments\n");
+    PyErr_BadArgument();
+  }
+
+  long id = PyLong_AsLong(pId);
+
+  if (rigid_bodies.size() <= id || 0 > id) {
+    Py_XDECREF(pId);
+    printf("engine.set_rigid_body_velocity got a rigid body id out of range\n");
+    PyErr_BadArgument();
+  }
+
+  //Parse the velocity tuple //should be changed to vectors later
+  PyObject* pVel = PyTuple_GetItem(args, 1);
+  Py_ssize_t nargs_vel = PyTuple_GET_SIZE(pVel);
+  if (nargs_vel != 2) {
+    printf("engine.set_rigid_body_velocity expects a long and a tuple of length two as arguments\n");
+    PyErr_BadArgument();
+  }
+
+  PyObject* pVelX = PyTuple_GetItem(pVel, 0);
+  if (!PyFloat_Check(pVelX)) {
+    Py_XDECREF(pVelX);
+    printf("engine.set_rigid_body_velocity expects a long and a tuple of length two as arguments - the first argument of the tuple is not a float\n");
+    PyErr_BadArgument();
+  }
+
+  PyObject* pVelY = PyTuple_GetItem(pVel, 1);
+  if (!PyFloat_Check(pVelY)) {
+    Py_XDECREF(pVelY);
+    printf("engine.set_rigid_body_velocity expects a long and a tuple of length two as arguments - the second argument of the tuple is not a float\n");
+    PyErr_BadArgument();
+  }
+
+  double x = PyFloat_AsDouble(pVelX);
+  double y = PyFloat_AsDouble(pVelY);
+
+  rigid_bodies[id]->SetVelocity(x,y);
+
+  Py_RETURN_NONE;
+}
+
 /*static*/ PyObject *RigidBodyHandler::GetRigidBodyPosition(PyObject *self,
                                                             PyObject *args) {
   Py_ssize_t nargs = PyTuple_GET_SIZE(args);
