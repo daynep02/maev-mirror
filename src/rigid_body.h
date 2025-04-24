@@ -17,16 +17,16 @@ class RigidBody {
 
     sf::Vector2f GetVelocity();
     void SetVelocity(float x, float y);
-    void SetVelocity(sf::Vector2f new_velocity);
+    void SetVelocity(const sf::Vector2f &new_velocity);
     void ModifyVelocity(float x, float y);
-    void ModifyVelocity(sf::Vector2f new_velocity);
+    void ModifyVelocity(const sf::Vector2f &new_velocity);
     void UpdateByVelocity(float gravity_const, double delta);
 
     sf::Vector2f GetPosition();
-    void SetPosition(sf::Vector2f new_position);
+    void SetPosition(const sf::Vector2f &new_position);
 
     sf::Vector2f GetSize();
-    void SetSize(sf::Vector2f new_size);
+    void SetSize(const sf::Vector2f &new_size);
 
     void DrawOutline(sf::RenderWindow* window, sf::Color color);
 

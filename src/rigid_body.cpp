@@ -33,9 +33,9 @@ void RigidBody::SetGravity(bool new_gravity) {gravity = new_gravity;}
 
 sf::Vector2f RigidBody::GetVelocity() {return velocity;}
 void RigidBody::SetVelocity(float x, float y) {velocity.x = x; velocity.y = y;}
-void RigidBody::SetVelocity(sf::Vector2f new_velocity) {velocity = new_velocity;}
+void RigidBody::SetVelocity(const sf::Vector2f &new_velocity) {velocity = new_velocity;}
 void RigidBody::ModifyVelocity(float x, float y) {velocity.x += x; velocity.y += y;}
-void RigidBody::ModifyVelocity(sf::Vector2f new_velocity) {velocity.x += new_velocity.x; velocity.y += new_velocity.y;}
+void RigidBody::ModifyVelocity(const sf::Vector2f &new_velocity) {velocity.x += new_velocity.x; velocity.y += new_velocity.y;}
 void RigidBody::UpdateByVelocity(float gravity_const, double delta) {
     if (static_) return;
 
@@ -55,10 +55,10 @@ void RigidBody::UpdateByVelocity(float gravity_const, double delta) {
 }
 
 sf::Vector2f RigidBody::GetPosition() {return box->getPosition();}
-void RigidBody::SetPosition(sf::Vector2f new_position) {box->setPosition(new_position.x,new_position.y);}
+void RigidBody::SetPosition(const sf::Vector2f &new_position) {box->setPosition(new_position.x,new_position.y);}
 
 sf::Vector2f RigidBody::GetSize() {return box->getSize();}
-void RigidBody::SetSize(sf::Vector2f new_size) {box->setSize(new_size.x,new_size.y);}
+void RigidBody::SetSize(const sf::Vector2f &new_size) {box->setSize(new_size.x,new_size.y);}
 
 void RigidBody::DrawOutline(sf::RenderWindow* window, sf::Color color) {
     sf::RectangleShape outline;
