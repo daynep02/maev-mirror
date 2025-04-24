@@ -24,8 +24,13 @@ def update():
     global game
     delta = engine.delta_time()
 
+    engine.set_rigid_body_velocity(game.player, (0.0, 0.0))
     if engine.key_is_pressed(AKEY):
-        engine.set
+        engine.set_rigid_body_velocity(game.player, (-50.0, 0.0))
+        print("A pressed")
+    if engine.key_is_pressed(DKEY):
+        engine.set_rigid_body_velocity(game.player, (50.0, 0.0))
+        print("D pressed")
 
 def draw():
     global game
