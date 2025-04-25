@@ -58,6 +58,7 @@ static PyMethodDef EngineMethods[] = {
     {"set_rigid_body_static", RigidBodyHandler::SetRigidBodyStatic, METH_VARARGS, engine_set_rigid_body_static_doc},
     {"is_rigid_body_gravity", RigidBodyHandler::IsRigidBodyGravity, METH_VARARGS, engine_is_rigid_body_gravity_doc},
     {"set_rigid_body_gravity", RigidBodyHandler::SetRigidBodyGravity, METH_VARARGS, engine_set_rigid_body_gravity_doc},
+    {"set_rigid_body_velocity", RigidBodyHandler::SetRigidBodyVelocity, METH_VARARGS, engine_set_rigid_body_gravity_doc},
     {"get_rigid_body_position", RigidBodyHandler::GetRigidBodyPosition, METH_VARARGS, engine_get_rigid_body_position_doc},
     {"set_rigid_body_position", RigidBodyHandler::SetRigidBodyPosition, METH_VARARGS, engine_set_rigid_body_position_doc},
     {"set_rigid_body_position", RigidBodyHandler::SetRigidBodyPosition, METH_VARARGS, engine_set_rigid_body_position_doc},

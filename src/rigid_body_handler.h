@@ -30,6 +30,8 @@ class RigidBodyHandler {
     static PyObject* IsRigidBodyGravity(PyObject *self, PyObject *args);
     static PyObject* SetRigidBodyGravity(PyObject *self, PyObject *args);
 
+	static PyObject* SetRigidBodyVelocity(PyObject* self, PyObject* args);
+
     static PyObject* GetRigidBodyPosition(PyObject *self, PyObject *args);
     static PyObject* SetRigidBodyPosition(PyObject *self, PyObject *args);
 
@@ -104,6 +106,15 @@ PyDoc_STRVAR(
 	".. function:: set_rigid_body_gravity(id, bool)\n"
 	"\n"
 	"  Sets the rigid body to have gravity or not with the specified id the passed bool.\n"
+	"\n"
+	"  :return: Nothing.\n");
+
+	// corresponding documentation for engine_set_rigid_body_gravity
+PyDoc_STRVAR(
+	engine_set_rigid_body_velocity_doc,
+	".. function:: engine_set_rigid_body_velocity_doc(id, tuple(float x, float y)))\n"
+	"\n"
+	"  Sets the rigid body to have the speicified velocity.\n"
 	"\n"
 	"  :return: Nothing.\n");
 
