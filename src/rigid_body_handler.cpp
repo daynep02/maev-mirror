@@ -35,13 +35,14 @@ void RigidBodyHandler::UpdatePreviousTime() { previous_time = current_time; }
 
 void RigidBodyHandler::UpdateAllBodies() {
   sf::Vector2f *prev_positions =
-      (sf::Vector2f *)calloc(rigid_bodies.size(), sizeof(sf::Vector2f));
+    (sf::Vector2f *)calloc(rigid_bodies.size(), sizeof(sf::Vector2f));
 
-  // Update by the rigid body's velocity
-  for (int i = 0; i < rigid_bodies.size(); i++) {
-    prev_positions[i] = rigid_bodies.at(i)->GetPosition();
-    rigid_bodies.at(i)->UpdateByVelocity(gravity, delta_time.count());
-  }
+    // Update by the rigid body's velocity
+    for (int i = 0; i < rigid_bodies.size(); i++) {
+      prev_positions[i] = rigid_bodies.at(i)->GetPosition();
+      rigid_bodies.at(i)->UpdateByVelocity(gravity, delta_time.count());
+    }
+
 
   // check for collisions
   //  bug: suffers from a "too fast" problem where a collision won't be detected
@@ -55,7 +56,7 @@ void RigidBodyHandler::UpdateAllBodies() {
       RigidBody *body_i = rigid_bodies.at(i);
       RigidBody *body_j = rigid_bodies.at(j);
       if (body_i->CollidesWith(body_j)) {
-        // printf("Rigid Body (%d) collided with (%d)",i,j);
+         printf("Rigid Body (%d) collided with (%d)\n",i,j);
 
         // transfer of power?
         if (!body_i->IsStatic() && !body_j->IsStatic()) {
@@ -67,17 +68,22 @@ void RigidBodyHandler::UpdateAllBodies() {
 
           body_j->SetPosition(prev_positions[j]);
           body_j->ModifyVelocity(vel_i.x / 2, vel_i.y / 2);
-          return;
         }
         // i shouldn't move, but j should
         if (body_i->IsStatic() && !body_j->IsStatic()) {
-          body_j->SetPosition(prev_positions[j]);
-          return;
+          //printf("Velocity: %f, %f\n", body_j->GetVelocity().x,body_j->GetVelocity().y);
+          const sf::Vector2f& currentVelo = body_i->GetVelocity();
+          body_j->ApplyForce(-gravity);
+          body_j->ApplyForce(-currentVelo);
         }
         // j shouldn't move, but i should
         if (!body_i->IsStatic() && body_j->IsStatic()) {
-          body_i->SetPosition(prev_positions[i]);
-          return;
+          printf("Velocity: %f, %f\n", body_i->GetVelocity().x,body_i->GetVelocity().y);
+          const sf::Vector2f& currentVelo = body_i->GetVelocity();
+          body_i->ApplyForce(-gravity);
+          body_i->ApplyForce(-currentVelo);
+          //body_i->ApplyForce(-body_i->GetVelocity());
+          //body_i->SetPosition(prev_positions[i]);
         }
 
         // do nothing?
@@ -91,7 +97,7 @@ void RigidBodyHandler::UpdateAllBodies() {
 /*static*/ PyObject *RigidBodyHandler::GetCurrentTime(PyObject *self,
                                                       PyObject *args) {
   auto time = std::chrono::duration_cast<std::chrono::duration<double>>(
-      current_time.time_since_epoch());
+    current_time.time_since_epoch());
   return PyFloat_FromDouble(time.count());
 }
 
@@ -144,12 +150,12 @@ void RigidBodyHandler::UpdateAllBodies() {
     free_rigid_bodies.pop_back();
     printf("engine.create_rigid_body: Adding to Vector\n");
     RigidBody *body =
-        new RigidBody(sf::Vector2f(x, y), sf::Vector2f(width, height));
+      new RigidBody(sf::Vector2f(x, y), sf::Vector2f(width, height));
     delete rigid_bodies.at(loc);
     rigid_bodies.at(loc) = body;
   } else {
     RigidBody *body =
-        new RigidBody(sf::Vector2f(x, y), sf::Vector2f(width, height));
+      new RigidBody(sf::Vector2f(x, y), sf::Vector2f(width, height));
     rigid_bodies.push_back(body);
     loc = rigid_bodies.size() - 1;
   }
@@ -166,14 +172,14 @@ void RigidBodyHandler::UpdateAllBodies() {
   Py_ssize_t nargs = PyTuple_GET_SIZE(args);
   if (nargs != 1) {
     printf(
-        "engine.is_rigid_body_static expects a single long as an argument\n");
+      "engine.is_rigid_body_static expects a single long as an argument\n");
     PyErr_BadArgument();
   }
   PyObject *pId = PyTuple_GetItem(args, 0);
   if (!PyLong_Check(pId)) {
     Py_XDECREF(pId);
     printf(
-        "engine.is_rigid_body_static expects a single long as an argument\n");
+      "engine.is_rigid_body_static expects a single long as an argument\n");
     PyErr_BadArgument();
   }
 
@@ -242,14 +248,14 @@ void RigidBodyHandler::UpdateAllBodies() {
   Py_ssize_t nargs = PyTuple_GET_SIZE(args);
   if (nargs != 1) {
     printf(
-        "engine.is_rigid_body_gravity expects a single long as an argument\n");
+      "engine.is_rigid_body_gravity expects a single long as an argument\n");
     PyErr_BadArgument();
   }
   PyObject *pId = PyTuple_GetItem(args, 0);
   if (!PyLong_Check(pId)) {
     Py_XDECREF(pId);
     printf(
-        "engine.is_rigid_body_gravity expects a single long as an argument\n");
+      "engine.is_rigid_body_gravity expects a single long as an argument\n");
     PyErr_BadArgument();
   }
 
@@ -548,7 +554,7 @@ PyObject* RigidBodyHandler::SetRigidBodyVelocity(PyObject* self, PyObject* args)
   if (rigid_bodies.size() <= id || 0 > id) {
     Py_XDECREF(pId);
     printf(
-        "engine.draw_rigid_body_collider got a rigid body id out of range\n");
+      "engine.draw_rigid_body_collider got a rigid body id out of range\n");
     PyErr_BadArgument();
   }
 
