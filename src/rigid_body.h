@@ -1,6 +1,7 @@
 #ifndef _RIGID_BODY_H_
 #define _RIGID_BODY_H_
 
+#include "SFML/System/Vector2.hpp"
 #include "box_collider.hpp"
 
 class RigidBody {
@@ -20,7 +21,9 @@ class RigidBody {
     void SetVelocity(const sf::Vector2f &new_velocity);
     void ModifyVelocity(float x, float y);
     void ModifyVelocity(const sf::Vector2f &new_velocity);
-    void UpdateByVelocity(float gravity_const, double delta);
+    void UpdateByVelocity( const sf::Vector2f& gravity, double delta);
+
+    void ApplyForce( const sf::Vector2f& force );
 
     sf::Vector2f GetPosition();
     void SetPosition(const sf::Vector2f &new_position);

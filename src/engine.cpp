@@ -211,7 +211,7 @@ int main(int argc, char *argv[]) {
 
     // Update the rigid bodies and time delta
     g_rigid_body_handler->UpdateCurrentAndTimeDelta();
-    g_rigid_body_handler->UpdateAllBodies(g_gravity);
+    g_rigid_body_handler->UpdateAllBodies();
 
     // loads in update Key Function of Python Game
     pValue = PyObject_CallNoArgs(pFuncUpdate);
