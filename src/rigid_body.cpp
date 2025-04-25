@@ -1,22 +1,16 @@
 #include "rigid_body.h"
 #include <SFML/System.hpp>
 
-RigidBody::RigidBody(sf::Vector2f new_position, sf::Vector2f new_size){
-    box = new BoxCollider();
-    box->setPosition(new_position.x,new_position.y);
-    box->setSize(new_size.x,new_size.y);
+RigidBody::RigidBody(sf::Vector2f new_position, sf::Vector2f new_size) 
+  : RigidBody(new_position, new_size, false, true){
 }
 
-RigidBody::RigidBody(sf::Vector2f new_position, sf::Vector2f new_size, bool new_static){
-    static_ = new_static;
-    box = new BoxCollider();
-    box->setPosition(new_position.x,new_position.y);
-    box->setSize(new_size.x,new_size.y);
+RigidBody::RigidBody(sf::Vector2f new_position, sf::Vector2f new_size, bool new_static)
+  : RigidBody(new_position, new_size, new_static, true){
 }
 
-RigidBody::RigidBody(sf::Vector2f new_position, sf::Vector2f new_size, bool new_static, bool gravity_) {
-    static_ = new_static;
-    gravity = gravity_;
+RigidBody::RigidBody(sf::Vector2f new_position, sf::Vector2f new_size, bool new_static, bool gravity_) 
+  : static_(new_static), gravity(gravity_) {
     box = new BoxCollider();
     box->setPosition(new_position.x,new_position.y);
     box->setSize(new_size.x,new_size.y);
@@ -36,7 +30,10 @@ void RigidBody::SetVelocity(float x, float y) {velocity.x = x; velocity.y = y;}
 void RigidBody::SetVelocity(const sf::Vector2f &new_velocity) {velocity = new_velocity;}
 void RigidBody::ModifyVelocity(float x, float y) {velocity.x += x; velocity.y += y;}
 void RigidBody::ModifyVelocity(const sf::Vector2f &new_velocity) {velocity.x += new_velocity.x; velocity.y += new_velocity.y;}
-void RigidBody::UpdateByVelocity(float gravity_const, double delta) {
+
+void RigidBody::ApplyForce(const sf::Vector2f& force) { velocity += force;}
+
+void RigidBody::UpdateByVelocity(const sf::Vector2f& gravity_, double delta) {
     if (static_) return;
 
     //printf("Updating body by velocity, with gravity of %f\n",gravity_const);
@@ -45,13 +42,11 @@ void RigidBody::UpdateByVelocity(float gravity_const, double delta) {
 
     //printf("Current Position: %f %f\n", box_position.x, box_position.y);
 
-    if(!gravity) {
-        SetPosition({box_position.x+velocity.x*delta,box_position.y+velocity.y*delta});
-    }else {
-        SetPosition({box_position.x+velocity.x*delta,box_position.y+(velocity.y+gravity_const)*delta});
-    }
+    if(gravity) 
+      ApplyForce(gravity_);
+
+    SetPosition(box_position + velocity * (float)delta);
     box_position = box->getPosition();
-    //printf("New Position: %f %f\n", box_position.x, box_position.y);
 }
 
 sf::Vector2f RigidBody::GetPosition() {return box->getPosition();}

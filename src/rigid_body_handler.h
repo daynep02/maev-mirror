@@ -14,7 +14,7 @@ class RigidBodyHandler {
     ~RigidBodyHandler();
 	void UpdateCurrentAndTimeDelta();
 	void UpdatePreviousTime();
-    void UpdateAllBodies(float gravity_const);
+    void UpdateAllBodies();
 
     //// PYTHON API ////
 
@@ -42,6 +42,7 @@ class RigidBodyHandler {
     static PyObject* FreeRigidBody(PyObject *self, PyObject *args);
 
     private:
+    sf::Vector2f gravity = {0.0f, 0.0f};
 };
 
 //// PYTHON DOCS ////

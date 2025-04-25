@@ -16,6 +16,7 @@ std::vector<long> free_rigid_bodies;
 
 RigidBodyHandler::RigidBodyHandler(sf::RenderWindow *window) {
   rigid_window = window;
+  gravity = {0.0f, 1.0f};
 }
 
 RigidBodyHandler::~RigidBodyHandler() {
@@ -32,14 +33,14 @@ void RigidBodyHandler::UpdateCurrentAndTimeDelta() {
 
 void RigidBodyHandler::UpdatePreviousTime() { previous_time = current_time; }
 
-void RigidBodyHandler::UpdateAllBodies(float gravity_const) {
+void RigidBodyHandler::UpdateAllBodies() {
   sf::Vector2f *prev_positions =
       (sf::Vector2f *)calloc(rigid_bodies.size(), sizeof(sf::Vector2f));
 
   // Update by the rigid body's velocity
   for (int i = 0; i < rigid_bodies.size(); i++) {
     prev_positions[i] = rigid_bodies.at(i)->GetPosition();
-    rigid_bodies.at(i)->UpdateByVelocity(gravity_const, delta_time.count());
+    rigid_bodies.at(i)->UpdateByVelocity(gravity, delta_time.count());
   }
 
   // check for collisions
