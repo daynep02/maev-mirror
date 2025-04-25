@@ -1,0 +1,9 @@
+
+def init():
+	...
+
+def update():
+	...
+
+def draw():
+	...
