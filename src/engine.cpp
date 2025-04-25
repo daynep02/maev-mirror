@@ -13,9 +13,12 @@
 #include "rigid_body.h"
 #include "rigid_body_handler.h"
 
+#include "camera_handler.hpp"
+
 #include <iostream>
 
 sf::RenderWindow *g_window;
+sf::View* g_camera;
 ObjectHandler *g_object_handler;
 BoxColliderHandler *g_box_collider_handler;
 RigidBodyHandler *g_rigid_body_handler;
@@ -81,6 +84,8 @@ static PyMethodDef EngineMethods[] = {
     {"set_music_pitch", AudioHandler::SetMusicPitch, METH_VARARGS, engine_set_music_pitch_doc},
     {"set_music_volume", AudioHandler::SetMusicVolume, METH_VARARGS, engine_set_music_volume_doc},
     {"set_music_loop", AudioHandler::SetMusicLoop, METH_VARARGS, engine_set_music_loop_doc},
+
+    {"set_camera_position", CameraHandler::SetPosition, METH_VARARGS, engine_set_camera_position_doc},
     
     createVector,
 	  length,
@@ -183,6 +188,8 @@ int main(int argc, char *argv[]) {
 
   // assign globals
   g_window = new sf::RenderWindow(sf::VideoMode({1024, 640}), "Engine!");
+  g_camera = new sf::View(sf::Vector2f(400.f, 250.f), sf::Vector2f(1024.f, 640.f));
+  g_window->setView(*g_camera);
 
   // create object handlers
   g_object_handler = new ObjectHandler(g_window);
@@ -228,6 +235,9 @@ int main(int argc, char *argv[]) {
     // Update previous time before drawing, for an iOS friendly delta time
     g_rigid_body_handler->UpdatePreviousTime();
 
+    // g_camera->move({0.1f, 0.f});
+    // g_window->setView(*g_camera);
+
     g_window->clear();
 
     // loads in draw Key Function of Python Game
@@ -245,6 +255,7 @@ int main(int argc, char *argv[]) {
   }
 
   delete g_window;
+  delete g_camera;
   delete g_object_handler;
   delete g_box_collider_handler;
   delete g_rigid_body_handler;
