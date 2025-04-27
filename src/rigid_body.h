@@ -38,7 +38,7 @@ public:
   bool CollidesWith(RigidBody *other);
   bool CollidesWith(BoxCollider *other);
   
-  void setTerminalVelo(const sf::Vector2f& terminalVelo);
+  void SetTerminalVelo(const sf::Vector2f& terminalVelo);
 
 private:
   bool static_ = false;
@@ -50,6 +50,8 @@ private:
   BoxCollider *box;
 
   sf::Vector2f terminalVelo = {0.0f, 100.0f};
+
+  float weight = 1.0f;
 };
 
 #endif //_RIGID_BODY_H_

@@ -2,9 +2,9 @@
 #define _RIGID_BODY_HANDLER_H_
 
 #include "Python.h"
+#include "rigid_body.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-
 
 class RigidBodyHandler {
 public:
@@ -15,7 +15,7 @@ public:
   void UpdateAllBodies();
 
   // python Api helper func
-  static void SetTerminalVelo(const sf::Vector2f &velo);
+  static void SetTerminalVelo(RigidBody *body, const sf::Vector2f &velo);
 
   //// PYTHON API ////
 
