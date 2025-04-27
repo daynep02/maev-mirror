@@ -5,46 +5,53 @@
 #include "box_collider.hpp"
 
 class RigidBody {
-    public:
-    RigidBody(sf::Vector2f new_position, sf::Vector2f new_size);
-    RigidBody(sf::Vector2f new_position, sf::Vector2f new_size, bool new_static);
-    RigidBody(sf::Vector2f new_position, sf::Vector2f new_size, bool new_static, bool gravity_);
-    ~RigidBody();
-    
-    bool IsStatic();
-    void SetStatic(bool new_static);
-    bool IsGravity();
-    void SetGravity(bool new_gravity);
+public:
+  RigidBody(sf::Vector2f new_position, sf::Vector2f new_size);
+  RigidBody(sf::Vector2f new_position, sf::Vector2f new_size, bool new_static);
+  RigidBody(sf::Vector2f new_position, sf::Vector2f new_size, bool new_static,
+            bool gravity_);
+  ~RigidBody();
 
-    sf::Vector2f GetVelocity();
-    void SetVelocity(float x, float y);
-    void SetVelocity(const sf::Vector2f &new_velocity);
-    void ModifyVelocity(float x, float y);
-    void ModifyVelocity(const sf::Vector2f &new_velocity);
-    void UpdateByVelocity( const sf::Vector2f& gravity, double delta);
+  bool IsStatic();
+  void SetStatic(bool new_static);
+  bool IsGravity();
+  void SetGravity(bool new_gravity);
 
-    void ApplyForce( const sf::Vector2f& force );
-    void ApplyGravity( const sf::Vector2f& gravity);
+  sf::Vector2f GetVelocity();
+  void SetVelocity(float x, float y);
+  void SetVelocity(const sf::Vector2f &new_velocity);
+  void ModifyVelocity(float x, float y);
+  void ModifyVelocity(const sf::Vector2f &new_velocity);
+  void UpdateByVelocity(const sf::Vector2f &gravity, double delta);
 
-    sf::Vector2f GetPosition();
-    void SetPosition(const sf::Vector2f &new_position);
+  void ApplyForce(const sf::Vector2f &force);
+  void ApplyGravity(const sf::Vector2f &gravity);
 
-    sf::Vector2f GetSize();
-    void SetSize(const sf::Vector2f &new_size);
+  sf::Vector2f GetPosition();
+  void SetPosition(const sf::Vector2f &new_position);
 
-    void DrawOutline(sf::RenderWindow* window, sf::Color color);
+  sf::Vector2f GetSize();
+  void SetSize(const sf::Vector2f &new_size);
 
-    bool CollidesWith(RigidBody* other);
-    bool CollidesWith(BoxCollider* other);
+  void DrawOutline(sf::RenderWindow *window, sf::Color color);
 
-    private:
-    bool static_ = false;
-    bool gravity = true;
-    sf::Vector2f velocity = {0,0};
-    float terminalX = 100.f;
-    float terminalY = 100.f;
-    
-    BoxCollider* box;
+  bool CollidesWith(RigidBody *other);
+  bool CollidesWith(BoxCollider *other);
+  
+  void SetTerminalVelo(const sf::Vector2f& terminalVelo);
+
+private:
+  bool static_ = false;
+  bool gravity = true;
+  sf::Vector2f velocity = {0, 0};
+  float terminalX = 100.f;
+  float terminalY = 100.f;
+
+  BoxCollider *box;
+
+  sf::Vector2f terminalVelo = {0.0f, 100.0f};
+
+  float weight = 1.0f;
 };
 
 #endif //_RIGID_BODY_H_

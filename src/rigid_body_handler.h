@@ -2,13 +2,9 @@
 #define _RIGID_BODY_HANDLER_H_
 
 #include "Python.h"
+#include "rigid_body.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-
-#include "SFML/System/Vector2.hpp"
-#include "common_helpers.h"
-#include "methodobject.h"
-#include "rigid_body.h"
 
 class RigidBodyHandler {
 public:
@@ -17,6 +13,9 @@ public:
   void UpdateCurrentAndTimeDelta();
   void UpdatePreviousTime();
   void UpdateAllBodies();
+
+  // python Api helper func
+  static void SetTerminalVelo(RigidBody *body, const sf::Vector2f &velo);
 
   //// PYTHON API ////
 
@@ -44,10 +43,10 @@ public:
   static PyObject *FreeRigidBody(PyObject *self, PyObject *args);
 
   static PyObject *SetGravity(PyObject *self, PyObject *args);
+  static PyObject *SetTerminalVelo(PyObject *self, PyObject *args);
 
 private:
-//  static sf::Vector2f gravity;
-  sf::Vector2f terminalVelo = {0.0f, 100.0f};
+  //  static sf::Vector2f gravity;
 };
 
 //// PYTHON DOCS ////
@@ -172,16 +171,28 @@ PyDoc_STRVAR(engine_free_rigid_body_doc,
              "\n"
              "  :return: Nothing.\n");
 
+// corresponding documentation for engine_set_gravity
 PyDoc_STRVAR(engine_set_gravity_doc,
              ".. function:: set_gravity(x, y)\n"
              "\n"
              " set the x and y component of engines gravity\n"
              "\n"
              "  :return: Nothing.\n");
-static PyMethodDef set_gravity = {
-  "set_gravity", RigidBodyHandler::SetGravity, METH_VARARGS,
-  engine_set_gravity_doc
-};
 
+/* This will likely need to be reworked into each rigid body, since it make more
+ * sense there. */
+// corresponding documentation for engine_set_gravity
+PyDoc_STRVAR(engine_set_terminal_velo_doc,
+             ".. function:: set_terminal_velo(x, y)\n"
+             "\n"
+             " set the x and y component of engines terminal velocity\n"
+             "\n"
+             "  :return: Nothing.\n");
+
+static PyMethodDef set_gravity = {"set_gravity", RigidBodyHandler::SetGravity,
+                                  METH_VARARGS, engine_set_gravity_doc};
+static PyMethodDef set_terminal_velo = {
+    "set_terminal_velo", RigidBodyHandler::SetTerminalVelo, METH_VARARGS,
+    engine_set_terminal_velo_doc};
 
 #endif //_RIGID_BODY_HANDLER_H_

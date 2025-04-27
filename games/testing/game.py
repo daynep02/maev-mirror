@@ -33,8 +33,9 @@ class Game:
 
         self.epic_music = engine.create_music("../games/testing/assets/epic_music.wav")
         engine.set_gravity(0.0, 1.0)
+        engine.set_terminal_velo(self.test_block, 0.0, 60.0)
 
-        #print(engine.get_rigid_body_size(self.platform))
+       #print(engine.get_rigid_body_size(self.platform))
 
 game = None
 first = True
