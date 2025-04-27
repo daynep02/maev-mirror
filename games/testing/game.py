@@ -32,6 +32,7 @@ class Game:
         print(engine.cross(self.vec2, self.vec4))
 
         self.epic_music = engine.create_music("../games/testing/assets/epic_music.wav")
+        engine.set_gravity(0.0, 1.0)
 
         #print(engine.get_rigid_body_size(self.platform))
 
@@ -78,7 +79,7 @@ def draw():
 
     ball = game.ball
 
-    engine.draw_sprite(game.background)
+#    engine.draw_sprite(game.background)
     engine.draw_circle(ball.circle)
     engine.draw_circle(game.ball2.circle)
     engine.draw_rigid_body_collider(game.test_block)

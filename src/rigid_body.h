@@ -24,6 +24,7 @@ class RigidBody {
     void UpdateByVelocity( const sf::Vector2f& gravity, double delta);
 
     void ApplyForce( const sf::Vector2f& force );
+    void ApplyGravity( const sf::Vector2f& gravity);
 
     sf::Vector2f GetPosition();
     void SetPosition(const sf::Vector2f &new_position);
@@ -40,6 +41,8 @@ class RigidBody {
     bool static_ = false;
     bool gravity = true;
     sf::Vector2f velocity = {0,0};
+    float terminalX = 100.f;
+    float terminalY = 100.f;
     
     BoxCollider* box;
 };

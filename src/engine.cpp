@@ -81,12 +81,12 @@ static PyMethodDef EngineMethods[] = {
     {"set_music_pitch", AudioHandler::SetMusicPitch, METH_VARARGS, engine_set_music_pitch_doc},
     {"set_music_volume", AudioHandler::SetMusicVolume, METH_VARARGS, engine_set_music_volume_doc},
     {"set_music_loop", AudioHandler::SetMusicLoop, METH_VARARGS, engine_set_music_loop_doc},
-    
     createVector,
 	  length,
 	  normalize,
 	  dot,
 	  cross,
+    set_gravity,
     {NULL, NULL, 0, NULL}};
 
 // initialization values
