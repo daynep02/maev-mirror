@@ -1,3 +1,7 @@
+/**
+* @file rigid_body.cpp
+* @brief definitions for the RigidBody class
+*/
 #include "rigid_body.h"
 #include "SFML/System/Vector2.hpp"
 #include <SFML/System.hpp>
