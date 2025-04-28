@@ -39,6 +39,8 @@ public:
   bool CollidesWith(BoxCollider *other);
   
   void SetTerminalVelo(const sf::Vector2f& terminalVelo);
+  
+  void Collide(RigidBody* other);
 
 private:
   bool static_ = false;

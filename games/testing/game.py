@@ -9,14 +9,39 @@ class Ball:
         self.x = 200
         self.y = 200
 
+class Control_Block:
+    def __init__(self):
+        self.id = engine.create_rigid_body((125,0),(25,25))
+        print("creating control block {id=}" )
+        self.set_terminal_velo(0.0, 200.0)
+    
+    def set_gravity(self, x: bool) -> None:
+        engine.set_rigid_body_gravity(self.id, x)
+
+    def set_static(self, x: bool) -> None:
+        engine.set_rigid_body_static(self.id, x)
+    
+    def draw(self) -> None:
+        engine.draw_rigid_body_collider(self.id)
+
+    def set_terminal_velo(self, x: float, y: float) -> None:
+        engine.set_terminal_velo(self.id x, y)
+
+    def update(self) -> None:
+        if engine.key_is_presse("Up")
 class Game:
     def __init__(self):
         self.ball = Ball()
         self.ball2 = Ball()
         self.background = engine.create_sprite("../games/testing/assets/vector.jpg")
         engine.set_sprite_position(self.background,(0,0))
-        self.test_block = engine.create_rigid_body((125,0),(25,25))
-        engine.set_rigid_body_gravity(self.test_block,True)
+
+        #The block to test our physics with
+        self.test_block = Control_Block()
+        self.test_block.set_static(False)
+        self.test_block.set_gravity(True)
+
+        #The platform to collide with
         self.platform = engine.create_rigid_body((0,300),(500,20))
         engine.set_rigid_body_static(self.platform,True)
 
@@ -33,9 +58,8 @@ class Game:
 
         self.epic_music = engine.create_music("../games/testing/assets/epic_music.wav")
         engine.set_gravity(0.0, 1.0)
-        engine.set_terminal_velo(self.test_block, 0.0, 60.0)
 
-       #print(engine.get_rigid_body_size(self.platform))
+
 
 game = None
 first = True
@@ -80,9 +104,9 @@ def draw():
 
     ball = game.ball
 
-#    engine.draw_sprite(game.background)
+    engine.draw_sprite(game.background)
     engine.draw_circle(ball.circle)
     engine.draw_circle(game.ball2.circle)
-    engine.draw_rigid_body_collider(game.test_block)
+    game.test_block.draw()
     engine.draw_rigid_body_collider(game.platform)
 

@@ -4,10 +4,12 @@
  * Hoyt
  * @brief Defines and makes available the APIs for the engine.
  */
+
 #include "audio_handler.h"
 #include "box_collider_handler.hpp"
 #include "keyboard.h"
 #include "object_handler.h"
+#include "pyerrors.h"
 #include "rigid_body_handler.h"
 #include "vector.h"
 #include <Python.h>
@@ -232,6 +234,10 @@ int main(int argc, char *argv[]) {
 
   // loads in the init Key Function of Python Game
   pValue = PyObject_CallNoArgs(pFuncInit);
+  if (!pValue){ 
+    PyErr_Occurred();
+    PyErr_Print();
+  }
   Py_DECREF(pValue);
 
   // SFML loop (ver. 3.0.0)

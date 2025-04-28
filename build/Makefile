@@ -46,6 +46,9 @@ audio_handler.o: $(previous_dir)/src/audio_handler.cpp
 run: all
 	LD_LIBRARY_PATH="$(previous_dir)/FLAC/lib:$LD_LIBRARY_PATH" ./engine $(previous_dir)/games/testing game.py
 
+r_debug: all 
+	LD_LIBRARY_PATH="$(previous_dir)/FLAC/lib:$LD_LIBRARY_PATH" gdb --args ./engine $(previous_dir)/games/testing game.py
+
 clean:
 	rm -f engine 
 	rm -rf *.o

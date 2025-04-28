@@ -2,6 +2,7 @@
 #define _RIGID_BODY_HANDLER_H_
 
 #include "Python.h"
+#include "SFML/System/Vector2.hpp"
 #include "rigid_body.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -45,7 +46,23 @@ public:
   static PyObject *SetGravity(PyObject *self, PyObject *args);
   static PyObject *SetTerminalVelo(PyObject *self, PyObject *args);
 
+  static PyObject *ApplyForce(PyObject *self, PyObject *args);
+
 private:
+  /**
+   *  @brief A helper function to the python API
+   *  @param body The body to apply the force to 
+   *  @param force The force to apply to the body
+   */
+  static void ApplyForce(RigidBody* body, const sf::Vector2f& force);
+
+  /**
+   *  @brief A helper function to the python API
+   *  @param body The body to apply the force to
+   *  @param x The x component of the force to be applied
+   *  @param The y component of the force to be applied
+   */
+  static void ApplyForce(RigidBody* body, float x, float y);
   //  static sf::Vector2f gravity;
 };
 

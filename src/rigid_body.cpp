@@ -95,3 +95,10 @@ void RigidBody::SetTerminalVelo(const sf::Vector2f& terminalVelo) {
   terminalX = terminalVelo.x;
   terminalY = terminalVelo.y;
 }
+
+void RigidBody::Collide(RigidBody *other) {
+  const sf::Vector2f& otherVelo = other->velocity;
+  const sf::Vector2f& collisionVelo = -(velocity + otherVelo) * 0.5f;
+  velocity += collisionVelo;
+  other->velocity += collisionVelo;
+}

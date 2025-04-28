@@ -66,6 +66,8 @@ void RigidBodyHandler::UpdateAllBodies() {
 
         // transfer of power?
         if (!body_i->IsStatic() && !body_j->IsStatic()) {
+          body_i->Collide(body_j);
+          /*
           const sf::Vector2f &vel_i = body_i->GetVelocity();
           const sf::Vector2f &vel_j = body_j->GetVelocity();
           const sf::Vector2f &collision_velo = (vel_j + vel_i) / 2.0f;
@@ -75,6 +77,7 @@ void RigidBodyHandler::UpdateAllBodies() {
 
           body_j->SetPosition(prev_positions[j]);
           body_j->ModifyVelocity(collision_velo);
+          */
           break;
         }
 
@@ -609,6 +612,49 @@ PyObject *RigidBodyHandler::SetRigidBodyVelocity(PyObject *self,
   Py_ssize_t nargs = PyTuple_GET_SIZE(args);
   if (nargs != 3) {
     printf("engine.set_terminal_velo expects one long and two floats as argument\n");
+    PyErr_BadArgument();
+  }
+
+  PyObject *pId = PyTuple_GetItem(args, 0);
+
+  if (!PyLong_Check(pId)) {
+    Py_XDECREF(pId);
+    printf("engine.set_terminal_velo expectis one long and two floats as argument"
+           "arguments\n");
+    PyErr_BadArgument();
+  }
+
+  PyObject *pX = PyTuple_GET_ITEM(args, 1);
+  PyObject *pY = PyTuple_GET_ITEM(args, 2);
+
+  if (!PyFloat_Check(pX) || !PyFloat_Check(pY)) {
+    printf("engine.set_terminal_velo expects one long and two floats as argument\n");
+    PyErr_BadArgument();
+  }
+
+  int id = PyLong_AS_LONG(pId);
+
+  if (rigid_bodies.size() <= id || 0 > id) {
+    Py_XDECREF(pId);
+    Py_XDECREF(pX);
+    Py_XDECREF(pY);
+    printf("engine.set_terminal_velo got a rigid body id out of range\n");
+    PyErr_BadArgument();
+  }
+
+  float x = (float)PyFloat_AS_DOUBLE(pX);
+  float y = (float)PyFloat_AS_DOUBLE(pY);
+
+  SetTerminalVelo(rigid_bodies.at(id), {x, y});
+  Py_RETURN_NONE;
+
+}
+
+/*static*/ PyObject *RigidBodyHandler::ApplyForce(PyObject *self,
+                                                       PyObject *args) {
+  Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+  if (nargs != 2 || nargs != 3) {
+    printf("engine.ApplyForce expects 2 longs or one long and two floats as argument\n");
     PyErr_BadArgument();
   }
 
