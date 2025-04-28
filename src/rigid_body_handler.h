@@ -51,18 +51,20 @@ public:
 private:
   /**
    *  @brief A helper function to the python API
-   *  @param body The body to apply the force to 
+   *  @param body The body to apply the force to
    *  @param force The force to apply to the body
+   *  @return True if function succeded, false otherwise
    */
-  static void ApplyForce(RigidBody* body, const sf::Vector2f& force);
+  static bool ApplyForce(RigidBody *body, const sf::Vector2f &force);
 
   /**
    *  @brief A helper function to the python API
    *  @param body The body to apply the force to
    *  @param x The x component of the force to be applied
    *  @param The y component of the force to be applied
+   *  @return True if function succeded, false otherwise
    */
-  static void ApplyForce(RigidBody* body, float x, float y);
+  static bool ApplyForce(RigidBody *body, float x, float y);
   //  static sf::Vector2f gravity;
 };
 
@@ -206,10 +208,19 @@ PyDoc_STRVAR(engine_set_terminal_velo_doc,
              "\n"
              "  :return: Nothing.\n");
 
+PyDoc_STRVAR(engine_apply_force_doc, ".. function:: apply_force(x, y)\n"
+                                     "\n"
+                                     " apply a force to an object\n"
+                                     "\n"
+                                     "  :return: Nothing.\n");
+
 static PyMethodDef set_gravity = {"set_gravity", RigidBodyHandler::SetGravity,
                                   METH_VARARGS, engine_set_gravity_doc};
 static PyMethodDef set_terminal_velo = {
     "set_terminal_velo", RigidBodyHandler::SetTerminalVelo, METH_VARARGS,
     engine_set_terminal_velo_doc};
+
+static PyMethodDef apply_force = {"apply_force", RigidBodyHandler::ApplyForce,
+                                  METH_VARARGS, engine_apply_force_doc};
 
 #endif //_RIGID_BODY_HANDLER_H_

@@ -13,21 +13,23 @@
 PyObject *Keyboard::key_is_pressed(PyObject *self, PyObject *args) {
   Py_ssize_t nargs = PyTuple_GET_SIZE(args);
   if (nargs != 1) {
-    printf("engine.key_is_pressed expects 1 argument");
+    printf("engine.key_is_pressed expects 1 argument\n");
     PyErr_BadArgument();
   }
 
   PyObject *pKey = PyTuple_GetItem(args, 0);
 
+  if(!PyUnicode_Check(pKey)) {
+    printf("engine.key_is_pressed expects a string\n");
+    PyErr_BadArgument();
+  }
   std::string keyStr = PyUnicode_AsUTF8(pKey);
 
   if (isPressed(keyStr)) {
     Py_RETURN_TRUE;
-    return Py_True;
   }
 
   Py_RETURN_FALSE;
-  return Py_False;
 }
 
 bool Keyboard::isPressed(std::string key) {

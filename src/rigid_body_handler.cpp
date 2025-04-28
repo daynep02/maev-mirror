@@ -18,8 +18,8 @@ std::vector<RigidBody *> rigid_bodies;
 std::vector<long> free_rigid_bodies;
 
 static sf::Vector2f gravity = {0.0f, 0.0f};
-// static sf::Vector2f terminalVelo = {std::numeric_limits<float>::max(),
-//                                    std::numeric_limits<float>::max()};
+static sf::Vector2f terminalVelo = {std::numeric_limits<float>::max(),
+                                    std::numeric_limits<float>::max()};
 
 RigidBodyHandler::RigidBodyHandler(sf::RenderWindow *window) {
   rigid_window = window;
@@ -43,7 +43,6 @@ void RigidBodyHandler::UpdateAllBodies() {
   sf::Vector2f *prev_positions =
       (sf::Vector2f *)calloc(rigid_bodies.size(), sizeof(sf::Vector2f));
 
-  // Update by the rigid body's velocity
   for (int i = 0; i < rigid_bodies.size(); i++) {
     prev_positions[i] = rigid_bodies.at(i)->GetPosition();
     rigid_bodies.at(i)->UpdateByVelocity(gravity, delta_time.count());
@@ -101,6 +100,11 @@ void RigidBodyHandler::UpdateAllBodies() {
       }
     }
   }
+
+  for (int i = 0; i < rigid_bodies.size(); i++) {
+  }
+
+  // Update by the rigid body's velocity
 
   delete prev_positions;
 }
@@ -611,7 +615,8 @@ PyObject *RigidBodyHandler::SetRigidBodyVelocity(PyObject *self,
                                                        PyObject *args) {
   Py_ssize_t nargs = PyTuple_GET_SIZE(args);
   if (nargs != 3) {
-    printf("engine.set_terminal_velo expects one long and two floats as argument\n");
+    printf("engine.set_terminal_velo expects one long and two floats as "
+           "argument\n");
     PyErr_BadArgument();
   }
 
@@ -619,8 +624,9 @@ PyObject *RigidBodyHandler::SetRigidBodyVelocity(PyObject *self,
 
   if (!PyLong_Check(pId)) {
     Py_XDECREF(pId);
-    printf("engine.set_terminal_velo expectis one long and two floats as argument"
-           "arguments\n");
+    printf(
+        "engine.set_terminal_velo expectis one long and two floats as argument"
+        "arguments\n");
     PyErr_BadArgument();
   }
 
@@ -628,7 +634,8 @@ PyObject *RigidBodyHandler::SetRigidBodyVelocity(PyObject *self,
   PyObject *pY = PyTuple_GET_ITEM(args, 2);
 
   if (!PyFloat_Check(pX) || !PyFloat_Check(pY)) {
-    printf("engine.set_terminal_velo expects one long and two floats as argument\n");
+    printf("engine.set_terminal_velo expects one long and two floats as "
+           "argument\n");
     PyErr_BadArgument();
   }
 
@@ -647,14 +654,15 @@ PyObject *RigidBodyHandler::SetRigidBodyVelocity(PyObject *self,
 
   SetTerminalVelo(rigid_bodies.at(id), {x, y});
   Py_RETURN_NONE;
-
 }
 
 /*static*/ PyObject *RigidBodyHandler::ApplyForce(PyObject *self,
-                                                       PyObject *args) {
+                                                  PyObject *args) {
   Py_ssize_t nargs = PyTuple_GET_SIZE(args);
-  if (nargs != 2 || nargs != 3) {
-    printf("engine.ApplyForce expects 2 longs or one long and two floats as argument\n");
+  if (nargs != 2 && nargs != 3) {
+    printf("engine.ApplyForce expects 2 longs or 1 long and 2 floats as "
+           "argument\n"
+           "Got %ld args\n", nargs);
     PyErr_BadArgument();
   }
 
@@ -662,33 +670,51 @@ PyObject *RigidBodyHandler::SetRigidBodyVelocity(PyObject *self,
 
   if (!PyLong_Check(pId)) {
     Py_XDECREF(pId);
-    printf("engine.set_terminal_velo expectis one long and two floats as argument"
+
+    printf("engine.ApplyForce expects at least one long as"
            "arguments\n");
     PyErr_BadArgument();
+  }
+  bool succ = false;
+
+  int id = PyLong_AS_LONG(pId);
+
+  if (rigid_bodies.size() <= id || 0 > id) {
+    Py_XDECREF(pId);
+    printf("engine.ApplyForce got a rigid body id out of range\n");
+    PyErr_BadArgument();
+  }
+
+  if (nargs == 2) {
+    printf("Not Implemented!\n");
+    Py_RETURN_NONE;
   }
 
   PyObject *pX = PyTuple_GET_ITEM(args, 1);
   PyObject *pY = PyTuple_GET_ITEM(args, 2);
 
   if (!PyFloat_Check(pX) || !PyFloat_Check(pY)) {
-    printf("engine.set_terminal_velo expects one long and two floats as argument\n");
-    PyErr_BadArgument();
-  }
 
-  int id = PyLong_AS_LONG(pId);
-
-  if (rigid_bodies.size() <= id || 0 > id) {
-    Py_XDECREF(pId);
-    Py_XDECREF(pX);
-    Py_XDECREF(pY);
-    printf("engine.set_terminal_velo got a rigid body id out of range\n");
+    printf("engine.ApplyForce expects one long and two floats as "
+           "argument\n");
     PyErr_BadArgument();
   }
 
   float x = (float)PyFloat_AS_DOUBLE(pX);
   float y = (float)PyFloat_AS_DOUBLE(pY);
 
-  SetTerminalVelo(rigid_bodies.at(id), {x, y});
+  ApplyForce(rigid_bodies.at(id), {x, y});
   Py_RETURN_NONE;
-
 }
+
+bool RigidBodyHandler::ApplyForce(RigidBody *body, const sf::Vector2f &force) {
+  //printf("Called This function\n");
+  body->ApplyForce(force);
+  return true;
+}
+
+bool RigidBodyHandler::ApplyForce(RigidBody* body, float x, float y) {
+  ApplyForce(body, {x, y});
+  return true;
+}
+

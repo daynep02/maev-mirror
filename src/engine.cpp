@@ -15,7 +15,6 @@
 #include <Python.h>
 #include <SFML/Graphics.hpp>
 
-
 sf::RenderWindow *g_window;
 ObjectHandler *g_object_handler;
 BoxColliderHandler *g_box_collider_handler;
@@ -119,6 +118,7 @@ static PyMethodDef EngineMethods[] = {
     cross,
     set_gravity,
     set_terminal_velo,
+    apply_force,
     {NULL, NULL, 0, NULL}};
 
 /**
@@ -234,7 +234,7 @@ int main(int argc, char *argv[]) {
 
   // loads in the init Key Function of Python Game
   pValue = PyObject_CallNoArgs(pFuncInit);
-  if (!pValue){ 
+  if (!pValue) {
     PyErr_Occurred();
     PyErr_Print();
   }

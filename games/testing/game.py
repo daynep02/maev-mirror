@@ -25,10 +25,18 @@ class Control_Block:
         engine.draw_rigid_body_collider(self.id)
 
     def set_terminal_velo(self, x: float, y: float) -> None:
-        engine.set_terminal_velo(self.id x, y)
+        engine.set_terminal_velo(self.id, x, y)
 
-    def update(self) -> None:
-        if engine.key_is_presse("Up")
+    def block_up(self) -> None:
+        if engine.key_is_pressed("Up"):
+            engine.apply_force(self.id, 0.0, -10.0)
+        if engine.key_is_pressed( "Down"):
+            engine.apply_force(self.id, 0.0, 1.0)
+        if engine.key_is_pressed("Left"):
+            engine.apply_force(self.id,-1.0, 0.0)
+        if engine.key_is_pressed("Right"):
+            engine.apply_force(self.id, 1.0, 0.0)
+        
 class Game:
     def __init__(self):
         self.ball = Ball()
@@ -93,6 +101,8 @@ def update():
     # engine.collides_with(game.ball.circle,game.ball2.circle)
     # if engine.collides_with(game.ball.circle,game.ball2.circle):
     #     print("Balls are colliding")
+
+    game.test_block.block_up()
 
     if first and engine.key_is_pressed(key):
         first = False
