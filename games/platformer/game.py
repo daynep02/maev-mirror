@@ -12,6 +12,9 @@ class Game:
         self.platforms.append(engine.create_rigid_body((150, 350), (500,10)))
         self.platforms.append(engine.create_rigid_body((660, 250), (200,10)))
 
+        engine.set_gravity(0.0, 50.0)
+        engine.set_terminal_velo(0.0, 1000.0)
+
         for platform in self.platforms:
             engine.set_rigid_body_static(platform,True)
 
