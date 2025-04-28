@@ -27,11 +27,13 @@ def update():
     engine.set_rigid_body_velocity(game.player, (0.0, 0.0))
     if engine.key_is_pressed(AKEY):
         engine.set_rigid_body_velocity(game.player, (-50.0, 0.0))
-        print("A pressed")
+        # print("A pressed")
     if engine.key_is_pressed(DKEY):
         engine.set_rigid_body_velocity(game.player, (50.0, 0.0))
-        print("D pressed")
-        engine.set_camera_position((6,7))
+        # print("D pressed")
+
+    tup = engine.get_rigid_body_position(game.player)
+    engine.set_camera_position(tup)
 
 def draw():
     global game

@@ -2,15 +2,16 @@
 
 #include <iostream>
 
-sf::View g_camera;
+sf::View* g_camera;
 sf::RenderWindow* camera_window;
 
 CameraHandler::CameraHandler(sf::RenderWindow* window) {
+    g_camera = new sf::View(sf::Vector2f(400.f, 250.f), sf::Vector2f(1024.f, 640.f));
     camera_window = window;
 }
 
 CameraHandler::~CameraHandler() {
-    
+    delete g_camera;
 }
 
 PyObject* CameraHandler::SetPosition(PyObject* self, PyObject* args) {
@@ -45,11 +46,9 @@ PyObject* CameraHandler::SetPosition(PyObject* self, PyObject* args) {
     double x = PyFloat_AsDouble(pX);
     double y = PyFloat_AsDouble(pY);
 
-    std::cout << x << " " << y << std::endl;
-    g_camera.setCenter({x, y});
-    std::cout << x << " " << y << std::endl;
-    camera_window->setView(g_camera);
-    std::cout << x << " " << y << std::endl;
+    // std::cout << x << " " << y << std::endl;
+    g_camera->setCenter({x, y});
+    camera_window->setView(*g_camera);
       // g_camera = new sf::View(sf::Vector2f(400.f, 250.f), sf::Vector2f(1024.f, 640.f));
 
     Py_RETURN_NONE;
