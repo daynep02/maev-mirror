@@ -12,6 +12,7 @@
 #include "pyerrors.h"
 #include "rigid_body_handler.h"
 #include "vector.h"
+#include "camera_handler.hpp"
 #include <Python.h>
 #include <SFML/Graphics.hpp>
 
