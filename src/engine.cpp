@@ -16,9 +16,11 @@
 #include <SFML/Graphics.hpp>
 
 sf::RenderWindow *g_window;
+// sf::View* g_camera;
 ObjectHandler *g_object_handler;
 BoxColliderHandler *g_box_collider_handler;
 RigidBodyHandler *g_rigid_body_handler;
+CameraHandler* g_camera_handler;
 float g_gravity = 50.0f;
 
 /**
@@ -83,34 +85,23 @@ static PyMethodDef EngineMethods[] = {
     {"free_rigid_body", RigidBodyHandler::FreeRigidBody, METH_VARARGS,
      engine_free_rigid_body_doc},
 
-    {"create_sound", AudioHandler::CreateSound, METH_VARARGS,
-     engine_create_sound_doc},
-    {"free_sound", AudioHandler::FreeSound, METH_VARARGS,
-     engine_free_sound_doc},
-    {"play_sound", AudioHandler::PlaySound, METH_VARARGS,
-     engine_play_sound_doc},
-    {"pause_sound", AudioHandler::PauseSound, METH_VARARGS,
-     engine_pause_sound_doc},
-    {"set_sound_pitch", AudioHandler::SetSoundPitch, METH_VARARGS,
-     engine_set_sound_pitch_doc},
-    {"set_sound_volume", AudioHandler::SetSoundVolume, METH_VARARGS,
-     engine_set_sound_volume_doc},
-    {"set_sound_loop", AudioHandler::SetSoundLoop, METH_VARARGS,
-     engine_set_sound_loop_doc},
-    {"create_music", AudioHandler::CreateMusic, METH_VARARGS,
-     engine_create_music_doc},
-    {"free_music", AudioHandler::FreeMusic, METH_VARARGS,
-     engine_free_music_doc},
-    {"play_music", AudioHandler::PlayMusic, METH_VARARGS,
-     engine_play_music_doc},
-    {"pause_music", AudioHandler::PauseMusic, METH_VARARGS,
-     engine_pause_music_doc},
-    {"set_music_pitch", AudioHandler::SetMusicPitch, METH_VARARGS,
-     engine_set_music_pitch_doc},
-    {"set_music_volume", AudioHandler::SetMusicVolume, METH_VARARGS,
-     engine_set_music_volume_doc},
-    {"set_music_loop", AudioHandler::SetMusicLoop, METH_VARARGS,
-     engine_set_music_loop_doc},
+    {"create_sound", AudioHandler::CreateSound, METH_VARARGS, engine_create_sound_doc},
+    {"free_sound", AudioHandler::FreeSound, METH_VARARGS, engine_free_sound_doc},
+    {"play_sound", AudioHandler::PlaySound, METH_VARARGS, engine_play_sound_doc},
+    {"pause_sound", AudioHandler::PauseSound, METH_VARARGS, engine_pause_sound_doc},
+    {"set_sound_pitch", AudioHandler::SetSoundPitch, METH_VARARGS, engine_set_sound_pitch_doc},
+    {"set_sound_volume", AudioHandler::SetSoundVolume, METH_VARARGS, engine_set_sound_volume_doc},
+    {"set_sound_loop", AudioHandler::SetSoundLoop, METH_VARARGS, engine_set_sound_loop_doc},
+    {"create_music", AudioHandler::CreateMusic, METH_VARARGS, engine_create_music_doc},
+    {"free_music", AudioHandler::FreeMusic, METH_VARARGS, engine_free_music_doc},
+    {"play_music", AudioHandler::PlayMusic, METH_VARARGS, engine_play_music_doc},
+    {"pause_music", AudioHandler::PauseMusic, METH_VARARGS, engine_pause_music_doc},
+    {"set_music_pitch", AudioHandler::SetMusicPitch, METH_VARARGS, engine_set_music_pitch_doc},
+    {"set_music_volume", AudioHandler::SetMusicVolume, METH_VARARGS, engine_set_music_volume_doc},
+    {"set_music_loop", AudioHandler::SetMusicLoop, METH_VARARGS, engine_set_music_loop_doc},
+
+    {"set_camera_position", CameraHandler::SetPosition, METH_VARARGS, engine_set_camera_position_doc},
+    
     createVector,
     length,
     normalize,
@@ -222,11 +213,14 @@ int main(int argc, char *argv[]) {
 
   // assign globals
   g_window = new sf::RenderWindow(sf::VideoMode({1024, 640}), "Engine!");
+  // g_camera = new sf::View(sf::Vector2f(400.f, 250.f), sf::Vector2f(1024.f, 640.f));
+  // g_window->setView(*g_camera);
 
   // create object handlers
   g_object_handler = new ObjectHandler(g_window);
   g_box_collider_handler = new BoxColliderHandler(g_window);
   g_rigid_body_handler = new RigidBodyHandler(g_window);
+  g_camera_handler = new CameraHandler(g_window);
 
   // Doing this so things don't fly off the screen in the first frame
   g_rigid_body_handler->UpdateCurrentAndTimeDelta();
@@ -271,6 +265,9 @@ int main(int argc, char *argv[]) {
     // Update previous time before drawing, for an iOS friendly delta time
     g_rigid_body_handler->UpdatePreviousTime();
 
+    // g_camera->move({0.1f, 0.f});
+    // g_window->setView(*g_camera);
+
     g_window->clear();
 
     // loads in draw Key Function of Python Game
@@ -288,9 +285,11 @@ int main(int argc, char *argv[]) {
   }
 
   delete g_window;
+  // delete g_camera;
   delete g_object_handler;
   delete g_box_collider_handler;
   delete g_rigid_body_handler;
+  delete g_camera_handler;
 
   printf("engine: Tearing Down\n");
 
