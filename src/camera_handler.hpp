@@ -8,10 +8,9 @@
 
 class CameraHandler {
     private:
-        // constexpr static sf::View g_camera = sf::View();
     
     public:
-        CameraHandler();
+        CameraHandler(sf::RenderWindow* window);
         ~CameraHandler();
 
         static PyObject* SetPosition(PyObject* self, PyObject* arg);
