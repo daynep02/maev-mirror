@@ -93,6 +93,8 @@ static PyMethodDef EngineMethods[] = {
 	  normalize,
 	  dot,
 	  cross,
+    set_gravity,
+    set_terminal_velo,
     {NULL, NULL, 0, NULL}};
 
 // initialization values

@@ -1,8 +1,9 @@
 #include "rigid_body_handler.h"
-
+#include "common_helpers.h"
+#include "rigid_body.h"
 #include <algorithm>
 #include <chrono>
-#include <iostream>
+#include <limits>
 #include <vector>
 
 sf::RenderWindow *rigid_window;
@@ -14,9 +15,12 @@ std::chrono::duration<double> delta_time;
 std::vector<RigidBody *> rigid_bodies;
 std::vector<long> free_rigid_bodies;
 
+static sf::Vector2f gravity = {0.0f, 0.0f};
+static sf::Vector2f terminalVelo = {std::numeric_limits<float>::max(),
+                                    std::numeric_limits<float>::max()};
+
 RigidBodyHandler::RigidBodyHandler(sf::RenderWindow *window) {
   rigid_window = window;
-  gravity = {0.0f, 1.0f};
 }
 
 RigidBodyHandler::~RigidBodyHandler() {
@@ -44,7 +48,8 @@ void RigidBodyHandler::UpdateAllBodies() {
   }
 
   // check for collisions
-  //  bug: suffers from a "too fast" problem where a collision won't be detected
+  //  bug: suffers from a "too fast" problem where a collision won't be dfloat ,
+  //  float yetected
   //       if a body is going so fast that it basically teleports across a body
   //       inbetween frames
   //  fix: move it one pixel from it's previous position every step to check for
@@ -55,29 +60,36 @@ void RigidBodyHandler::UpdateAllBodies() {
       RigidBody *body_i = rigid_bodies.at(i);
       RigidBody *body_j = rigid_bodies.at(j);
       if (body_i->CollidesWith(body_j)) {
-        // printf("Rigid Body (%d) collided with (%d)",i,j);
+        // printf("Rigid Body (%d) collided with (%d)\n",i,j);
 
         // transfer of power?
         if (!body_i->IsStatic() && !body_j->IsStatic()) {
-          sf::Vector2f vel_i = body_i->GetVelocity();
-          sf::Vector2f vel_j = body_j->GetVelocity();
+          const sf::Vector2f &vel_i = body_i->GetVelocity();
+          const sf::Vector2f &vel_j = body_j->GetVelocity();
+          const sf::Vector2f &collision_velo = (vel_j + vel_i) / 2.0f;
 
           body_i->SetPosition(prev_positions[i]);
-          body_i->ModifyVelocity(vel_j.x / 2, vel_j.y / 2);
+          body_i->ModifyVelocity(collision_velo);
 
           body_j->SetPosition(prev_positions[j]);
-          body_j->ModifyVelocity(vel_i.x / 2, vel_i.y / 2);
-          return;
+          body_j->ModifyVelocity(collision_velo);
+          break;
         }
+
         // i shouldn't move, but j should
         if (body_i->IsStatic() && !body_j->IsStatic()) {
-          body_j->SetPosition(prev_positions[j]);
-          return;
+          const sf::Vector2f &currentVelo = body_i->GetVelocity();
+          body_j->ApplyForce(-gravity);
+          body_j->ApplyForce(-currentVelo * 1.75f);
+          break;
         }
+
         // j shouldn't move, but i should
         if (!body_i->IsStatic() && body_j->IsStatic()) {
-          body_i->SetPosition(prev_positions[i]);
-          return;
+          const sf::Vector2f &currentVelo = body_i->GetVelocity();
+          body_i->ApplyForce(-gravity);
+          body_i->ApplyForce(-currentVelo * 1.75f);
+          break;
         }
 
         // do nothing?
@@ -86,6 +98,10 @@ void RigidBodyHandler::UpdateAllBodies() {
   }
 
   delete prev_positions;
+}
+
+void RigidBodyHandler::SetTerminalVelo(const sf::Vector2f &velo) {
+  terminalVelo = velo;
 }
 
 /*static*/ PyObject *RigidBodyHandler::GetCurrentTime(PyObject *self,
@@ -227,12 +243,7 @@ void RigidBodyHandler::UpdateAllBodies() {
     PyErr_BadArgument();
   }
 
-  // printf("engine.draw_rigid_body_collider: Drawing Collider %lu\n",id);
-
   rigid_bodies.at(id)->SetStatic(b);
-
-  // Py_XDECREF(pId);
-  // printf("engine.draw_rigid_body_collider: Returning\n");
 
   Py_RETURN_NONE;
 }
@@ -260,8 +271,6 @@ void RigidBodyHandler::UpdateAllBodies() {
     printf("engine.is_rigid_body_gravity got a rigid body id out of range\n");
     PyErr_BadArgument();
   }
-
-  // Py_XDECREF(pId);
 
   if (rigid_bodies.at(id)->IsGravity()) {
     Py_RETURN_TRUE;
@@ -303,27 +312,25 @@ void RigidBodyHandler::UpdateAllBodies() {
     PyErr_BadArgument();
   }
 
-  // printf("engine.draw_rigid_body_collider: Drawing Collider %lu\n",id);
-
   rigid_bodies.at(id)->SetGravity(b);
-
-  // Py_XDECREF(pId);
-  // printf("engine.draw_rigid_body_collider: Returning\n");
 
   Py_RETURN_NONE;
 }
 
-PyObject* RigidBodyHandler::SetRigidBodyVelocity(PyObject* self, PyObject* args) {
+PyObject *RigidBodyHandler::SetRigidBodyVelocity(PyObject *self,
+                                                 PyObject *args) {
   Py_ssize_t nargs = PyTuple_GET_SIZE(args);
   if (nargs != 2) {
-    printf("engine.set_rigid_body_velocity expects a long and a tuple of length two as arguments\n");
+    printf("engine.set_rigid_body_velocity expects a long and a tuple of "
+           "length two as arguments\n");
     PyErr_BadArgument();
   }
 
   PyObject *pId = PyTuple_GetItem(args, 0);
   if (!PyLong_Check(pId)) {
     Py_XDECREF(pId);
-    printf("engine.set_rigid_body_velocity expects a long and a tuple of length two as arguments\n");
+    printf("engine.set_rigid_body_velocity expects a long and a tuple of "
+           "length two as arguments\n");
     PyErr_BadArgument();
   }
 
@@ -335,32 +342,37 @@ PyObject* RigidBodyHandler::SetRigidBodyVelocity(PyObject* self, PyObject* args)
     PyErr_BadArgument();
   }
 
-  //Parse the velocity tuple //should be changed to vectors later
-  PyObject* pVel = PyTuple_GetItem(args, 1);
+  // Parse the velocity tuple //should be changed to vectors later
+  PyObject *pVel = PyTuple_GetItem(args, 1);
   Py_ssize_t nargs_vel = PyTuple_GET_SIZE(pVel);
   if (nargs_vel != 2) {
-    printf("engine.set_rigid_body_velocity expects a long and a tuple of length two as arguments\n");
+    printf("engine.set_rigid_body_velocity expects a long and a tuple of "
+           "length two as arguments\n");
     PyErr_BadArgument();
   }
 
-  PyObject* pVelX = PyTuple_GetItem(pVel, 0);
+  PyObject *pVelX = PyTuple_GetItem(pVel, 0);
   if (!PyFloat_Check(pVelX)) {
     Py_XDECREF(pVelX);
-    printf("engine.set_rigid_body_velocity expects a long and a tuple of length two as arguments - the first argument of the tuple is not a float\n");
+    printf(
+        "engine.set_rigid_body_velocity expects a long and a tuple of length "
+        "two as arguments - the first argument of the tuple is not a float\n");
     PyErr_BadArgument();
   }
 
-  PyObject* pVelY = PyTuple_GetItem(pVel, 1);
+  PyObject *pVelY = PyTuple_GetItem(pVel, 1);
   if (!PyFloat_Check(pVelY)) {
     Py_XDECREF(pVelY);
-    printf("engine.set_rigid_body_velocity expects a long and a tuple of length two as arguments - the second argument of the tuple is not a float\n");
+    printf(
+        "engine.set_rigid_body_velocity expects a long and a tuple of length "
+        "two as arguments - the second argument of the tuple is not a float\n");
     PyErr_BadArgument();
   }
 
   double x = PyFloat_AsDouble(pVelX);
   double y = PyFloat_AsDouble(pVelY);
 
-  rigid_bodies[id]->SetVelocity(x,y);
+  rigid_bodies[id]->SetVelocity(x, y);
 
   Py_RETURN_NONE;
 }
@@ -435,16 +447,7 @@ PyObject* RigidBodyHandler::SetRigidBodyVelocity(PyObject* self, PyObject* args)
   double x = PyFloat_AsDouble(pX);
   double y = PyFloat_AsDouble(pY);
 
-  // printf("engine.set_rigid_body_position: setting position\n");
-
   rigid_bodies.at(id)->SetPosition(sf::Vector2f(x, y));
-
-  // printf("engine.set_rigid_body_position: done setting position\n");
-
-  // Py_XDECREF(pId);
-  // Py_XDECREF(pPosition);
-  // Py_XDECREF(pX);
-  // Py_XDECREF(pY);
 
   Py_RETURN_NONE;
 }
@@ -471,17 +474,12 @@ PyObject* RigidBodyHandler::SetRigidBodyVelocity(PyObject* self, PyObject* args)
     PyErr_BadArgument();
   }
 
-  // printf("engine.draw_rigid_body_collider: Drawing Collider %lu\n",id);
-
   sf::Vector2f position = rigid_bodies.at(id)->GetSize();
 
   PyObject *w = PyFloat_FromDouble(position.x);
   PyObject *h = PyFloat_FromDouble(position.y);
 
   PyObject *pSize = PyTuple_Pack(2, w, h);
-
-  // Py_XDECREF(pId);
-  // printf("engine.draw_rigid_body_collider: Returning\n");
 
   return pSize;
 }
@@ -519,11 +517,6 @@ PyObject* RigidBodyHandler::SetRigidBodyVelocity(PyObject* self, PyObject* args)
 
   rigid_bodies.at(id)->SetSize(sf::Vector2f(x, y));
 
-  // Py_XDECREF(pId);
-  // Py_XDECREF(pPosition);
-  // Py_XDECREF(pX);
-  // Py_XDECREF(pY);
-
   Py_RETURN_NONE;
 }
 
@@ -552,12 +545,7 @@ PyObject* RigidBodyHandler::SetRigidBodyVelocity(PyObject* self, PyObject* args)
     PyErr_BadArgument();
   }
 
-  // printf("engine.draw_rigid_body_collider: Drawing Collider %lu\n",id);
-
   rigid_bodies.at(id)->DrawOutline(rigid_window, sf::Color::Green);
-
-  // Py_XDECREF(pId);
-  // printf("engine.draw_rigid_body_collider: Returning\n");
 
   Py_RETURN_NONE;
 }
@@ -588,5 +576,49 @@ PyObject* RigidBodyHandler::SetRigidBodyVelocity(PyObject* self, PyObject* args)
 
   // Py_XDECREF(pId);
 
+  Py_RETURN_NONE;
+}
+
+/*static*/ PyObject *RigidBodyHandler::SetGravity(PyObject *self,
+                                                  PyObject *args) {
+  Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+  if (nargs != 2) {
+    printf("engine.set_gravity expects two floats as argument\n");
+    PyErr_BadArgument();
+  }
+
+  PyObject *pX = PyTuple_GET_ITEM(args, 0);
+  PyObject *pY = PyTuple_GET_ITEM(args, 1);
+
+  if (!PyFloat_Check(pX) || !PyFloat_Check(pY)) {
+    printf("engine.set_gravity expects two floats as argument\n");
+    PyErr_BadArgument();
+  }
+
+  float x = (float)PyFloat_AS_DOUBLE(pX);
+  float y = (float)PyFloat_AS_DOUBLE(pY);
+  gravity = {x, y};
+  Py_RETURN_NONE;
+}
+
+/*static*/ PyObject *RigidBodyHandler::SetTerminalVelo(PyObject *self,
+                                                       PyObject *args) {
+  Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+  if (nargs != 2) {
+    printf("engine.setTerminalVelo expects two floats as argument\n");
+    PyErr_BadArgument();
+  }
+
+  PyObject *pX = PyTuple_GET_ITEM(args, 0);
+  PyObject *pY = PyTuple_GET_ITEM(args, 1);
+
+  if (!PyFloat_Check(pX) || !PyFloat_Check(pY)) {
+    printf("engine.setTerminalVelo expects two floats as argument\n");
+    PyErr_BadArgument();
+  }
+
+  float x = (float)PyFloat_AS_DOUBLE(pX);
+  float y = (float)PyFloat_AS_DOUBLE(pY);
+  SetTerminalVelo({x, y});
   Py_RETURN_NONE;
 }
