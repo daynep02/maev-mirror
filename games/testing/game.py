@@ -29,7 +29,7 @@ class Control_Block:
 
     def block_up(self) -> None:
         if engine.key_is_pressed("Up"):
-            engine.apply_force(self.id, 0.0, -10.0)
+            engine.apply_force(self.id, 0.0, -2.0)
         if engine.key_is_pressed( "Down"):
             engine.apply_force(self.id, 0.0, 1.0)
         if engine.key_is_pressed("Left"):

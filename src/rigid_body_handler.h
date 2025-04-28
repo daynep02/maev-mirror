@@ -46,6 +46,11 @@ public:
   static PyObject *SetGravity(PyObject *self, PyObject *args);
   static PyObject *SetTerminalVelo(PyObject *self, PyObject *args);
 
+  /**
+   * @param self required for python api functions
+   * @paarm args a tuple containing the arguments for the function. Should contain a long as id for the body and 2 floats
+   * @brief The API for applying a force to a rigid body
+   */
   static PyObject *ApplyForce(PyObject *self, PyObject *args);
 
 private:

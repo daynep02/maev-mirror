@@ -5,6 +5,7 @@
 #include "rigid_body.h"
 #include "SFML/System/Vector2.hpp"
 #include <SFML/System.hpp>
+#include <stdexcept>
 
 RigidBody::RigidBody(sf::Vector2f new_position, sf::Vector2f new_size)
     : RigidBody(new_position, new_size, false, true) {}
@@ -57,8 +58,6 @@ void RigidBody::ApplyGravity(const sf::Vector2f &gravity) {
 void RigidBody::UpdateByVelocity(const sf::Vector2f &gravity_, double delta) {
   if (static_)
     return;
-  if (gravity)
-    ApplyGravity(gravity_);
 
   box->getRect()->move(velocity * (float)delta);
 }
@@ -91,14 +90,23 @@ bool RigidBody::CollidesWith(BoxCollider *other) {
   return box->CollidesWith(other);
 }
 
-void RigidBody::SetTerminalVelo(const sf::Vector2f& terminalVelo) {
+void RigidBody::SetTerminalVelo(const sf::Vector2f &terminalVelo) {
   terminalX = terminalVelo.x;
   terminalY = terminalVelo.y;
 }
 
 void RigidBody::Collide(RigidBody *other) {
-  const sf::Vector2f& otherVelo = other->velocity;
-  const sf::Vector2f& collisionVelo = -(velocity + otherVelo) * 0.5f;
+  const sf::Vector2f &otherVelo = other->velocity;
+  const sf::Vector2f &collisionVelo = -(velocity + otherVelo) * 0.5f;
+  if (other->static_) {
+    velocity -= velocity;
+    return;
+  }
+  if (static_) {
+    other->velocity -= other->velocity;
+    return;
+  }
   velocity += collisionVelo;
   other->velocity += collisionVelo;
 }
+

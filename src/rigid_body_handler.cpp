@@ -1,4 +1,5 @@
 #include "rigid_body_handler.h"
+#include "SFML/System/Vector2.hpp"
 #include "common_helpers.h"
 #include "longobject.h"
 #include "object.h"
@@ -43,10 +44,12 @@ void RigidBodyHandler::UpdateAllBodies() {
   sf::Vector2f *prev_positions =
       (sf::Vector2f *)calloc(rigid_bodies.size(), sizeof(sf::Vector2f));
 
+  /*
   for (int i = 0; i < rigid_bodies.size(); i++) {
     prev_positions[i] = rigid_bodies.at(i)->GetPosition();
     rigid_bodies.at(i)->UpdateByVelocity(gravity, delta_time.count());
   }
+  */
 
   // check for collisions
   //  bug: suffers from a "too fast" problem where a collision won't be dfloat ,
@@ -57,15 +60,20 @@ void RigidBodyHandler::UpdateAllBodies() {
   //  a collision,
   //       too tired to implement it rn
   for (int i = 0; i < rigid_bodies.size(); i++) {
+    RigidBody *body_i = rigid_bodies.at(i);
+    // update the velocity at the location
+    body_i->UpdateByVelocity(gravity, delta_time.count());
+    body_i->ApplyGravity(gravity);
     for (int j = i + 1; j < rigid_bodies.size(); j++) {
-      RigidBody *body_i = rigid_bodies.at(i);
       RigidBody *body_j = rigid_bodies.at(j);
       if (body_i->CollidesWith(body_j)) {
         // printf("Rigid Body (%d) collided with (%d)\n",i,j);
 
+        body_i->Collide(body_j);
+        break;
         // transfer of power?
         if (!body_i->IsStatic() && !body_j->IsStatic()) {
-          body_i->Collide(body_j);
+          //body_i->Collide(body_j);
           /*
           const sf::Vector2f &vel_i = body_i->GetVelocity();
           const sf::Vector2f &vel_j = body_j->GetVelocity();
@@ -82,29 +90,32 @@ void RigidBodyHandler::UpdateAllBodies() {
 
         // i shouldn't move, but j should
         if (body_i->IsStatic() && !body_j->IsStatic()) {
-          const sf::Vector2f &currentVelo = body_i->GetVelocity();
-          body_j->ApplyForce(-gravity);
-          body_j->ApplyForce(-currentVelo * 1.75f);
-          break;
+          // sf::Vector2f newVelo;
+          const sf::Vector2f &currentVelo = body_j->GetVelocity();
+          // body_j->SetVelocity({0.0f, 0.0f});
+          body_j->ApplyGravity(-gravity);
+
+          body_j->ApplyForce({currentVelo.x, -currentVelo.y});
+          if (currentVelo.y != 0.0)
+            // body_j->ApplyForce({currentVelo.x, - currentVelo.y});
+            break;
         }
 
         // j shouldn't move, but i should
         if (!body_i->IsStatic() && body_j->IsStatic()) {
           const sf::Vector2f &currentVelo = body_i->GetVelocity();
-          body_i->ApplyForce(-gravity);
-          body_i->ApplyForce(-currentVelo * 1.75f);
-          break;
+          // body_i->SetVelocity({0.0f, 0.0f});
+          body_i->ApplyGravity(-gravity);
+          // body_i->ApplyForce({currentVelo.x, -currentVelo.y});
+          if (currentVelo.y != 0.0)
+            // body_i->ApplyForce({currentVelo.x, -currentVelo.y});
+            break;
         }
 
         // do nothing?
       }
     }
   }
-
-  for (int i = 0; i < rigid_bodies.size(); i++) {
-  }
-
-  // Update by the rigid body's velocity
 
   delete prev_positions;
 }
@@ -662,7 +673,8 @@ PyObject *RigidBodyHandler::SetRigidBodyVelocity(PyObject *self,
   if (nargs != 2 && nargs != 3) {
     printf("engine.ApplyForce expects 2 longs or 1 long and 2 floats as "
            "argument\n"
-           "Got %ld args\n", nargs);
+           "Got %ld args\n",
+           nargs);
     PyErr_BadArgument();
   }
 
@@ -708,13 +720,12 @@ PyObject *RigidBodyHandler::SetRigidBodyVelocity(PyObject *self,
 }
 
 bool RigidBodyHandler::ApplyForce(RigidBody *body, const sf::Vector2f &force) {
-  //printf("Called This function\n");
+  // printf("Called This function\n");
   body->ApplyForce(force);
   return true;
 }
 
-bool RigidBodyHandler::ApplyForce(RigidBody* body, float x, float y) {
+bool RigidBodyHandler::ApplyForce(RigidBody *body, float x, float y) {
   ApplyForce(body, {x, y});
   return true;
 }
-
