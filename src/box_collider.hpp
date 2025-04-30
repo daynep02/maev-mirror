@@ -8,7 +8,7 @@
 class BoxCollider {
     public:
         BoxCollider();
-        BoxCollider(sf::Vector2f position, sf::Vector2f size);
+        BoxCollider(const sf::Vector2f &position, const sf::Vector2f &size);
         ~BoxCollider();
 
         bool CollidesWith(BoxCollider* other);

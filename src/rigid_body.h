@@ -12,12 +12,12 @@ public:
             bool gravity_);
   ~RigidBody();
 
-  bool IsStatic();
+  bool IsStatic() const;
   void SetStatic(bool new_static);
-  bool IsGravity();
+  bool IsGravity() const;
   void SetGravity(bool new_gravity);
 
-  sf::Vector2f GetVelocity();
+  const sf::Vector2f& GetVelocity() const;
   void SetVelocity(float x, float y);
   void SetVelocity(const sf::Vector2f &new_velocity);
   void ModifyVelocity(float x, float y);
@@ -27,16 +27,16 @@ public:
   void ApplyForce(const sf::Vector2f &force);
   void ApplyGravity(const sf::Vector2f &gravity);
 
-  sf::Vector2f GetPosition();
+  sf::Vector2f GetPosition() const ;
   void SetPosition(const sf::Vector2f &new_position);
 
-  sf::Vector2f GetSize();
+  sf::Vector2f GetSize() const;
   void SetSize(const sf::Vector2f &new_size);
 
-  void DrawOutline(sf::RenderWindow *window, sf::Color color);
+  void DrawOutline(sf::RenderWindow *window, sf::Color color) const;
 
-  bool CollidesWith(RigidBody *other);
-  bool CollidesWith(BoxCollider *other);
+  bool CollidesWith(RigidBody *other) const;
+  bool CollidesWith(BoxCollider *other) const;
   
   void SetTerminalVelo(const sf::Vector2f& terminalVelo);
   
@@ -57,6 +57,7 @@ private:
 
   float weight = 1.0f;
   sf::Vector2f friction = {0.0f, 0.0f};
+  sf::Vector2f previousPosition = {0.0f, 0.0f};
 
 
 };

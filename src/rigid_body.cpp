@@ -24,15 +24,15 @@ RigidBody::RigidBody(sf::Vector2f new_position, sf::Vector2f new_size,
 
 RigidBody::~RigidBody() { delete box; }
 
-bool RigidBody::IsStatic() { return static_; }
+bool RigidBody::IsStatic() const { return static_; }
 
 void RigidBody::SetStatic(bool new_static) { static_ = new_static; };
 
-bool RigidBody::IsGravity() { return gravity; }
+bool RigidBody::IsGravity() const { return gravity; }
 
 void RigidBody::SetGravity(bool new_gravity) { gravity = new_gravity; }
 
-sf::Vector2f RigidBody::GetVelocity() { return velocity; }
+const sf::Vector2f &RigidBody::GetVelocity() const { return velocity; }
 
 void RigidBody::SetVelocity(float x, float y) { velocity = {x, y}; }
 
@@ -58,21 +58,22 @@ void RigidBody::ApplyGravity(const sf::Vector2f &gravity) {
 void RigidBody::UpdateByVelocity(const sf::Vector2f &gravity_, double delta) {
   if (static_)
     return;
+  previousPosition = box->getPosition();
 
   box->getRect()->move(velocity * (float)delta);
 }
 
-sf::Vector2f RigidBody::GetPosition() { return box->getPosition(); }
+sf::Vector2f RigidBody::GetPosition() const { return box->getPosition(); }
 void RigidBody::SetPosition(const sf::Vector2f &new_position) {
   box->setPosition(new_position.x, new_position.y);
 }
 
-sf::Vector2f RigidBody::GetSize() { return box->getSize(); }
+sf::Vector2f RigidBody::GetSize() const { return box->getSize(); }
 void RigidBody::SetSize(const sf::Vector2f &new_size) {
   box->setSize(new_size.x, new_size.y);
 }
 
-void RigidBody::DrawOutline(sf::RenderWindow *window, sf::Color color) {
+void RigidBody::DrawOutline(sf::RenderWindow *window, sf::Color color) const {
   sf::RectangleShape outline;
   outline.setPosition(GetPosition());
   outline.setSize(GetSize());
@@ -82,11 +83,11 @@ void RigidBody::DrawOutline(sf::RenderWindow *window, sf::Color color) {
   window->draw(outline);
 }
 
-bool RigidBody::CollidesWith(RigidBody *other) {
+bool RigidBody::CollidesWith(RigidBody *other) const {
   return box->CollidesWith(other->box);
 }
 
-bool RigidBody::CollidesWith(BoxCollider *other) {
+bool RigidBody::CollidesWith(BoxCollider *other) const {
   return box->CollidesWith(other);
 }
 

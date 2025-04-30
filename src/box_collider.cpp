@@ -1,11 +1,10 @@
 #include "box_collider.hpp"
 
-BoxCollider::BoxCollider() {
-    box = new sf::RectangleShape(sf::Vector2f(10, 10));
-    box->setPosition(sf::Vector2f(0, 0));
+BoxCollider::BoxCollider() 
+  : BoxCollider({0,0}, {10, 10}) {
 }
 
-BoxCollider::BoxCollider(sf::Vector2f position, sf::Vector2f size) {
+BoxCollider::BoxCollider(const sf::Vector2f &position, const sf::Vector2f &size) {
     box = new sf::RectangleShape(size);
     box->setPosition(position);
     box->setFillColor(sf::Color::Red);

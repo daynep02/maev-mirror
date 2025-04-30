@@ -41,15 +41,15 @@ void RigidBodyHandler::UpdateCurrentAndTimeDelta() {
 void RigidBodyHandler::UpdatePreviousTime() { previous_time = current_time; }
 
 void RigidBodyHandler::UpdateAllBodies() {
-  sf::Vector2f *prev_positions =
-      (sf::Vector2f *)calloc(rigid_bodies.size(), sizeof(sf::Vector2f));
 
-  /*
   for (int i = 0; i < rigid_bodies.size(); i++) {
-    prev_positions[i] = rigid_bodies.at(i)->GetPosition();
     rigid_bodies.at(i)->UpdateByVelocity(gravity, delta_time.count());
   }
-  */
+
+
+}
+
+void RigidBodyHandler::CollideBodies() {
 
   // check for collisions
   //  bug: suffers from a "too fast" problem where a collision won't be dfloat ,
@@ -70,7 +70,7 @@ void RigidBodyHandler::UpdateAllBodies() {
         // printf("Rigid Body (%d) collided with (%d)\n",i,j);
 
         body_i->Collide(body_j);
-        break;
+        continue;
         // transfer of power?
         if (!body_i->IsStatic() && !body_j->IsStatic()) {
           //body_i->Collide(body_j);
@@ -116,8 +116,11 @@ void RigidBodyHandler::UpdateAllBodies() {
       }
     }
   }
+}
 
-  delete prev_positions;
+void RigidBodyHandler::UpdateSim(){
+  UpdateAllBodies();
+  CollideBodies();
 }
 
 void RigidBodyHandler::SetTerminalVelo(RigidBody *body,

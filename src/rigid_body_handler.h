@@ -14,6 +14,8 @@ public:
   void UpdateCurrentAndTimeDelta();
   void UpdatePreviousTime();
   void UpdateAllBodies();
+  void CollideBodies();
+  void UpdateSim();
 
   // python Api helper func
   static void SetTerminalVelo(RigidBody *body, const sf::Vector2f &velo);
