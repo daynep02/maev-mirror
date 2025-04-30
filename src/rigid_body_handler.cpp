@@ -1,5 +1,8 @@
 #include "rigid_body_handler.h"
+#include "SFML/System/Vector2.hpp"
 #include "common_helpers.h"
+#include "longobject.h"
+#include "object.h"
 #include "rigid_body.h"
 #include <algorithm>
 #include <chrono>
@@ -41,11 +44,12 @@ void RigidBodyHandler::UpdateAllBodies() {
   sf::Vector2f *prev_positions =
       (sf::Vector2f *)calloc(rigid_bodies.size(), sizeof(sf::Vector2f));
 
-  // Update by the rigid body's velocity
+  /*
   for (int i = 0; i < rigid_bodies.size(); i++) {
     prev_positions[i] = rigid_bodies.at(i)->GetPosition();
     rigid_bodies.at(i)->UpdateByVelocity(gravity, delta_time.count());
   }
+  */
 
   // check for collisions
   //  bug: suffers from a "too fast" problem where a collision won't be dfloat ,
@@ -56,14 +60,21 @@ void RigidBodyHandler::UpdateAllBodies() {
   //  a collision,
   //       too tired to implement it rn
   for (int i = 0; i < rigid_bodies.size(); i++) {
+    RigidBody *body_i = rigid_bodies.at(i);
+    // update the velocity at the location
+    body_i->UpdateByVelocity(gravity, delta_time.count());
+    body_i->ApplyGravity(gravity);
     for (int j = i + 1; j < rigid_bodies.size(); j++) {
-      RigidBody *body_i = rigid_bodies.at(i);
       RigidBody *body_j = rigid_bodies.at(j);
       if (body_i->CollidesWith(body_j)) {
         // printf("Rigid Body (%d) collided with (%d)\n",i,j);
 
+        body_i->Collide(body_j);
+        break;
         // transfer of power?
         if (!body_i->IsStatic() && !body_j->IsStatic()) {
+          //body_i->Collide(body_j);
+          /*
           const sf::Vector2f &vel_i = body_i->GetVelocity();
           const sf::Vector2f &vel_j = body_j->GetVelocity();
           const sf::Vector2f &collision_velo = (vel_j + vel_i) / 2.0f;
@@ -73,23 +84,32 @@ void RigidBodyHandler::UpdateAllBodies() {
 
           body_j->SetPosition(prev_positions[j]);
           body_j->ModifyVelocity(collision_velo);
+          */
           break;
         }
 
         // i shouldn't move, but j should
         if (body_i->IsStatic() && !body_j->IsStatic()) {
-          const sf::Vector2f &currentVelo = body_i->GetVelocity();
-          body_j->ApplyForce(-gravity);
-          body_j->ApplyForce(-currentVelo * 1.75f);
-          break;
+          // sf::Vector2f newVelo;
+          const sf::Vector2f &currentVelo = body_j->GetVelocity();
+          // body_j->SetVelocity({0.0f, 0.0f});
+          body_j->ApplyGravity(-gravity);
+
+          body_j->ApplyForce({currentVelo.x, -currentVelo.y});
+          if (currentVelo.y != 0.0)
+            // body_j->ApplyForce({currentVelo.x, - currentVelo.y});
+            break;
         }
 
         // j shouldn't move, but i should
         if (!body_i->IsStatic() && body_j->IsStatic()) {
           const sf::Vector2f &currentVelo = body_i->GetVelocity();
-          body_i->ApplyForce(-gravity);
-          body_i->ApplyForce(-currentVelo * 1.75f);
-          break;
+          // body_i->SetVelocity({0.0f, 0.0f});
+          body_i->ApplyGravity(-gravity);
+          // body_i->ApplyForce({currentVelo.x, -currentVelo.y});
+          if (currentVelo.y != 0.0)
+            // body_i->ApplyForce({currentVelo.x, -currentVelo.y});
+            break;
         }
 
         // do nothing?
@@ -100,8 +120,9 @@ void RigidBodyHandler::UpdateAllBodies() {
   delete prev_positions;
 }
 
-void RigidBodyHandler::SetTerminalVelo(const sf::Vector2f &velo) {
-  terminalVelo = velo;
+void RigidBodyHandler::SetTerminalVelo(RigidBody *body,
+                                       const sf::Vector2f &velo) {
+  body->SetTerminalVelo(velo);
 }
 
 /*static*/ PyObject *RigidBodyHandler::GetCurrentTime(PyObject *self,
@@ -604,21 +625,107 @@ PyObject *RigidBodyHandler::SetRigidBodyVelocity(PyObject *self,
 /*static*/ PyObject *RigidBodyHandler::SetTerminalVelo(PyObject *self,
                                                        PyObject *args) {
   Py_ssize_t nargs = PyTuple_GET_SIZE(args);
-  if (nargs != 2) {
-    printf("engine.setTerminalVelo expects two floats as argument\n");
+  if (nargs != 3) {
+    printf("engine.set_terminal_velo expects one long and two floats as "
+           "argument\n");
     PyErr_BadArgument();
   }
 
-  PyObject *pX = PyTuple_GET_ITEM(args, 0);
-  PyObject *pY = PyTuple_GET_ITEM(args, 1);
+  PyObject *pId = PyTuple_GetItem(args, 0);
+
+  if (!PyLong_Check(pId)) {
+    Py_XDECREF(pId);
+    printf(
+        "engine.set_terminal_velo expectis one long and two floats as argument"
+        "arguments\n");
+    PyErr_BadArgument();
+  }
+
+  PyObject *pX = PyTuple_GET_ITEM(args, 1);
+  PyObject *pY = PyTuple_GET_ITEM(args, 2);
 
   if (!PyFloat_Check(pX) || !PyFloat_Check(pY)) {
-    printf("engine.setTerminalVelo expects two floats as argument\n");
+    printf("engine.set_terminal_velo expects one long and two floats as "
+           "argument\n");
+    PyErr_BadArgument();
+  }
+
+  int id = PyLong_AS_LONG(pId);
+
+  if (rigid_bodies.size() <= id || 0 > id) {
+    Py_XDECREF(pId);
+    Py_XDECREF(pX);
+    Py_XDECREF(pY);
+    printf("engine.set_terminal_velo got a rigid body id out of range\n");
     PyErr_BadArgument();
   }
 
   float x = (float)PyFloat_AS_DOUBLE(pX);
   float y = (float)PyFloat_AS_DOUBLE(pY);
-  SetTerminalVelo({x, y});
+
+  SetTerminalVelo(rigid_bodies.at(id), {x, y});
   Py_RETURN_NONE;
+}
+
+/*static*/ PyObject *RigidBodyHandler::ApplyForce(PyObject *self,
+                                                  PyObject *args) {
+  Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+  if (nargs != 2 && nargs != 3) {
+    printf("engine.ApplyForce expects 2 longs or 1 long and 2 floats as "
+           "argument\n"
+           "Got %ld args\n",
+           nargs);
+    PyErr_BadArgument();
+  }
+
+  PyObject *pId = PyTuple_GetItem(args, 0);
+
+  if (!PyLong_Check(pId)) {
+    Py_XDECREF(pId);
+
+    printf("engine.ApplyForce expects at least one long as"
+           "arguments\n");
+    PyErr_BadArgument();
+  }
+  bool succ = false;
+
+  int id = PyLong_AS_LONG(pId);
+
+  if (rigid_bodies.size() <= id || 0 > id) {
+    Py_XDECREF(pId);
+    printf("engine.ApplyForce got a rigid body id out of range\n");
+    PyErr_BadArgument();
+  }
+
+  if (nargs == 2) {
+    printf("Not Implemented!\n");
+    Py_RETURN_NONE;
+  }
+
+  PyObject *pX = PyTuple_GET_ITEM(args, 1);
+  PyObject *pY = PyTuple_GET_ITEM(args, 2);
+
+  if (!PyFloat_Check(pX) || !PyFloat_Check(pY)) {
+
+    printf("engine.ApplyForce expects one long and two floats as "
+           "argument\n");
+    PyErr_BadArgument();
+  }
+
+  float x = (float)PyFloat_AS_DOUBLE(pX);
+  float y = (float)PyFloat_AS_DOUBLE(pY);
+
+  ApplyForce(rigid_bodies.at(id), {x, y});
+  Py_RETURN_NONE;
+}
+
+bool RigidBodyHandler::ApplyForce(RigidBody *body, const sf::Vector2f &force) {
+  // printf("Called This function\n");
+  body->ApplyForce(force);
+  return true;
+}
+
+bool RigidBodyHandler::ApplyForce(RigidBody *body, float x, float y) {
+  ApplyForce(body, {x, y});
+  return true;
 }

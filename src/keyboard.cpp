@@ -1,7 +1,7 @@
 /**
  * @file keyboard.cpp
  * @author Dayne Pefley
- * @brief the definitions of keyboard.h
+ * @brief the declarations of keyboard.h
  */
 #ifndef keyboard_cpp
 #define keyboard_cpp
@@ -13,28 +13,23 @@
 PyObject *Keyboard::key_is_pressed(PyObject *self, PyObject *args) {
   Py_ssize_t nargs = PyTuple_GET_SIZE(args);
   if (nargs != 1) {
-    printf("engine.key_is_pressed expects 1 argument");
+    printf("engine.key_is_pressed expects 1 argument\n");
     PyErr_BadArgument();
   }
+
   PyObject *pKey = PyTuple_GetItem(args, 0);
 
-  std::string keyStr = PyUnicode_AsUTF8(pKey);
-
-  // Py_XDECREF(pKey);
-  /*
-  if (keyStr.size() > 1) {
-    Py_XDECREF(pKey);
-    printf("engine.key_is_pressed expects 1 char as argument");
+  if(!PyUnicode_Check(pKey)) {
+    printf("engine.key_is_pressed expects a string\n");
     PyErr_BadArgument();
   }
-  */
+  std::string keyStr = PyUnicode_AsUTF8(pKey);
+
   if (isPressed(keyStr)) {
-    // printf("Key Pressed!\n");
     Py_RETURN_TRUE;
-    return Py_True;
   }
+
   Py_RETURN_FALSE;
-  return Py_False;
 }
 
 bool Keyboard::isPressed(std::string key) {

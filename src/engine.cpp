@@ -1,21 +1,21 @@
+/**
+ * @file engine.cpp
+ * @author Dr. Denning, Dawson Ochs, Sterling Davis, Dayne Pefley, and Ethan
+ * Hoyt
+ * @brief Defines and makes available the APIs for the engine.
+ */
+
+#include "audio_handler.h"
+#include "box_collider_handler.hpp"
 #include "keyboard.h"
+#include "object_handler.h"
+#include "pyerrors.h"
+#include "rigid_body_handler.h"
+#include "vector.h"
+#include "camera_handler.hpp"
+#include "text_handler.h"
 #include <Python.h>
 #include <SFML/Graphics.hpp>
-
-#include "keyboard.h"
-#include "vector.h"
-#include "object_handler.h"
-#include "audio_handler.h"
-
-#include "box_collider.hpp"
-#include "box_collider_handler.hpp"
-
-#include "rigid_body.h"
-#include "rigid_body_handler.h"
-
-#include "camera_handler.hpp"
-
-#include <iostream>
 
 sf::RenderWindow *g_window;
 // sf::View* g_camera;
@@ -23,10 +23,12 @@ ObjectHandler *g_object_handler;
 BoxColliderHandler *g_box_collider_handler;
 RigidBodyHandler *g_rigid_body_handler;
 CameraHandler* g_camera_handler;
+TextHandler* g_text_handler;
 float g_gravity = 50.0f;
 
-
-// Python methods built into engine
+/**
+ * @brief The methods that are available to the engine
+ */
 static PyMethodDef EngineMethods[] = {
     {"create_sprite", ObjectHandler::CreateSprite, METH_VARARGS,
      engine_create_sprite_doc},
@@ -38,7 +40,6 @@ static PyMethodDef EngineMethods[] = {
      engine_draw_sprite_doc},
     {"free_sprite", ObjectHandler::FreeSprite, METH_VARARGS,
      engine_free_sprite_doc},
-    
     {"create_circle", ObjectHandler::CreateCircle, METH_VARARGS,
      engine_create_circle_doc},
     {"set_circle_fill_color", ObjectHandler::SetCircleFillColor, METH_VARARGS,
@@ -52,24 +53,40 @@ static PyMethodDef EngineMethods[] = {
     {"collides_with", ObjectHandler::CollidesWith, METH_VARARGS,
      engine_collides_with_doc},
     keyPressed,
-    
-	  {"create_box_collider", BoxColliderHandler::createBoxCollider, METH_VARARGS, engine_create_box_collider_doc},
-    {"free_box_collider", BoxColliderHandler::freeBoxCollider, METH_VARARGS, engine_free_box_collider_doc},
-    {"current_time", RigidBodyHandler::GetCurrentTime, METH_VARARGS, engine_current_time_doc},
-    {"delta_time", RigidBodyHandler::GetDeltaTime, METH_VARARGS, engine_delta_time_doc},
-    {"create_rigid_body", RigidBodyHandler::CreateRigidBody, METH_VARARGS, engine_create_rigid_body_doc},
-    {"is_rigid_body_static", RigidBodyHandler::IsRigidBodyStatic, METH_VARARGS, engine_is_rigid_body_static_doc},
-    {"set_rigid_body_static", RigidBodyHandler::SetRigidBodyStatic, METH_VARARGS, engine_set_rigid_body_static_doc},
-    {"is_rigid_body_gravity", RigidBodyHandler::IsRigidBodyGravity, METH_VARARGS, engine_is_rigid_body_gravity_doc},
-    {"set_rigid_body_gravity", RigidBodyHandler::SetRigidBodyGravity, METH_VARARGS, engine_set_rigid_body_gravity_doc},
-    {"set_rigid_body_velocity", RigidBodyHandler::SetRigidBodyVelocity, METH_VARARGS, engine_set_rigid_body_gravity_doc},
-    {"get_rigid_body_position", RigidBodyHandler::GetRigidBodyPosition, METH_VARARGS, engine_get_rigid_body_position_doc},
-    {"set_rigid_body_position", RigidBodyHandler::SetRigidBodyPosition, METH_VARARGS, engine_set_rigid_body_position_doc},
-    {"set_rigid_body_position", RigidBodyHandler::SetRigidBodyPosition, METH_VARARGS, engine_set_rigid_body_position_doc},
-    {"get_rigid_body_size", RigidBodyHandler::GetRigidBodySize, METH_VARARGS, engine_get_rigid_body_size_doc},
-    {"set_rigid_body_size", RigidBodyHandler::SetRigidBodySize, METH_VARARGS, engine_set_rigid_body_size_doc},
-    {"draw_rigid_body_collider", RigidBodyHandler::DrawRigidBodyCollider, METH_VARARGS, engine_draw_rigid_body_collider_doc},
-    {"free_rigid_body", RigidBodyHandler::FreeRigidBody, METH_VARARGS, engine_free_rigid_body_doc},
+    {"create_box_collider", BoxColliderHandler::createBoxCollider, METH_VARARGS,
+     engine_create_box_collider_doc},
+    {"free_box_collider", BoxColliderHandler::freeBoxCollider, METH_VARARGS,
+     engine_free_box_collider_doc},
+    {"current_time", RigidBodyHandler::GetCurrentTime, METH_VARARGS,
+     engine_current_time_doc},
+    {"delta_time", RigidBodyHandler::GetDeltaTime, METH_VARARGS,
+     engine_delta_time_doc},
+    {"create_rigid_body", RigidBodyHandler::CreateRigidBody, METH_VARARGS,
+     engine_create_rigid_body_doc},
+    {"is_rigid_body_static", RigidBodyHandler::IsRigidBodyStatic, METH_VARARGS,
+     engine_is_rigid_body_static_doc},
+    {"set_rigid_body_static", RigidBodyHandler::SetRigidBodyStatic,
+     METH_VARARGS, engine_set_rigid_body_static_doc},
+    {"is_rigid_body_gravity", RigidBodyHandler::IsRigidBodyGravity,
+     METH_VARARGS, engine_is_rigid_body_gravity_doc},
+    {"set_rigid_body_gravity", RigidBodyHandler::SetRigidBodyGravity,
+     METH_VARARGS, engine_set_rigid_body_gravity_doc},
+    {"set_rigid_body_velocity", RigidBodyHandler::SetRigidBodyVelocity,
+     METH_VARARGS, engine_set_rigid_body_gravity_doc},
+    {"get_rigid_body_position", RigidBodyHandler::GetRigidBodyPosition,
+     METH_VARARGS, engine_get_rigid_body_position_doc},
+    {"set_rigid_body_position", RigidBodyHandler::SetRigidBodyPosition,
+     METH_VARARGS, engine_set_rigid_body_position_doc},
+    {"set_rigid_body_position", RigidBodyHandler::SetRigidBodyPosition,
+     METH_VARARGS, engine_set_rigid_body_position_doc},
+    {"get_rigid_body_size", RigidBodyHandler::GetRigidBodySize, METH_VARARGS,
+     engine_get_rigid_body_size_doc},
+    {"set_rigid_body_size", RigidBodyHandler::SetRigidBodySize, METH_VARARGS,
+     engine_set_rigid_body_size_doc},
+    {"draw_rigid_body_collider", RigidBodyHandler::DrawRigidBodyCollider,
+     METH_VARARGS, engine_draw_rigid_body_collider_doc},
+    {"free_rigid_body", RigidBodyHandler::FreeRigidBody, METH_VARARGS,
+     engine_free_rigid_body_doc},
 
     {"create_sound", AudioHandler::CreateSound, METH_VARARGS, engine_create_sound_doc},
     {"free_sound", AudioHandler::FreeSound, METH_VARARGS, engine_free_sound_doc},
@@ -86,18 +103,29 @@ static PyMethodDef EngineMethods[] = {
     {"set_music_volume", AudioHandler::SetMusicVolume, METH_VARARGS, engine_set_music_volume_doc},
     {"set_music_loop", AudioHandler::SetMusicLoop, METH_VARARGS, engine_set_music_loop_doc},
 
+    {"create_font", TextHandler::CreateFont, METH_VARARGS, engine_create_font_doc},
+    {"create_text", TextHandler::CreateText, METH_VARARGS, engine_create_text_doc},
+    {"set_text_position", TextHandler::SetTextPosition, METH_VARARGS, engine_set_text_position_doc},
+    {"set_text_size", TextHandler::SetTextSize, METH_VARARGS, engine_set_text_size_doc},
+    {"set_text_color", TextHandler::SetTextColor, METH_VARARGS, engine_set_text_color_doc},
+    {"set_text", TextHandler::SetText, METH_VARARGS, engine_set_text_doc},
+    {"draw_text", TextHandler::DrawText, METH_VARARGS, engine_draw_text_doc},
+
     {"set_camera_position", CameraHandler::SetPosition, METH_VARARGS, engine_set_camera_position_doc},
     
     createVector,
-	  length,
-	  normalize,
-	  dot,
-	  cross,
+    length,
+    normalize,
+    dot,
+    cross,
     set_gravity,
     set_terminal_velo,
+    apply_force,
     {NULL, NULL, 0, NULL}};
 
-// initialization values
+/**
+ * @brief definiton of the engine module available in python
+ */
 static PyModuleDef EngineModule = {PyModuleDef_HEAD_INIT,
                                    "engine",
                                    NULL,
@@ -108,7 +136,9 @@ static PyModuleDef EngineModule = {PyModuleDef_HEAD_INIT,
                                    NULL,
                                    NULL};
 
-// init function
+/**
+ * @brief the init function for the python intepreter
+ */
 PyMODINIT_FUNC PyInit_engine(void) { return PyModule_Create(&EngineModule); }
 
 int main(int argc, char *argv[]) {
@@ -119,7 +149,8 @@ int main(int argc, char *argv[]) {
   int i;
 
   if (argc != 3) {
-    fprintf(stderr, "Usage: engine /full/path/to/pythongame/dir pythongame.py\n");
+    fprintf(stderr,
+            "Usage: engine /full/path/to/pythongame/dir pythongame.py\n");
     return 1;
   }
 
@@ -130,10 +161,11 @@ int main(int argc, char *argv[]) {
   Py_Initialize();
   char *module_path = argv[1];
   char simple_str[1024];
-  sprintf(simple_str,"import sys\n"
-                     "sys.path.insert(0, \"%s\")\n"
-                     "sys.path.insert(0, \".\")",module_path);
-                     
+  sprintf(simple_str,
+          "import sys\n"
+          "sys.path.insert(0, \"%s\")\n"
+          "sys.path.insert(0, \".\")",
+          module_path);
 
   char *pythonfilename = argv[2];
   char *extension = strstr(pythonfilename, ".py\0");
@@ -144,8 +176,9 @@ int main(int argc, char *argv[]) {
   }
   pName = PyUnicode_DecodeFSDefault(pythonfilename);
 
-  //PyRun_SimpleString("import sys\n"            "import os");
-  //PyRun_SimpleString("sys.path.append( os.path.dirname(os.getcwd()) +'/project_name/')");
+  // PyRun_SimpleString("import sys\n"            "import os");
+  // PyRun_SimpleString("sys.path.append( os.path.dirname(os.getcwd())
+  // +'/project_name/')");
   PyRun_SimpleString(simple_str);
 
   // load local instance of pName
@@ -199,6 +232,8 @@ int main(int argc, char *argv[]) {
   g_box_collider_handler = new BoxColliderHandler(g_window);
   g_rigid_body_handler = new RigidBodyHandler(g_window);
   g_camera_handler = new CameraHandler(g_window);
+  g_text_handler = new TextHandler(g_window);
+
 
   // Doing this so things don't fly off the screen in the first frame
   g_rigid_body_handler->UpdateCurrentAndTimeDelta();
@@ -206,6 +241,10 @@ int main(int argc, char *argv[]) {
 
   // loads in the init Key Function of Python Game
   pValue = PyObject_CallNoArgs(pFuncInit);
+  if (!pValue) {
+    PyErr_Occurred();
+    PyErr_Print();
+  }
   Py_DECREF(pValue);
 
   // SFML loop (ver. 3.0.0)
@@ -264,6 +303,7 @@ int main(int argc, char *argv[]) {
   delete g_box_collider_handler;
   delete g_rigid_body_handler;
   delete g_camera_handler;
+  delete g_text_handler;
 
   printf("engine: Tearing Down\n");
 
