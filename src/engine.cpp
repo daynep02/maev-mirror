@@ -13,6 +13,7 @@
 #include "rigid_body_handler.h"
 #include "vector.h"
 #include "camera_handler.hpp"
+#include "text_handler.h"
 #include <Python.h>
 #include <SFML/Graphics.hpp>
 
@@ -22,6 +23,7 @@ ObjectHandler *g_object_handler;
 BoxColliderHandler *g_box_collider_handler;
 RigidBodyHandler *g_rigid_body_handler;
 CameraHandler* g_camera_handler;
+TextHandler* g_text_handler;
 float g_gravity = 50.0f;
 
 /**
@@ -100,6 +102,14 @@ static PyMethodDef EngineMethods[] = {
     {"set_music_pitch", AudioHandler::SetMusicPitch, METH_VARARGS, engine_set_music_pitch_doc},
     {"set_music_volume", AudioHandler::SetMusicVolume, METH_VARARGS, engine_set_music_volume_doc},
     {"set_music_loop", AudioHandler::SetMusicLoop, METH_VARARGS, engine_set_music_loop_doc},
+
+    {"create_font", TextHandler::CreateFont, METH_VARARGS, engine_create_font_doc},
+    {"create_text", TextHandler::CreateText, METH_VARARGS, engine_create_text_doc},
+    {"set_text_position", TextHandler::SetTextPosition, METH_VARARGS, engine_set_text_position_doc},
+    {"set_text_size", TextHandler::SetTextSize, METH_VARARGS, engine_set_text_size_doc},
+    {"set_text_color", TextHandler::SetTextColor, METH_VARARGS, engine_set_text_color_doc},
+    {"set_text", TextHandler::SetText, METH_VARARGS, engine_set_text_doc},
+    {"draw_text", TextHandler::DrawText, METH_VARARGS, engine_draw_text_doc},
 
     {"set_camera_position", CameraHandler::SetPosition, METH_VARARGS, engine_set_camera_position_doc},
     
@@ -222,6 +232,8 @@ int main(int argc, char *argv[]) {
   g_box_collider_handler = new BoxColliderHandler(g_window);
   g_rigid_body_handler = new RigidBodyHandler(g_window);
   g_camera_handler = new CameraHandler(g_window);
+  g_text_handler = new TextHandler(g_window);
+
 
   // Doing this so things don't fly off the screen in the first frame
   g_rigid_body_handler->UpdateCurrentAndTimeDelta();
@@ -291,6 +303,7 @@ int main(int argc, char *argv[]) {
   delete g_box_collider_handler;
   delete g_rigid_body_handler;
   delete g_camera_handler;
+  delete g_text_handler;
 
   printf("engine: Tearing Down\n");
 

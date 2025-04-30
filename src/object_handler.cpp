@@ -148,7 +148,7 @@ ObjectHandler::~ObjectHandler() {
     PyErr_BadArgument();
   }
 
-  PyObject *pPosition = PyTuple_GetItem(args, 0);
+  PyObject *pPosition = PyTuple_GetItem(args, 1);
   PyObject *pX = PyTuple_GetItem(pPosition, 0);
   PyObject *pY = PyTuple_GetItem(pPosition, 1);
 
@@ -366,7 +366,7 @@ ObjectHandler::~ObjectHandler() {
     PyErr_BadArgument();
   }
 
-  PyObject *pPosition = PyTuple_GetItem(args, 0);
+  PyObject *pPosition = PyTuple_GetItem(args, 1);
   PyObject *pX = PyTuple_GetItem(pPosition, 0);
   PyObject *pY = PyTuple_GetItem(pPosition, 1);
 

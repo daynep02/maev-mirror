@@ -64,6 +64,14 @@ class Game:
         print(engine.dot(self.vec2, self.vec4))
         print(engine.cross(self.vec2, self.vec4))
 
+        #testing text
+        self.font = engine.create_font("../games/testing/assets/comic.ttf")
+        self.text = engine.create_text(self.font)
+        engine.set_text(self.text, "Forgot to call this funciton lol")
+        engine.set_text_position(self.text, (300,500))
+        engine.set_text_size(self.text, 50)
+        engine.set_text_color(self.text, (255,0,0,255))
+
         self.epic_music = engine.create_music("../games/testing/assets/epic_music.wav")
         engine.set_gravity(0.0, 1.0)
 
@@ -119,4 +127,5 @@ def draw():
     engine.draw_circle(game.ball2.circle)
     game.test_block.draw()
     engine.draw_rigid_body_collider(game.platform)
+    engine.draw_text(game.text)
 
