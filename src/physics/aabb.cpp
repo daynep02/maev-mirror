@@ -4,10 +4,15 @@
  * @brief defines the member functions for the aabb
  */
 
-#ifndef AABB_HPP
-#define AABB_HPP
-
+#ifndef AABB_CPP
+#define AABB_CPP
 #include "aabb.hpp"
-Aabb::Aabb() {}
+#include "SFML/System/Vector2.hpp"
 
-#endif // !AABB_HPP
+Aabb::Aabb()
+  : Aabb({0,0}, {0,0}){}
+
+Aabb::Aabb(const sf::Vector2f &min, const sf::Vector2f &max)
+    : min(min), max(max) {}
+
+#endif // !AABB_CPP

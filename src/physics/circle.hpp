@@ -8,6 +8,7 @@
 #include "SFML/Graphics/CircleShape.hpp"
 #include "SFML/System/Vector2.hpp"
 #include "hittable.hpp"
+#include "aabb.hpp"
 /**
  * @brief a collidable circle for the physics system
  */
@@ -44,6 +45,8 @@ public:
   bool CollidesWith(Circle *other);
 
 private:
+
   sf::CircleShape shape;
+  Aabb boundingBox;
 };
 #endif // CIRCLE_CPP

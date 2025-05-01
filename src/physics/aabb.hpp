@@ -10,8 +10,9 @@
 #include "hittable.hpp"
 
 class Aabb: public Hittable {
+public:
   /**
-  * @brief constnructs an aabb with nothing in it. It should not collide with anything.
+  * @brief constructs an aabb with nothing in it. It should not collide with anything.
   *
   */
   Aabb();
