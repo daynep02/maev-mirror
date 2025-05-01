@@ -14,6 +14,7 @@
 #include "vector.h"
 #include "camera_handler.hpp"
 #include "text_handler.h"
+#include "callback_handler.h"
 #include <Python.h>
 #include <SFML/Graphics.hpp>
 
@@ -24,35 +25,38 @@ BoxColliderHandler *g_box_collider_handler;
 RigidBodyHandler *g_rigid_body_handler;
 CameraHandler* g_camera_handler;
 TextHandler* g_text_handler;
+CallbackHandler* g_callback_handler;
 float g_gravity = 50.0f;
 
 /**
  * @brief The methods that are available to the engine
  */
 static PyMethodDef EngineMethods[] = {
-    {"create_sprite", ObjectHandler::CreateSprite, METH_VARARGS,
-     engine_create_sprite_doc},
-    {"set_sprite_position", ObjectHandler::SetSpritePosition, METH_VARARGS,
-     engine_set_sprite_position_doc},
-    {"set_sprite_scale", ObjectHandler::SetSpriteScale, METH_VARARGS,
-     engine_set_sprite_scale_doc},
-    {"draw_sprite", ObjectHandler::DrawSprite, METH_VARARGS,
-     engine_draw_sprite_doc},
-    {"free_sprite", ObjectHandler::FreeSprite, METH_VARARGS,
-     engine_free_sprite_doc},
-    {"create_circle", ObjectHandler::CreateCircle, METH_VARARGS,
-     engine_create_circle_doc},
-    {"set_circle_fill_color", ObjectHandler::SetCircleFillColor, METH_VARARGS,
-     engine_set_circle_fill_color_doc},
-    {"set_circle_position", ObjectHandler::SetCirclePosition, METH_VARARGS,
-     engine_set_circle_position_doc},
-    {"set_circle_scale", ObjectHandler::SetCircleScale, METH_VARARGS,
-     engine_set_circle_scale_doc},
-    {"draw_circle", ObjectHandler::DrawCircle, METH_VARARGS,
-     engine_draw_circle_doc},
-    {"collides_with", ObjectHandler::CollidesWith, METH_VARARGS,
-     engine_collides_with_doc},
+    {"create_sprite", ObjectHandler::CreateSprite, METH_VARARGS,engine_create_sprite_doc},
+    {"set_sprite_position", ObjectHandler::SetSpritePosition, METH_VARARGS,engine_set_sprite_position_doc},
+    {"set_sprite_scale", ObjectHandler::SetSpriteScale, METH_VARARGS,engine_set_sprite_scale_doc},
+    {"draw_sprite", ObjectHandler::DrawSprite, METH_VARARGS,engine_draw_sprite_doc},
+    {"free_sprite", ObjectHandler::FreeSprite, METH_VARARGS,engine_free_sprite_doc},
+    {"create_circle", ObjectHandler::CreateCircle, METH_VARARGS,engine_create_circle_doc},
+    {"set_circle_fill_color", ObjectHandler::SetCircleFillColor, METH_VARARGS,engine_set_circle_fill_color_doc},
+    {"set_circle_position", ObjectHandler::SetCirclePosition, METH_VARARGS,engine_set_circle_position_doc},
+    {"set_circle_scale", ObjectHandler::SetCircleScale, METH_VARARGS,engine_set_circle_scale_doc},
+    {"set_circle_radius", ObjectHandler::SetCircleRadius, METH_VARARGS, engine_set_circle_radius_doc},
+    {"set_circle_outline_thickness", ObjectHandler::SetCircleOutlineThickness, METH_VARARGS, engine_set_circle_outline_thickness_doc},
+    {"set_circle_outline_color", ObjectHandler::SetCircleOutlineColor, METH_VARARGS, engine_set_circle_outline_color_doc},
+    {"draw_circle", ObjectHandler::DrawCircle, METH_VARARGS,engine_draw_circle_doc},
+    {"create_rect", ObjectHandler::CreateRect, METH_VARARGS,engine_create_rect_doc},
+    {"set_rect_fill_color", ObjectHandler::SetRectFillColor, METH_VARARGS,engine_set_rect_fill_color_doc},
+    {"set_rect_position", ObjectHandler::SetRectPosition, METH_VARARGS,engine_set_rect_position_doc},
+    {"set_rect_scale", ObjectHandler::SetRectScale, METH_VARARGS,engine_set_rect_scale_doc},
+    {"set_rect_size", ObjectHandler::SetRectSize, METH_VARARGS, engine_set_rect_size_doc},
+    {"set_rect_outline_thickness", ObjectHandler::SetRectOutlineThickness, METH_VARARGS, engine_set_rect_outline_thickness_doc},
+    {"set_rect_outline_color", ObjectHandler::SetRectOutlineColor, METH_VARARGS, engine_set_rect_outline_color_doc},
+    {"draw_rect", ObjectHandler::DrawRect, METH_VARARGS,engine_draw_rect_doc},
+    {"collides_with", ObjectHandler::CollidesWith, METH_VARARGS,engine_collides_with_doc},
+     
     keyPressed,
+
     {"create_box_collider", BoxColliderHandler::createBoxCollider, METH_VARARGS,
      engine_create_box_collider_doc},
     {"free_box_collider", BoxColliderHandler::freeBoxCollider, METH_VARARGS,
@@ -112,6 +116,8 @@ static PyMethodDef EngineMethods[] = {
     {"draw_text", TextHandler::DrawText, METH_VARARGS, engine_draw_text_doc},
 
     {"set_camera_position", CameraHandler::SetPosition, METH_VARARGS, engine_set_camera_position_doc},
+
+    {"set_on_close", CallbackHandler::SetOnClose, METH_VARARGS, engine_set_on_close_doc},
     
     createVector,
     length,
@@ -233,6 +239,7 @@ int main(int argc, char *argv[]) {
   g_rigid_body_handler = new RigidBodyHandler(g_window);
   g_camera_handler = new CameraHandler(g_window);
   g_text_handler = new TextHandler(g_window);
+  g_callback_handler = new CallbackHandler();
 
 
   // Doing this so things don't fly off the screen in the first frame
@@ -250,7 +257,9 @@ int main(int argc, char *argv[]) {
   // SFML loop (ver. 3.0.0)
   while (g_window->isOpen()) {
     while (std::optional event = g_window->pollEvent()) {
+      g_callback_handler->HandleEvent(g_window,event);
       if (event->is<sf::Event::Closed>()) {
+
         g_window->close();
         break;
       }

@@ -43,8 +43,8 @@ PyObject* CameraHandler::SetPosition(PyObject* self, PyObject* args) {
         PyErr_BadArgument();
     }
 
-    double x = PyFloat_AsDouble(pX);
-    double y = PyFloat_AsDouble(pY);
+    float x = (float)PyFloat_AsDouble(pX);
+    float y = (float)PyFloat_AsDouble(pY);
 
     // std::cout << x << " " << y << std::endl;
     g_camera->setCenter({x, y});
