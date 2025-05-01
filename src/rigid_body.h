@@ -40,7 +40,7 @@ public:
   
   void SetTerminalVelo(const sf::Vector2f& terminalVelo);
   
-  void Collide(RigidBody* other);
+  void Collide(RigidBody* other, const sf::Vector2f& gravity);
 
 
 private:

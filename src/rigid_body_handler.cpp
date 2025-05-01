@@ -41,12 +41,10 @@ void RigidBodyHandler::UpdateCurrentAndTimeDelta() {
 void RigidBodyHandler::UpdatePreviousTime() { previous_time = current_time; }
 
 void RigidBodyHandler::UpdateAllBodies() {
-
-  for (int i = 0; i < rigid_bodies.size(); i++) {
-    rigid_bodies.at(i)->UpdateByVelocity(gravity, delta_time.count());
+  for (const auto& body : rigid_bodies) {
+    body->ApplyGravity(gravity);
+    body->UpdateByVelocity(gravity, delta_time.count());
   }
-
-
 }
 
 void RigidBodyHandler::CollideBodies() {
@@ -61,64 +59,17 @@ void RigidBodyHandler::CollideBodies() {
   //       too tired to implement it rn
   for (int i = 0; i < rigid_bodies.size(); i++) {
     RigidBody *body_i = rigid_bodies.at(i);
-    // update the velocity at the location
-    body_i->UpdateByVelocity(gravity, delta_time.count());
-    body_i->ApplyGravity(gravity);
     for (int j = i + 1; j < rigid_bodies.size(); j++) {
       RigidBody *body_j = rigid_bodies.at(j);
       if (body_i->CollidesWith(body_j)) {
-        // printf("Rigid Body (%d) collided with (%d)\n",i,j);
-
-        body_i->Collide(body_j);
+        body_i->Collide(body_j, gravity);
         continue;
-        // transfer of power?
-        if (!body_i->IsStatic() && !body_j->IsStatic()) {
-          //body_i->Collide(body_j);
-          /*
-          const sf::Vector2f &vel_i = body_i->GetVelocity();
-          const sf::Vector2f &vel_j = body_j->GetVelocity();
-          const sf::Vector2f &collision_velo = (vel_j + vel_i) / 2.0f;
-
-          body_i->SetPosition(prev_positions[i]);
-          body_i->ModifyVelocity(collision_velo);
-
-          body_j->SetPosition(prev_positions[j]);
-          body_j->ModifyVelocity(collision_velo);
-          */
-          break;
-        }
-
-        // i shouldn't move, but j should
-        if (body_i->IsStatic() && !body_j->IsStatic()) {
-          // sf::Vector2f newVelo;
-          const sf::Vector2f &currentVelo = body_j->GetVelocity();
-          // body_j->SetVelocity({0.0f, 0.0f});
-          body_j->ApplyGravity(-gravity);
-
-          body_j->ApplyForce({currentVelo.x, -currentVelo.y});
-          if (currentVelo.y != 0.0)
-            // body_j->ApplyForce({currentVelo.x, - currentVelo.y});
-            break;
-        }
-
-        // j shouldn't move, but i should
-        if (!body_i->IsStatic() && body_j->IsStatic()) {
-          const sf::Vector2f &currentVelo = body_i->GetVelocity();
-          // body_i->SetVelocity({0.0f, 0.0f});
-          body_i->ApplyGravity(-gravity);
-          // body_i->ApplyForce({currentVelo.x, -currentVelo.y});
-          if (currentVelo.y != 0.0)
-            // body_i->ApplyForce({currentVelo.x, -currentVelo.y});
-            break;
-        }
-
-        // do nothing?
       }
     }
   }
 }
 
-void RigidBodyHandler::UpdateSim(){
+void RigidBodyHandler::UpdateSim() {
   UpdateAllBodies();
   CollideBodies();
 }

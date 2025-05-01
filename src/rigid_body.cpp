@@ -96,16 +96,16 @@ void RigidBody::SetTerminalVelo(const sf::Vector2f &terminalVelo) {
   terminalY = terminalVelo.y;
 }
 
-void RigidBody::Collide(RigidBody *other) {
+void RigidBody::Collide(RigidBody *other, const sf::Vector2f& gravity) {
   const sf::Vector2f &otherVelo = other->velocity;
   const sf::Vector2f &collisionVelo = -(velocity + otherVelo) * 0.5f;
   if (other->static_) {
-    velocity -= velocity;
-    return;
+    SetPosition(previousPosition);
+    ApplyGravity(-gravity);
   }
   if (static_) {
-    other->velocity -= other->velocity;
-    return;
+    other->SetPosition(other->previousPosition);
+    other->ApplyGravity(-gravity);
   }
   velocity += collisionVelo;
   other->velocity += collisionVelo;
