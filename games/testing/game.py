@@ -90,6 +90,7 @@ def init():
 
     engine.create_box_collider((1, 167.5), (100, 100))
     engine.play_music(game.epic_music)
+    print("The screen dimensions are: ", engine.get_screen_width(), engine.get_screen_height())
 
 def update():
     global game

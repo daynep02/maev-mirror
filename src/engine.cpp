@@ -15,6 +15,7 @@
 #include "camera_handler.hpp"
 #include "text_handler.h"
 #include "callback_handler.h"
+#include "consts.h"
 #include <Python.h>
 #include <SFML/Graphics.hpp>
 
@@ -118,7 +119,10 @@ static PyMethodDef EngineMethods[] = {
     {"set_camera_position", CameraHandler::SetPosition, METH_VARARGS, engine_set_camera_position_doc},
 
     {"set_on_close", CallbackHandler::SetOnClose, METH_VARARGS, engine_set_on_close_doc},
-    
+   
+    {"get_screen_width", Consts::GetScreenWidth, METH_VARARGS, engine_get_screen_width_doc},
+    {"get_screen_height", Consts::GetScreenHeight, METH_VARARGS, engine_get_screen_height_doc},
+
     createVector,
     length,
     normalize,
@@ -229,7 +233,7 @@ int main(int argc, char *argv[]) {
   }
 
   // assign globals
-  g_window = new sf::RenderWindow(sf::VideoMode({1024, 640}), "Engine!");
+  g_window = new sf::RenderWindow(sf::VideoMode({SCREEN_WIDTH, SCREEN_HEIGHT}), "Engine!");
   // g_camera = new sf::View(sf::Vector2f(400.f, 250.f), sf::Vector2f(1024.f, 640.f));
   // g_window->setView(*g_camera);
 
