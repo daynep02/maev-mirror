@@ -12,6 +12,7 @@ public:
             bool gravity_);
   ~RigidBody();
 
+
   bool IsStatic() const;
   void SetStatic(bool new_static);
   bool IsGravity() const;
@@ -41,6 +42,8 @@ public:
   void SetTerminalVelo(const sf::Vector2f& terminalVelo);
   
   void Collide(RigidBody* other, const sf::Vector2f& gravity);
+
+  BoxCollider* GetBox() const;
 
 
 private:

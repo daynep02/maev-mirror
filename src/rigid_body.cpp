@@ -4,6 +4,7 @@
  */
 #include "rigid_body.h"
 #include "SFML/System/Vector2.hpp"
+#include "box_collider.hpp"
 #include <SFML/System.hpp>
 #include <stdexcept>
 
@@ -96,7 +97,7 @@ void RigidBody::SetTerminalVelo(const sf::Vector2f &terminalVelo) {
   terminalY = terminalVelo.y;
 }
 
-void RigidBody::Collide(RigidBody *other, const sf::Vector2f& gravity) {
+void RigidBody::Collide(RigidBody *other, const sf::Vector2f &gravity) {
   const sf::Vector2f &otherVelo = other->velocity;
   const sf::Vector2f &collisionVelo = -(velocity + otherVelo) * 0.5f;
   if (other->static_) {
@@ -111,3 +112,4 @@ void RigidBody::Collide(RigidBody *other, const sf::Vector2f& gravity) {
   other->velocity += collisionVelo;
 }
 
+BoxCollider *RigidBody::GetBox() const { return box; }

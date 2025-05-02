@@ -15,6 +15,7 @@ public:
   void UpdatePreviousTime();
   void UpdateAllBodies();
   void CollideBodies();
+  void UpdateConstraints();
   void UpdateSim();
 
   // python Api helper func
