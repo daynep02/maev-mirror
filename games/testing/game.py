@@ -75,7 +75,8 @@ class Game:
         self.epic_music = engine.create_music("../games/testing/assets/epic_music.wav")
         engine.set_gravity(0.0, 1.0)
 
-
+def on_close():
+    print("\"Window closed\", said the Python!")
 
 game = None
 first = True
@@ -85,6 +86,7 @@ def init():
     global game
     game = Game()
     #engine.free_sprite(game.background)
+    engine.set_on_close(on_close)
 
     engine.create_box_collider((1, 167.5), (100, 100))
     engine.play_music(game.epic_music)
