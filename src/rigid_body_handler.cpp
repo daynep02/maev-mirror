@@ -8,6 +8,7 @@
 #include <chrono>
 #include <limits>
 #include <vector>
+#include <iostream>
 
 sf::RenderWindow *rigid_window;
 
@@ -717,6 +718,43 @@ PyObject *RigidBodyHandler::SetRigidBodyVelocity(PyObject *self,
 
   ApplyForce(rigid_bodies.at(id), {x, y});
   Py_RETURN_NONE;
+}
+
+PyObject* RigidBodyHandler::RigidBodyCollidesWith(PyObject* self, PyObject* args) {
+  Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+  if (nargs != 2) {
+    std::cerr << "rigid_body_collides_with: expects 2 araguments" << std::endl;
+    PyErr_BadArgument();
+  }
+
+  PyObject* pId1 = PyTuple_GET_ITEM(args, 0);
+  PyObject* pId2 = PyTuple_GET_ITEM(args, 1);
+
+  if (!PyLong_Check(pId1)) {
+    std::cerr << "rigid_body_collides_with: expects a rigidbody id as the first argument" << std::endl;
+    PyErr_BadArgument();
+  } 
+  
+  if (!PyLong_Check(pId2)) {
+    std::cerr << "rigid_body_collides_with: expects a box collider id as the second argument" << std::endl;
+    PyErr_BadArgument();
+  }
+
+  long rid = PyLong_AS_LONG(pId1);
+  long bcid = PyLong_AS_LONG(pId2);
+
+  if (rigid_bodies.size() <= rid || 0 > rid) {
+    std::cerr << "rigid_body_collides_with: argument 1 id is out of range" << std::endl;
+    PyErr_BadArgument();
+  }
+
+  if (rigid_bodies.size() <= rid || 0 > rid) {
+    std::cerr << "rigid_body_collides_with: argument 1 id is out of range" << std::endl;
+    PyErr_BadArgument();
+  }
+
+
+  Py_RETURN_TRUE;
 }
 
 bool RigidBodyHandler::ApplyForce(RigidBody *body, const sf::Vector2f &force) {

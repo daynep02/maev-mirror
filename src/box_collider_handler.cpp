@@ -93,3 +93,7 @@ PyObject* BoxColliderHandler::freeBoxCollider(PyObject* self, PyObject* args) {
 
     Py_RETURN_NONE;
 }
+
+bool BoxColliderHandler::isBoxColliderIDInRange(long id) {
+    return 0 <= id && id < box_colliders.size();
+}

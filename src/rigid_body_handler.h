@@ -46,6 +46,8 @@ public:
   static PyObject *SetGravity(PyObject *self, PyObject *args);
   static PyObject *SetTerminalVelo(PyObject *self, PyObject *args);
 
+  static PyObject* RigidBodyCollidesWith(PyObject* self, PyObject* args);
+
   /**
    * @param self required for python api functions
    * @paarm args a tuple containing the arguments for the function. Should contain a long as id for the body and 2 floats
@@ -218,6 +220,14 @@ PyDoc_STRVAR(engine_apply_force_doc, ".. function:: apply_force(x, y)\n"
                                      " apply a force to an object\n"
                                      "\n"
                                      "  :return: Nothing.\n");
+
+PyDoc_STRVAR(engine_rigid_body_collides_with_doc, 
+  "function:: rigid_body_collides_with(id1,id2)\n"
+  "\n"
+  " check if a rigid body is colliding with anything\n"
+  "\n"
+  "::return bool"
+);
 
 static PyMethodDef set_gravity = {"set_gravity", RigidBodyHandler::SetGravity,
                                   METH_VARARGS, engine_set_gravity_doc};
