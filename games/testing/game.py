@@ -83,6 +83,9 @@ first = True
 
 # Key Functions for Game
 def init():
+    print("The screen dimensions were: ", engine.get_screen_width(), engine.get_screen_height())
+    engine.set_screen_width(1400);
+    print("But now the screen dimensions are: ", engine.get_screen_width(), engine.get_screen_height())
     global game
     game = Game()
     #engine.free_sprite(game.background)
@@ -90,7 +93,6 @@ def init():
 
     engine.create_box_collider((1, 167.5), (100, 100))
     engine.play_music(game.epic_music)
-    print("The screen dimensions are: ", engine.get_screen_width(), engine.get_screen_height())
 
 def update():
     global game
