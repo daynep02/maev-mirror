@@ -117,6 +117,7 @@ static PyMethodDef EngineMethods[] = {
     {"draw_text", TextHandler::DrawText, METH_VARARGS, engine_draw_text_doc},
 
     {"set_camera_position", CameraHandler::SetPosition, METH_VARARGS, engine_set_camera_position_doc},
+    {"set_camera_size", CameraHandler::SetSize, METH_VARARGS, engine_set_camera_size_doc},
 
     {"set_on_close", CallbackHandler::SetOnClose, METH_VARARGS, engine_set_on_close_doc},
    
