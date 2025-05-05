@@ -1,4 +1,6 @@
 #include "object_handler.h"
+#include "floatobject.h"
+#include "tupleobject.h"
 #include <algorithm>
 #include <cmath>
 #include <vector>
@@ -182,6 +184,48 @@ ObjectHandler::~ObjectHandler()
 	// Py_XDECREF(pY);
 
 	Py_RETURN_NONE;
+}
+
+/*static*/ PyObject *ObjectHandler::GetSpriteSize(PyObject *self,
+												   PyObject *args)
+{
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 1)
+	{
+		printf(
+			"engine.get_sprite_size expects a long as an argemunt\n");
+		PyErr_BadArgument();
+	}
+	PyObject *pId = PyTuple_GetItem(args, 0);
+	if (!PyLong_Check(pId))
+	{
+		Py_XDECREF(pId);
+		printf(
+			"engine.get_sprite_size expects a long as an argument\n");
+		PyErr_BadArgument();
+	}
+
+	long id = PyLong_AsLong(pId);
+
+	if (sprites.size() <= id || id < 0)
+	{
+		Py_XDECREF(pId);
+		printf("engine.get_sprite_size got a sprite id out of range\n");
+		PyErr_BadArgument();
+	}
+
+
+	auto size = sprites.at(id)->getTextureRect().size;
+
+  PyObject* x = PyFloat_FromDouble(size.x);
+  PyObject* y = PyFloat_FromDouble(size.y);
+
+	// Py_XDECREF(pId);
+	// Py_XDECREF(pPosition);
+	// Py_XDECREF(pX);
+	// Py_XDECREF(pY);
+
+	return PyTuple_Pack(2, x, y);
 }
 
 /*static*/ PyObject *ObjectHandler::DrawSprite(PyObject *self, PyObject *args)

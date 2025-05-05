@@ -17,7 +17,7 @@ FLAGS = -Wall -Wpedantic -Wextra
 all: engine
 
 engine: $(previous_dir)/src/engine.cpp object_handler.o keyboard.o box_collider.o box_collider_handler.o rigid_body.o rigid_body_handler.o vector.o audio_handler.o camera_handler.o text_handler.o callback_handler.o
-	g++ -g -o engine $(previous_dir)/src/engine.cpp object_handler.o keyboard.o box_collider.o box_collider_handler.o rigid_body.o rigid_body_handler.o vector.o audio_handler.o camera_handler.o text_handler.o callback_handler.o $(INCLUDE_PYTHON) $(INCLUDE_SFML) $(INCLUDE_FLAC)
+	g++ -g -o engine $(previous_dir)/src/engine.cpp object_handler.o keyboard.o box_collider_handler.o box_collider.o rigid_body.o rigid_body_handler.o vector.o audio_handler.o camera_handler.o text_handler.o callback_handler.o $(INCLUDE_PYTHON) $(INCLUDE_SFML) $(INCLUDE_FLAC)
 
 object_handler.o: $(previous_dir)/src/object_handler.cpp
 	g++ -g -o object_handler.o -c $(previous_dir)/src/object_handler.cpp $(INCLUDE_PYTHON) $(INCLUDE_SFML)

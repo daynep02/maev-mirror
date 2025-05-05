@@ -7,15 +7,15 @@
 
 #include "audio_handler.h"
 #include "box_collider_handler.hpp"
+#include "callback_handler.h"
+#include "camera_handler.hpp"
+#include "consts.h"
 #include "keyboard.h"
 #include "object_handler.h"
 #include "pyerrors.h"
 #include "rigid_body_handler.h"
-#include "vector.h"
-#include "camera_handler.hpp"
 #include "text_handler.h"
-#include "callback_handler.h"
-#include "consts.h"
+#include "vector.h"
 #include <Python.h>
 #include <SFML/Graphics.hpp>
 
@@ -24,38 +24,59 @@ sf::RenderWindow *g_window;
 ObjectHandler *g_object_handler;
 BoxColliderHandler *g_box_collider_handler;
 RigidBodyHandler *g_rigid_body_handler;
-CameraHandler* g_camera_handler;
-TextHandler* g_text_handler;
-CallbackHandler* g_callback_handler;
+CameraHandler *g_camera_handler;
+TextHandler *g_text_handler;
+CallbackHandler *g_callback_handler;
 float g_gravity = 50.0f;
 
 /**
  * @brief The methods that are available to the engine
  */
 static PyMethodDef EngineMethods[] = {
-    {"create_sprite", ObjectHandler::CreateSprite, METH_VARARGS,engine_create_sprite_doc},
-    {"set_sprite_position", ObjectHandler::SetSpritePosition, METH_VARARGS,engine_set_sprite_position_doc},
-    {"set_sprite_scale", ObjectHandler::SetSpriteScale, METH_VARARGS,engine_set_sprite_scale_doc},
-    {"draw_sprite", ObjectHandler::DrawSprite, METH_VARARGS,engine_draw_sprite_doc},
-    {"free_sprite", ObjectHandler::FreeSprite, METH_VARARGS,engine_free_sprite_doc},
-    {"create_circle", ObjectHandler::CreateCircle, METH_VARARGS,engine_create_circle_doc},
-    {"set_circle_fill_color", ObjectHandler::SetCircleFillColor, METH_VARARGS,engine_set_circle_fill_color_doc},
-    {"set_circle_position", ObjectHandler::SetCirclePosition, METH_VARARGS,engine_set_circle_position_doc},
-    {"set_circle_scale", ObjectHandler::SetCircleScale, METH_VARARGS,engine_set_circle_scale_doc},
-    {"set_circle_radius", ObjectHandler::SetCircleRadius, METH_VARARGS, engine_set_circle_radius_doc},
-    {"set_circle_outline_thickness", ObjectHandler::SetCircleOutlineThickness, METH_VARARGS, engine_set_circle_outline_thickness_doc},
-    {"set_circle_outline_color", ObjectHandler::SetCircleOutlineColor, METH_VARARGS, engine_set_circle_outline_color_doc},
-    {"draw_circle", ObjectHandler::DrawCircle, METH_VARARGS,engine_draw_circle_doc},
-    {"create_rect", ObjectHandler::CreateRect, METH_VARARGS,engine_create_rect_doc},
-    {"set_rect_fill_color", ObjectHandler::SetRectFillColor, METH_VARARGS,engine_set_rect_fill_color_doc},
-    {"set_rect_position", ObjectHandler::SetRectPosition, METH_VARARGS,engine_set_rect_position_doc},
-    {"set_rect_scale", ObjectHandler::SetRectScale, METH_VARARGS,engine_set_rect_scale_doc},
-    {"set_rect_size", ObjectHandler::SetRectSize, METH_VARARGS, engine_set_rect_size_doc},
-    {"set_rect_outline_thickness", ObjectHandler::SetRectOutlineThickness, METH_VARARGS, engine_set_rect_outline_thickness_doc},
-    {"set_rect_outline_color", ObjectHandler::SetRectOutlineColor, METH_VARARGS, engine_set_rect_outline_color_doc},
-    {"draw_rect", ObjectHandler::DrawRect, METH_VARARGS,engine_draw_rect_doc},
-    {"collides_with", ObjectHandler::CollidesWith, METH_VARARGS,engine_collides_with_doc},
-     
+    {"create_sprite", ObjectHandler::CreateSprite, METH_VARARGS,
+     engine_create_sprite_doc},
+    {"set_sprite_position", ObjectHandler::SetSpritePosition, METH_VARARGS,
+     engine_set_sprite_position_doc},
+    {"set_sprite_scale", ObjectHandler::SetSpriteScale, METH_VARARGS,
+     engine_set_sprite_scale_doc},
+    {"draw_sprite", ObjectHandler::DrawSprite, METH_VARARGS,
+     engine_draw_sprite_doc},
+    {"free_sprite", ObjectHandler::FreeSprite, METH_VARARGS,
+     engine_free_sprite_doc},
+    {"create_circle", ObjectHandler::CreateCircle, METH_VARARGS,
+     engine_create_circle_doc},
+    {"set_circle_fill_color", ObjectHandler::SetCircleFillColor, METH_VARARGS,
+     engine_set_circle_fill_color_doc},
+    {"set_circle_position", ObjectHandler::SetCirclePosition, METH_VARARGS,
+     engine_set_circle_position_doc},
+    {"set_circle_scale", ObjectHandler::SetCircleScale, METH_VARARGS,
+     engine_set_circle_scale_doc},
+    {"set_circle_radius", ObjectHandler::SetCircleRadius, METH_VARARGS,
+     engine_set_circle_radius_doc},
+    {"set_circle_outline_thickness", ObjectHandler::SetCircleOutlineThickness,
+     METH_VARARGS, engine_set_circle_outline_thickness_doc},
+    {"set_circle_outline_color", ObjectHandler::SetCircleOutlineColor,
+     METH_VARARGS, engine_set_circle_outline_color_doc},
+    {"draw_circle", ObjectHandler::DrawCircle, METH_VARARGS,
+     engine_draw_circle_doc},
+    {"create_rect", ObjectHandler::CreateRect, METH_VARARGS,
+     engine_create_rect_doc},
+    {"set_rect_fill_color", ObjectHandler::SetRectFillColor, METH_VARARGS,
+     engine_set_rect_fill_color_doc},
+    {"set_rect_position", ObjectHandler::SetRectPosition, METH_VARARGS,
+     engine_set_rect_position_doc},
+    {"set_rect_scale", ObjectHandler::SetRectScale, METH_VARARGS,
+     engine_set_rect_scale_doc},
+    {"set_rect_size", ObjectHandler::SetRectSize, METH_VARARGS,
+     engine_set_rect_size_doc},
+    {"set_rect_outline_thickness", ObjectHandler::SetRectOutlineThickness,
+     METH_VARARGS, engine_set_rect_outline_thickness_doc},
+    {"set_rect_outline_color", ObjectHandler::SetRectOutlineColor, METH_VARARGS,
+     engine_set_rect_outline_color_doc},
+    {"draw_rect", ObjectHandler::DrawRect, METH_VARARGS, engine_draw_rect_doc},
+    {"collides_with", ObjectHandler::CollidesWith, METH_VARARGS,
+     engine_collides_with_doc},
+
     keyPressed,
 
     {"create_box_collider", BoxColliderHandler::createBoxCollider, METH_VARARGS,
@@ -93,35 +114,58 @@ static PyMethodDef EngineMethods[] = {
     {"free_rigid_body", RigidBodyHandler::FreeRigidBody, METH_VARARGS,
      engine_free_rigid_body_doc},
 
-    {"create_sound", AudioHandler::CreateSound, METH_VARARGS, engine_create_sound_doc},
-    {"free_sound", AudioHandler::FreeSound, METH_VARARGS, engine_free_sound_doc},
-    {"play_sound", AudioHandler::PlaySound, METH_VARARGS, engine_play_sound_doc},
-    {"pause_sound", AudioHandler::PauseSound, METH_VARARGS, engine_pause_sound_doc},
-    {"set_sound_pitch", AudioHandler::SetSoundPitch, METH_VARARGS, engine_set_sound_pitch_doc},
-    {"set_sound_volume", AudioHandler::SetSoundVolume, METH_VARARGS, engine_set_sound_volume_doc},
-    {"set_sound_loop", AudioHandler::SetSoundLoop, METH_VARARGS, engine_set_sound_loop_doc},
-    {"create_music", AudioHandler::CreateMusic, METH_VARARGS, engine_create_music_doc},
-    {"free_music", AudioHandler::FreeMusic, METH_VARARGS, engine_free_music_doc},
-    {"play_music", AudioHandler::PlayMusic, METH_VARARGS, engine_play_music_doc},
-    {"pause_music", AudioHandler::PauseMusic, METH_VARARGS, engine_pause_music_doc},
-    {"set_music_pitch", AudioHandler::SetMusicPitch, METH_VARARGS, engine_set_music_pitch_doc},
-    {"set_music_volume", AudioHandler::SetMusicVolume, METH_VARARGS, engine_set_music_volume_doc},
-    {"set_music_loop", AudioHandler::SetMusicLoop, METH_VARARGS, engine_set_music_loop_doc},
+    {"create_sound", AudioHandler::CreateSound, METH_VARARGS,
+     engine_create_sound_doc},
+    {"free_sound", AudioHandler::FreeSound, METH_VARARGS,
+     engine_free_sound_doc},
+    {"play_sound", AudioHandler::PlaySound, METH_VARARGS,
+     engine_play_sound_doc},
+    {"pause_sound", AudioHandler::PauseSound, METH_VARARGS,
+     engine_pause_sound_doc},
+    {"set_sound_pitch", AudioHandler::SetSoundPitch, METH_VARARGS,
+     engine_set_sound_pitch_doc},
+    {"set_sound_volume", AudioHandler::SetSoundVolume, METH_VARARGS,
+     engine_set_sound_volume_doc},
+    {"set_sound_loop", AudioHandler::SetSoundLoop, METH_VARARGS,
+     engine_set_sound_loop_doc},
+    {"create_music", AudioHandler::CreateMusic, METH_VARARGS,
+     engine_create_music_doc},
+    {"free_music", AudioHandler::FreeMusic, METH_VARARGS,
+     engine_free_music_doc},
+    {"play_music", AudioHandler::PlayMusic, METH_VARARGS,
+     engine_play_music_doc},
+    {"pause_music", AudioHandler::PauseMusic, METH_VARARGS,
+     engine_pause_music_doc},
+    {"set_music_pitch", AudioHandler::SetMusicPitch, METH_VARARGS,
+     engine_set_music_pitch_doc},
+    {"set_music_volume", AudioHandler::SetMusicVolume, METH_VARARGS,
+     engine_set_music_volume_doc},
+    {"set_music_loop", AudioHandler::SetMusicLoop, METH_VARARGS,
+     engine_set_music_loop_doc},
 
-    {"create_font", TextHandler::CreateFont, METH_VARARGS, engine_create_font_doc},
-    {"create_text", TextHandler::CreateText, METH_VARARGS, engine_create_text_doc},
-    {"set_text_position", TextHandler::SetTextPosition, METH_VARARGS, engine_set_text_position_doc},
-    {"set_text_size", TextHandler::SetTextSize, METH_VARARGS, engine_set_text_size_doc},
-    {"set_text_color", TextHandler::SetTextColor, METH_VARARGS, engine_set_text_color_doc},
+    {"create_font", TextHandler::CreateFont, METH_VARARGS,
+     engine_create_font_doc},
+    {"create_text", TextHandler::CreateText, METH_VARARGS,
+     engine_create_text_doc},
+    {"set_text_position", TextHandler::SetTextPosition, METH_VARARGS,
+     engine_set_text_position_doc},
+    {"set_text_size", TextHandler::SetTextSize, METH_VARARGS,
+     engine_set_text_size_doc},
+    {"set_text_color", TextHandler::SetTextColor, METH_VARARGS,
+     engine_set_text_color_doc},
     {"set_text", TextHandler::SetText, METH_VARARGS, engine_set_text_doc},
     {"draw_text", TextHandler::DrawText, METH_VARARGS, engine_draw_text_doc},
 
-    {"set_camera_position", CameraHandler::SetPosition, METH_VARARGS, engine_set_camera_position_doc},
+    {"set_camera_position", CameraHandler::SetPosition, METH_VARARGS,
+     engine_set_camera_position_doc},
 
-    {"set_on_close", CallbackHandler::SetOnClose, METH_VARARGS, engine_set_on_close_doc},
-   
-    {"get_screen_width", Consts::GetScreenWidth, METH_VARARGS, engine_get_screen_width_doc},
-    {"get_screen_height", Consts::GetScreenHeight, METH_VARARGS, engine_get_screen_height_doc},
+    {"set_on_close", CallbackHandler::SetOnClose, METH_VARARGS,
+     engine_set_on_close_doc},
+
+    {"get_screen_width", Consts::GetScreenWidth, METH_VARARGS,
+     engine_get_screen_width_doc},
+    {"get_screen_height", Consts::GetScreenHeight, METH_VARARGS,
+     engine_get_screen_height_doc},
 
     createVector,
     length,
@@ -132,6 +176,7 @@ static PyMethodDef EngineMethods[] = {
     set_terminal_velo,
     apply_force,
     get_velocity,
+    Get_Srite_size,
     {NULL, NULL, 0, NULL}};
 
 /**
@@ -234,9 +279,10 @@ int main(int argc, char *argv[]) {
   }
 
   // assign globals
-  g_window = new sf::RenderWindow(sf::VideoMode({SCREEN_WIDTH, SCREEN_HEIGHT}), "Engine!");
-  // g_camera = new sf::View(sf::Vector2f(400.f, 250.f), sf::Vector2f(1024.f, 640.f));
-  // g_window->setView(*g_camera);
+  g_window = new sf::RenderWindow(sf::VideoMode({SCREEN_WIDTH, SCREEN_HEIGHT}),
+                                  "Engine!");
+  // g_camera = new sf::View(sf::Vector2f(400.f, 250.f), sf::Vector2f(1024.f,
+  // 640.f)); g_window->setView(*g_camera);
 
   // create object handlers
   g_object_handler = new ObjectHandler(g_window);
@@ -245,7 +291,6 @@ int main(int argc, char *argv[]) {
   g_camera_handler = new CameraHandler(g_window);
   g_text_handler = new TextHandler(g_window);
   g_callback_handler = new CallbackHandler();
-
 
   // Doing this so things don't fly off the screen in the first frame
   g_rigid_body_handler->UpdateCurrentAndTimeDelta();
@@ -262,7 +307,7 @@ int main(int argc, char *argv[]) {
   // SFML loop (ver. 3.0.0)
   while (g_window->isOpen()) {
     while (std::optional event = g_window->pollEvent()) {
-      g_callback_handler->HandleEvent(g_window,event);
+      g_callback_handler->HandleEvent(g_window, event);
       if (event->is<sf::Event::Closed>()) {
 
         g_window->close();
@@ -280,7 +325,6 @@ int main(int argc, char *argv[]) {
     // loads in update Key Function of Python Game
     pValue = PyObject_CallNoArgs(pFuncUpdate);
 
-
     pErr = PyErr_Occurred();
     // catch-all for errors that game causes
     if (pErr) {
@@ -289,8 +333,9 @@ int main(int argc, char *argv[]) {
       break;
     }
     Py_XDECREF(pValue); // dereferences, but pValue can already be NULL
-    
-    // call the engine update after game update game forces are correctly applied to physics
+
+    // call the engine update after game update game forces are correctly
+    // applied to physics
     g_rigid_body_handler->Update();
 
     // Update previous time before drawing, for an iOS friendly delta time

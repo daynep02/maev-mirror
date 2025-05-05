@@ -6,7 +6,7 @@ import math
 class Game:
 
     def __init__(self) -> None:
-        self.controlAbles = [ControlBlock(40,40, 10,10, "../games/racing/assets/soup.jpg")]
+        self.controlAbles = [ControlBlock(40,40, 50,50 , "../games/racing/assets/soup.jpg")]
         return
 
     def update(self):
