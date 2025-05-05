@@ -29,13 +29,13 @@ class Control_Block:
 
     def block_up(self) -> None:
         if engine.key_is_pressed("Up"):
-            engine.apply_force(self.id, 0.0, -20.0)
+            engine.apply_force(self.id, 0.0, -9.0)
         if engine.key_is_pressed( "Down"):
-            engine.apply_force(self.id, 0.0, 10.0)
+            engine.apply_force(self.id, 0.0, 9.0)
         if engine.key_is_pressed("Left"):
-            engine.apply_force(self.id,-10.0, 0.0)
+            engine.apply_force(self.id,-5.0, 0.0)
         if engine.key_is_pressed("Right"):
-            engine.apply_force(self.id, 10.0, 0.0)
+            engine.apply_force(self.id, 5.0, 0.0)
         
 class Game:
     def __init__(self):
