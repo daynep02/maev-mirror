@@ -45,6 +45,8 @@ public:
 
   BoxCollider* GetBox() const;
 
+  void ApplyAllForces();
+
 
 private:
 
@@ -62,6 +64,9 @@ private:
   sf::Vector2f friction = {0.0f, 0.0f};
   sf::Vector2f previousPosition = {0.0f, 0.0f};
 
+  sf::Vector2f previousPosition = {0,0};
+
+  std::vector<sf::Vector2f> forcesToApply;
 
 };
 

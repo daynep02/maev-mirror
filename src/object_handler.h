@@ -30,12 +30,20 @@ public:
   static PyObject *SetCircleFillColor(PyObject *self, PyObject *args);
   static PyObject *SetCirclePosition(PyObject *self, PyObject *args);
   static PyObject *SetCircleScale(PyObject *self, PyObject *args);
+  static PyObject *SetCircleRadius(PyObject *self, PyObject *args);
+  static PyObject *SetCircleOutlineThickness(PyObject *self, PyObject *args);
+  static PyObject *SetCircleOutlineColor(PyObject *self, PyObject *args);
   static PyObject *DrawCircle(PyObject *self, PyObject *args);
 
-  /**
-  * @brief API to rotate the the object through python
-  */
-  static PyObject *RotateObject(PyObject *self, PyObject *args);
+  static PyObject *CreateRect(PyObject *self, PyObject *args);
+  static PyObject *SetRectFillColor(PyObject *self, PyObject *args);
+  static PyObject *SetRectPosition(PyObject *self, PyObject *args);
+  static PyObject *SetRectScale(PyObject *self, PyObject *args);
+  static PyObject *SetRectSize(PyObject *self, PyObject *args);
+  static PyObject *SetRectOutlineThickness(PyObject *self, PyObject *args);
+  static PyObject *SetRectOutlineColor(PyObject *self, PyObject *args);
+  static PyObject *DrawRect(PyObject *self, PyObject *args);
+  static PyObject *GetSpriteSize(PyObject *self, PyObject *args);
 
   ///// Physics Engine /////
   static PyObject *CollidesWith(PyObject *self, PyObject *args);
@@ -136,4 +144,90 @@ PyDoc_STRVAR(engine_collides_with_doc,
              "\n"
              "  :return: bool of whether the two shapes collided.\n");
 
+// corresponding documentation for engine_create_rect
+PyDoc_STRVAR(
+    engine_create_rect_doc,
+    ".. function:: create_rect( (w,h) )\n"
+    "\n"
+    "  Creates a rect with the given width and height and returns its id.\n"
+    "\n"
+    "  :return: an integer representing the rect's id.\n");
+
+// corresponding documentation for set_rect_fill_color
+PyDoc_STRVAR(engine_set_rect_fill_color_doc,
+             ".. function:: set_rect_fill_color(id, (r,g,b,a))\n"
+             "\n"
+             "  Sets the fill color of the rect with the given id with the "
+             "RGBA value in the tuple (second arg)\n"
+             "\n"
+             "  :return: Nothing.\n");
+
+// corresponding documentation for set_rect_position
+PyDoc_STRVAR(engine_set_rect_position_doc,
+             ".. function:: set_rect_position(id, (x, y))\n"
+             "\n"
+             "  Sets the position of the rect with the given id at the x and y "
+             "provided in the tuple (second arg)\n"
+             "\n"
+             "  :return: Nothing.\n");
+
+// corresponding documentation for set_rect_scale
+PyDoc_STRVAR(engine_set_rect_scale_doc,
+             ".. function:: set_rect_scale(id, (x, y))\n"
+             "\n"
+             "  Sets the scale of the rect with the given id at the x and y "
+             "provided in the tuple (second arg)\n"
+             "\n"
+             "  :return: Nothing.\n");
+
+// corresponding documentation for set_rect_size
+PyDoc_STRVAR(engine_set_rect_size_doc,
+             ".. function:: set_rect_radius(id, (w,h))\n"
+             "\n"
+             "  Sets the size of the rect with the given id with the provided "
+             "width and height (second arg)\n"
+             "\n"
+             "  :return: Nothing.\n");
+
+// corresponding documentation for set_rect_outline_thickness
+PyDoc_STRVAR(
+    engine_set_rect_outline_thickness_doc,
+    ".. function:: set_rect_outline_thickness(id, thickness)\n"
+    "\n"
+    "  Sets the outline thickness in pixels of the rect with the given id\n"
+    "\n"
+    "  :return: Nothing.\n");
+
+// corresponding documentation for set_rect_outline_color
+PyDoc_STRVAR(engine_set_rect_outline_color_doc,
+             ".. function:: set_rect_outline_color(id, (r,g,b,a))\n"
+             "\n"
+             "  Sets the outline color of the rect with the given id with the "
+             "RGBA value in the tuple (second arg)\n"
+             "\n"
+             "  :return: Nothing.\n");
+
+// corresponding documentation for engine_draw_rect
+PyDoc_STRVAR(engine_draw_rect_doc, ".. function:: draw_rect(id)\n"
+                                   "\n"
+                                   "  Draws the rect with the given id.\n"
+                                   "\n"
+                                   "  :return: Nothing.\n");
+
+PyDoc_STRVAR(engine_collides_with_doc,
+             ".. function:: collides_with(id1, id2)\n"
+             "\n"
+             "  Tests whether two shapes collide or not.\n"
+             "\n"
+             "  :return: bool of whether the two shapes collided.\n");
+
+PyDoc_STRVAR(engine_get_sprite_size_doc, ".. function:: get_sprite_size(id1)\n"
+                                     "\n"
+                                     "  Gets the size of a sprite.\n"
+                                     "\n"
+                                     "  :return: a tuple containing the x and "
+                                     "y values of the size of a sprite.\n");
+static PyMethodDef Get_Srite_size =
+                       {"get_sprite_size", ObjectHandler::GetSpriteSize,
+                        METH_VARARGS, engine_get_sprite_size_doc};
 #endif //_OBJECT_HANDLER_H_

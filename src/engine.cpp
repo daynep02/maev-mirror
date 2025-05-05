@@ -7,18 +7,28 @@
 
 #include "audio_handler.h"
 #include "box_collider_handler.hpp"
+#include "callback_handler.h"
+#include "camera_handler.hpp"
 #include "keyboard.h"
 #include "object_handler.h"
 #include "pyerrors.h"
 #include "rigid_body_handler.h"
+#include "text_handler.h"
 #include "vector.h"
+#include "callback_handler.h"
+#include "window_handler.h"
 #include <Python.h>
 #include <SFML/Graphics.hpp>
 
 sf::RenderWindow *g_window;
+// sf::View* g_camera;
+WindowHandler* g_window_handler;
 ObjectHandler *g_object_handler;
 BoxColliderHandler *g_box_collider_handler;
 RigidBodyHandler *g_rigid_body_handler;
+CameraHandler *g_camera_handler;
+TextHandler *g_text_handler;
+CallbackHandler *g_callback_handler;
 float g_gravity = 50.0f;
 
 /**
@@ -43,11 +53,34 @@ static PyMethodDef EngineMethods[] = {
      engine_set_circle_position_doc},
     {"set_circle_scale", ObjectHandler::SetCircleScale, METH_VARARGS,
      engine_set_circle_scale_doc},
+    {"set_circle_radius", ObjectHandler::SetCircleRadius, METH_VARARGS,
+     engine_set_circle_radius_doc},
+    {"set_circle_outline_thickness", ObjectHandler::SetCircleOutlineThickness,
+     METH_VARARGS, engine_set_circle_outline_thickness_doc},
+    {"set_circle_outline_color", ObjectHandler::SetCircleOutlineColor,
+     METH_VARARGS, engine_set_circle_outline_color_doc},
     {"draw_circle", ObjectHandler::DrawCircle, METH_VARARGS,
      engine_draw_circle_doc},
+    {"create_rect", ObjectHandler::CreateRect, METH_VARARGS,
+     engine_create_rect_doc},
+    {"set_rect_fill_color", ObjectHandler::SetRectFillColor, METH_VARARGS,
+     engine_set_rect_fill_color_doc},
+    {"set_rect_position", ObjectHandler::SetRectPosition, METH_VARARGS,
+     engine_set_rect_position_doc},
+    {"set_rect_scale", ObjectHandler::SetRectScale, METH_VARARGS,
+     engine_set_rect_scale_doc},
+    {"set_rect_size", ObjectHandler::SetRectSize, METH_VARARGS,
+     engine_set_rect_size_doc},
+    {"set_rect_outline_thickness", ObjectHandler::SetRectOutlineThickness,
+     METH_VARARGS, engine_set_rect_outline_thickness_doc},
+    {"set_rect_outline_color", ObjectHandler::SetRectOutlineColor, METH_VARARGS,
+     engine_set_rect_outline_color_doc},
+    {"draw_rect", ObjectHandler::DrawRect, METH_VARARGS, engine_draw_rect_doc},
     {"collides_with", ObjectHandler::CollidesWith, METH_VARARGS,
      engine_collides_with_doc},
+
     keyPressed,
+
     {"create_box_collider", BoxColliderHandler::createBoxCollider, METH_VARARGS,
      engine_create_box_collider_doc},
     {"free_box_collider", BoxColliderHandler::freeBoxCollider, METH_VARARGS,
@@ -111,14 +144,47 @@ static PyMethodDef EngineMethods[] = {
      engine_set_music_volume_doc},
     {"set_music_loop", AudioHandler::SetMusicLoop, METH_VARARGS,
      engine_set_music_loop_doc},
+
+    {"create_font", TextHandler::CreateFont, METH_VARARGS,
+     engine_create_font_doc},
+    {"create_text", TextHandler::CreateText, METH_VARARGS,
+     engine_create_text_doc},
+    {"set_text_position", TextHandler::SetTextPosition, METH_VARARGS,
+     engine_set_text_position_doc},
+    {"set_text_size", TextHandler::SetTextSize, METH_VARARGS,
+     engine_set_text_size_doc},
+    {"set_text_color", TextHandler::SetTextColor, METH_VARARGS,
+     engine_set_text_color_doc},
+    {"set_text", TextHandler::SetText, METH_VARARGS, engine_set_text_doc},
+    {"draw_text", TextHandler::DrawText, METH_VARARGS, engine_draw_text_doc},
+
+    {"set_camera_position", CameraHandler::SetPosition, METH_VARARGS, engine_set_camera_position_doc},
+    {"set_camera_size", CameraHandler::SetSize, METH_VARARGS, engine_set_camera_size_doc},
+
+    {"set_on_close", CallbackHandler::SetOnClose, METH_VARARGS, engine_set_on_close_doc},
+   
+    {"set_screen_size", WindowHandler::SetScreenSize, METH_VARARGS, engine_set_screen_size_doc},
+    {"get_screen_width", WindowHandler::GetScreenWidth, METH_VARARGS, engine_get_screen_width_doc},
+    {"get_screen_height", WindowHandler::GetScreenHeight, METH_VARARGS, engine_get_screen_height_doc},
+
     createVector,
+	x,
+	y,
+	sca_add,
+	sca_sub,
+	sca_mul,
+	sca_div,
     length,
     normalize,
+	vec_add,
+	vec_sub,
     dot,
     cross,
     set_gravity,
     set_terminal_velo,
     apply_force,
+    get_velocity,
+    Get_Srite_size,
     {NULL, NULL, 0, NULL}};
 
 /**
@@ -221,12 +287,18 @@ int main(int argc, char *argv[]) {
   }
 
   // assign globals
-  g_window = new sf::RenderWindow(sf::VideoMode({1024, 640}), "Engine!");
+  g_window = new sf::RenderWindow(sf::VideoMode({1024, 600}), "Engine!");
+  // g_camera = new sf::View(sf::Vector2f(400.f, 250.f), sf::Vector2f(1024.f, 640.f));
+  // g_window->setView(*g_camera);
 
   // create object handlers
+  g_window_handler = new WindowHandler(g_window);
   g_object_handler = new ObjectHandler(g_window);
   g_box_collider_handler = new BoxColliderHandler(g_window);
   g_rigid_body_handler = new RigidBodyHandler(g_window);
+  g_camera_handler = new CameraHandler(g_window);
+  g_text_handler = new TextHandler(g_window);
+  g_callback_handler = new CallbackHandler();
 
   // Doing this so things don't fly off the screen in the first frame
   g_rigid_body_handler->UpdateCurrentAndTimeDelta();
@@ -243,7 +315,9 @@ int main(int argc, char *argv[]) {
   // SFML loop (ver. 3.0.0)
   while (g_window->isOpen()) {
     while (std::optional event = g_window->pollEvent()) {
+      g_callback_handler->HandleEvent(g_window, event);
       if (event->is<sf::Event::Closed>()) {
+
         g_window->close();
         break;
       }
@@ -259,6 +333,7 @@ int main(int argc, char *argv[]) {
 
     // loads in update Key Function of Python Game
     pValue = PyObject_CallNoArgs(pFuncUpdate);
+
     pErr = PyErr_Occurred();
     // catch-all for errors that game causes
     if (pErr) {
@@ -268,8 +343,15 @@ int main(int argc, char *argv[]) {
     }
     Py_XDECREF(pValue); // dereferences, but pValue can already be NULL
 
+    // call the engine update after game update game forces are correctly
+    // applied to physics
+    g_rigid_body_handler->Update();
+
     // Update previous time before drawing, for an iOS friendly delta time
     g_rigid_body_handler->UpdatePreviousTime();
+
+    // g_camera->move({0.1f, 0.f});
+    // g_window->setView(*g_camera);
 
     g_window->clear();
 
@@ -288,9 +370,13 @@ int main(int argc, char *argv[]) {
   }
 
   delete g_window;
+  // delete g_camera;
+  delete g_window_handler;
   delete g_object_handler;
   delete g_box_collider_handler;
   delete g_rigid_body_handler;
+  delete g_camera_handler;
+  delete g_text_handler;
 
   printf("engine: Tearing Down\n");
 

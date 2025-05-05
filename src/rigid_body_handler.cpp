@@ -391,6 +391,40 @@ PyObject *RigidBodyHandler::SetRigidBodyVelocity(PyObject *self,
   return pPos;
 }
 
+/*static*/ PyObject *RigidBodyHandler::GetRigidBodyVelocity(PyObject *self,
+                                                            PyObject *args) {
+  Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+  if (nargs != 1) {
+    printf("engine.get_rigid_body_velocity expects a single long as an "
+           "argument\n");
+    PyErr_BadArgument();
+  }
+  PyObject *pId = PyTuple_GetItem(args, 0);
+  if (!PyLong_Check(pId)) {
+    Py_XDECREF(pId);
+    printf("engine.get_rigid_body_velocity expects a single long as an "
+           "argument\n");
+    PyErr_BadArgument();
+  }
+
+  long id = PyLong_AsLong(pId);
+
+  if (rigid_bodies.size() <= id || 0 > id) {
+    Py_XDECREF(pId);
+    printf("engine.get_rigid_body_velocity got a rigid body id out of range\n");
+    PyErr_BadArgument();
+  }
+
+  const sf::Vector2f &velo = rigid_bodies.at(id)->GetVelocity();
+
+  PyObject *x = PyFloat_FromDouble(velo.x);
+  PyObject *y = PyFloat_FromDouble(velo.y);
+
+  PyObject *pPos = PyTuple_Pack(2, x, y);
+
+  return pPos;
+}
+
 /*static*/ PyObject *RigidBodyHandler::SetRigidBodyPosition(PyObject *self,
                                                             PyObject *args) {
   Py_ssize_t nargs = PyTuple_GET_SIZE(args);

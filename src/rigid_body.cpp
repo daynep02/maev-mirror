@@ -6,6 +6,7 @@
 #include "SFML/System/Vector2.hpp"
 #include "box_collider.hpp"
 #include <SFML/System.hpp>
+#include <iterator>
 #include <stdexcept>
 
 RigidBody::RigidBody(sf::Vector2f new_position, sf::Vector2f new_size)
@@ -52,11 +53,14 @@ void RigidBody::ApplyForce(const sf::Vector2f &force) { velocity += force; }
 void RigidBody::ApplyGravity(const sf::Vector2f &gravity) {
   if (velocity.x < terminalX)
     ApplyForce({0, gravity.x});
+
   if (velocity.y < terminalY)
     ApplyForce({0, gravity.y});
+
 }
 
 void RigidBody::UpdateByVelocity(const sf::Vector2f &gravity_, double delta) {
+  previousPosition = box->getPosition();
   if (static_)
     return;
   previousPosition = box->getPosition();
