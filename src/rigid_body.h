@@ -42,6 +42,8 @@ public:
   
   void Collide(RigidBody* other);
 
+  void ApplyAllForces();
+
 
 private:
 
@@ -58,6 +60,9 @@ private:
   float weight = 1.0f;
   sf::Vector2f friction = {0.0f, 0.0f};
 
+  sf::Vector2f previousPosition = {0,0};
+
+  std::vector<sf::Vector2f> forcesToApply;
 
 };
 

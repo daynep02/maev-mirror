@@ -3,6 +3,7 @@
 
 #include "Python.h"
 #include "SFML/System/Vector2.hpp"
+#include "methodobject.h"
 #include "rigid_body.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -13,6 +14,9 @@ public:
   ~RigidBodyHandler();
   void UpdateCurrentAndTimeDelta();
   void UpdatePreviousTime();
+  void Update();
+  void UpdateForces();
+  void UpdatePositions();
   void UpdateAllBodies();
 
   // python Api helper func
@@ -48,10 +52,13 @@ public:
 
   /**
    * @param self required for python api functions
-   * @paarm args a tuple containing the arguments for the function. Should contain a long as id for the body and 2 floats
+   * @paarm args a tuple containing the arguments for the function. Should
+   * contain a long as id for the body and 2 floats
    * @brief The API for applying a force to a rigid body
    */
   static PyObject *ApplyForce(PyObject *self, PyObject *args);
+
+  static PyObject *GetRigidBodyVelocity(PyObject *self, PyObject *args);
 
 private:
   /**
@@ -203,8 +210,8 @@ PyDoc_STRVAR(engine_set_gravity_doc,
              "\n"
              "  :return: Nothing.\n");
 
-/* This will likely need to be reworked into each rigid body, since it make more
- * sense there. */
+/* This will likely need to be reworked into each rigid body, since it make
+ * more sense there. */
 // corresponding documentation for engine_set_gravity
 PyDoc_STRVAR(engine_set_terminal_velo_doc,
              ".. function:: set_terminal_velo(x, y)\n"
@@ -219,6 +226,14 @@ PyDoc_STRVAR(engine_apply_force_doc, ".. function:: apply_force(x, y)\n"
                                      "\n"
                                      "  :return: Nothing.\n");
 
+// corresponding documentation for get_rigid_body_velocity
+PyDoc_STRVAR(engine_get_rigid_body_velocity_doc,
+             ".. function:: get_rigid_body_velocity(id)\n"
+             "\n"
+             "  Gets the velocity of the a rigid body with the specified id.\n"
+             "\n"
+             "  :return: A tuple of floats (x,y).\n");
+
 static PyMethodDef set_gravity = {"set_gravity", RigidBodyHandler::SetGravity,
                                   METH_VARARGS, engine_set_gravity_doc};
 static PyMethodDef set_terminal_velo = {
@@ -227,5 +242,9 @@ static PyMethodDef set_terminal_velo = {
 
 static PyMethodDef apply_force = {"apply_force", RigidBodyHandler::ApplyForce,
                                   METH_VARARGS, engine_apply_force_doc};
+
+static PyMethodDef get_velocity = {
+    "get_rigid_body_velocity", RigidBodyHandler::GetRigidBodyVelocity,
+    METH_VARARGS, engine_get_rigid_body_velocity_doc};
 
 #endif //_RIGID_BODY_HANDLER_H_
