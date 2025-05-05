@@ -131,6 +131,7 @@ static PyMethodDef EngineMethods[] = {
     set_gravity,
     set_terminal_velo,
     apply_force,
+    get_velocity,
     {NULL, NULL, 0, NULL}};
 
 /**
@@ -275,10 +276,11 @@ int main(int argc, char *argv[]) {
 
     // Update the rigid bodies and time delta
     g_rigid_body_handler->UpdateCurrentAndTimeDelta();
-    g_rigid_body_handler->UpdateAllBodies();
 
     // loads in update Key Function of Python Game
     pValue = PyObject_CallNoArgs(pFuncUpdate);
+
+
     pErr = PyErr_Occurred();
     // catch-all for errors that game causes
     if (pErr) {
@@ -287,6 +289,9 @@ int main(int argc, char *argv[]) {
       break;
     }
     Py_XDECREF(pValue); // dereferences, but pValue can already be NULL
+    
+    // call the engine update after game update game forces are correctly applied to physics
+    g_rigid_body_handler->Update();
 
     // Update previous time before drawing, for an iOS friendly delta time
     g_rigid_body_handler->UpdatePreviousTime();

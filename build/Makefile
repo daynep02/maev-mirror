@@ -58,6 +58,10 @@ run: all
 r_debug: all 
 	LD_LIBRARY_PATH="$(previous_dir)/FLAC/lib:$LD_LIBRARY_PATH" gdb --args ./engine $(previous_dir)/games/testing game.py
 
+runD: all
+	LD_LIBRARY_PATH="$(previous_dir)/FLAC/lib:$LD_LIBRARY_PATH" ./engine $(previous_dir)/games/racing game.py
+
+
 clean:
 	rm -f engine 
 	rm -rf *.o
