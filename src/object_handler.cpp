@@ -43,11 +43,11 @@ ObjectHandler::~ObjectHandler()
 	}
 	PyObject *pName = PyTuple_GetItem(args, 0);
 
-	printf("engine.create_sprite: Creating String\n");
+//	printf("engine.create_sprite: Creating String\n");
 
 	std::string name = PyUnicode_AsUTF8(pName);
 
-	printf("engine.create_sprite: Creating Texture from %s\n", name.c_str());
+//	printf("engine.create_sprite: Creating Texture from %s\n", name.c_str());
 	sf::Texture *texture = new sf::Texture;
 	bool res = texture->loadFromFile(name.c_str());
 	if (!res)
@@ -56,14 +56,14 @@ ObjectHandler::~ObjectHandler()
 		PyErr_BadArgument();
 	}
 
-	printf("engine.create_sprite: Checking for Free Sprites\n");
+	//printf("engine.create_sprite: Checking for Free Sprites\n");
 	long loc;
 	if (!free_sprites.empty())
 	{
-		printf("engine.create_sprite: Using Free Sprites\n");
+		//printf("engine.create_sprite: Using Free Sprites\n");
 		loc = free_sprites.back();
 		free_sprites.pop_back();
-		printf("engine.create_sprite: Adding to Vector\n");
+		//printf("engine.create_sprite: Adding to Vector\n");
 		delete textures.at(loc);
 		textures.at(loc) = texture;
 		sf::Sprite *sprite = new sf::Sprite(*textures.at(loc));
@@ -75,14 +75,14 @@ ObjectHandler::~ObjectHandler()
 	{
 		textures.push_back(texture);
 		loc = textures.size() - 1;
-		printf("engine.create_sprite: Adding to Vector\n");
+		//printf("engine.create_sprite: Adding to Vector\n");
 		sf::Sprite *sprite = new sf::Sprite(*textures.at(loc));
 		sprite->setPosition({0, 0});
 		sprites.push_back(sprite);
 		loc = textures.size() - 1;
 	}
 
-	printf("engine.create_sprite: Returning ID\n");
+	//printf("engine.create_sprite: Returning ID\n");
 
 	// Py_XDECREF(pName);
 
@@ -124,11 +124,11 @@ ObjectHandler::~ObjectHandler()
 	double x = PyFloat_AsDouble(pX);
 	double y = PyFloat_AsDouble(pY);
 
-	printf("engine.set_sprite_position: setting position\n");
+	//printf("engine.set_sprite_position: setting position\n");
 
 	sprites.at(id)->setPosition(sf::Vector2f(x, y));
 
-	printf("engine.set_sprite_position: done setting position\n");
+	//printf("engine.set_sprite_position: done setting position\n");
 
 	// TODO: free() getting invalid pointer somewhere here?
 	// Py_XDECREF(pId);
