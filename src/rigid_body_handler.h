@@ -14,7 +14,6 @@ public:
   ~RigidBodyHandler();
   void UpdateCurrentAndTimeDelta();
   void UpdatePreviousTime();
-  void Update();
   void UpdateForces();
   void UpdatePositions();
   void UpdateAllBodies();

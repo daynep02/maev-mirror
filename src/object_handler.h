@@ -214,20 +214,44 @@ PyDoc_STRVAR(engine_draw_rect_doc, ".. function:: draw_rect(id)\n"
                                    "\n"
                                    "  :return: Nothing.\n");
 
-PyDoc_STRVAR(engine_collides_with_doc,
-             ".. function:: collides_with(id1, id2)\n"
+PyDoc_STRVAR(engine_get_sprite_size_doc,
+             ".. function:: get_sprite_size(id1)\n"
              "\n"
-             "  Tests whether two shapes collide or not.\n"
+             "  Gets the size of a sprite.\n"
              "\n"
-             "  :return: bool of whether the two shapes collided.\n");
+             "  :return: a tuple containing the x and "
+             "y values of the size of a sprite.\n");
 
-PyDoc_STRVAR(engine_get_sprite_size_doc, ".. function:: get_sprite_size(id1)\n"
-                                     "\n"
-                                     "  Gets the size of a sprite.\n"
-                                     "\n"
-                                     "  :return: a tuple containing the x and "
-                                     "y values of the size of a sprite.\n");
-static PyMethodDef Get_Srite_size =
-                       {"get_sprite_size", ObjectHandler::GetSpriteSize,
-                        METH_VARARGS, engine_get_sprite_size_doc};
+// corresponding documentation for set_circle_radius
+PyDoc_STRVAR(engine_set_circle_radius_doc,
+             ".. function:: set_circle_radius(id, radius)\n"
+             "\n"
+             "  Sets the radius of the circle with the given id with the "
+             "provided float (second arg)\n"
+             "\n"
+             "  :return: Nothing.\n");
+// corresponding documentation for set_circle_outline_thickness
+PyDoc_STRVAR(
+    engine_set_circle_outline_thickness_doc,
+    ".. function:: set_circle_outline_thickness(id, thickness)\n"
+    "\n"
+    "  Sets the outline thickness in pixels of the circle with the given id\n"
+    "\n"
+    "  :return: Nothing.\n");
+
+// corresponding documentation for set_circle_outline_color
+PyDoc_STRVAR(engine_set_circle_outline_color_doc,
+             ".. function:: set_circle_outline_color(id, (r,g,b,a))\n"
+             "\n"
+             "  Sets the outline color of the circle with the given id with "
+             "the RGBA value in the tuple (second arg)\n"
+             "\n"
+             "  :return: Nothing.\n");
+
+
+
+
+static PyMethodDef Get_Sprite_size = {"get_sprite_size",
+                                     ObjectHandler::GetSpriteSize, METH_VARARGS,
+                                     engine_get_sprite_size_doc};
 #endif //_OBJECT_HANDLER_H_
