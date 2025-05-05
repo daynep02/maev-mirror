@@ -9,7 +9,6 @@
 #include "box_collider_handler.hpp"
 #include "callback_handler.h"
 #include "camera_handler.hpp"
-#include "consts.h"
 #include "keyboard.h"
 #include "object_handler.h"
 #include "pyerrors.h"
@@ -171,12 +170,14 @@ static PyMethodDef EngineMethods[] = {
     createVector,
 	x,
 	y,
-	vec_add,
-	vec_sub,
-	vec_mul,
-	vec_div,
+	sca_add,
+	sca_sub,
+	sca_mul,
+	sca_div,
     length,
     normalize,
+	vec_add,
+	vec_sub,
     dot,
     cross,
     set_gravity,

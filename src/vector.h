@@ -14,15 +14,18 @@ class Vector {
 	static PyObject* y(PyObject* self, PyObject* args);
 
 	// Intra-Vector methods
-	static PyObject* add(PyObject* self, PyObject* args);
-	static PyObject* sub(PyObject* self, PyObject* args);
-	static PyObject* mul(PyObject* self, PyObject* args);
-	static PyObject* div(PyObject* self, PyObject* args);
+	static PyObject* scaAdd(PyObject* self, PyObject* args);
+	static PyObject* scaSub(PyObject* self, PyObject* args);
+	static PyObject* scaMul(PyObject* self, PyObject* args);
+	static PyObject* scaDiv(PyObject* self, PyObject* args);
 	
 	static PyObject* length(PyObject* self, PyObject* args);
 	static PyObject* normalize(PyObject* self, PyObject* args);
 
 	// Extra-Vector methods
+	static PyObject* vecAdd(PyObject* self, PyObject* args);
+	static PyObject* vecSub(PyObject* self, PyObject* args);
+	
 	static PyObject* dot(PyObject* self, PyObject* args);
 	static PyObject* cross(PyObject* self, PyObject* args);
 };
@@ -113,12 +116,14 @@ PyDoc_STRVAR(
 static PyMethodDef createVector = {"create_vector", Vector::create_vector, METH_VARARGS, create_vector_doc};
 static PyMethodDef x = {"x", Vector::x, METH_VARARGS, length_doc};
 static PyMethodDef y = {"y", Vector::y, METH_VARARGS, length_doc};
-static PyMethodDef vec_add = {"vec_add", Vector::add, METH_VARARGS, add_doc};
-static PyMethodDef vec_sub = {"vec_sub", Vector::sub, METH_VARARGS, sub_doc};
-static PyMethodDef vec_mul = {"vec_mul", Vector::mul, METH_VARARGS, mul_doc};
-static PyMethodDef vec_div = {"vec_div", Vector::div, METH_VARARGS, div_doc};
+static PyMethodDef sca_add = {"sca_add", Vector::scaAdd, METH_VARARGS, add_doc};
+static PyMethodDef sca_sub = {"sca_sub", Vector::scaSub, METH_VARARGS, sub_doc};
+static PyMethodDef sca_mul = {"sca_mul", Vector::scaMul, METH_VARARGS, mul_doc};
+static PyMethodDef sca_div = {"sca_div", Vector::scaDiv, METH_VARARGS, div_doc};
 static PyMethodDef length = {"length", Vector::length, METH_VARARGS, length_doc};
 static PyMethodDef normalize = {"normalize", Vector::normalize, METH_VARARGS, normalize_doc};
+static PyMethodDef vec_add = {"vec_add", Vector::vecAdd, METH_VARARGS, add_doc};
+static PyMethodDef vec_sub = {"vec_sub", Vector::vecSub, METH_VARARGS, sub_doc};
 static PyMethodDef dot = {"dot", Vector::dot, METH_VARARGS, dot_doc};
 static PyMethodDef cross = {"cross", Vector::cross, METH_VARARGS, cross_doc};
 

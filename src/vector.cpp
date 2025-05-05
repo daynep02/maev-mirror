@@ -64,7 +64,7 @@ PyObject* Vector::y(PyObject* self, PyObject* args) {
 }
 
 // Adds scalar value to Vector
-PyObject* Vector::add(PyObject* self, PyObject* args) {
+PyObject* Vector::scaAdd(PyObject* self, PyObject* args) {
 	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
 	if (nargs != 2) {
 		printf("engine.vec_add expects a single long and a single float as an argument\n");
@@ -84,7 +84,7 @@ PyObject* Vector::add(PyObject* self, PyObject* args) {
 }
 
 // Subtracts scalar value to Vector
-PyObject* Vector::sub(PyObject* self, PyObject* args) {
+PyObject* Vector::scaSub(PyObject* self, PyObject* args) {
 	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
 	if (nargs != 2) {
 		printf("engine.vec_add expects a single long and a single float as an argument\n");
@@ -104,7 +104,7 @@ PyObject* Vector::sub(PyObject* self, PyObject* args) {
 }
 
 // Multiplies scalar value to Vector
-PyObject* Vector::mul(PyObject* self, PyObject* args) {
+PyObject* Vector::scaMul(PyObject* self, PyObject* args) {
 	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
 	if (nargs != 2) {
 		printf("engine.vec_add expects a single long and a single float as an argument\n");
@@ -124,7 +124,7 @@ PyObject* Vector::mul(PyObject* self, PyObject* args) {
 }
 
 // Divides scalar value to Vector
-PyObject* Vector::div(PyObject* self, PyObject* args) {
+PyObject* Vector::scaDiv(PyObject* self, PyObject* args) {
 	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
 	if (nargs != 2) {
 		printf("engine.vec_add expects a single long and a single float as an argument\n");
@@ -182,6 +182,44 @@ PyObject* Vector::normalize(PyObject* self, PyObject* args) {
 
 	printf("engine.normalize: returning normalized Vector\n");
 	return PyLong_FromLong(id);
+}
+
+// Adds Vector to Vector
+PyObject* Vector::vecAdd(PyObject* self, PyObject* args) {
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 2) {
+		printf("engine.vec_add expects two longs as arguments\n");
+		PyErr_BadArgument();
+	}
+	// obtain argument contents
+	PyObject* id1o = PyTuple_GetItem(args, 0);
+	PyObject* id2o = PyTuple_GetItem(args, 1);
+
+	long id1 = PyLong_AsLong(id1o);
+	float id2 = PyFloat_AsDouble(id2o);
+	
+	(*(vectors.at(id1))) += (*(vectors.at(id2)));
+
+	return PyLong_FromLong(id1);
+}
+
+// Subtracts Vector to Vector
+PyObject* Vector::vecSub(PyObject* self, PyObject* args) {
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 2) {
+		printf("engine.vec_add expects two longs as arguments\n");
+		PyErr_BadArgument();
+	}
+	// obtain argument contents
+	PyObject* id1o = PyTuple_GetItem(args, 0);
+	PyObject* id2o = PyTuple_GetItem(args, 1);
+
+	long id1 = PyLong_AsLong(id1o);
+	float id2 = PyFloat_AsDouble(id2o);
+	
+	(*(vectors.at(id1))) -= (*(vectors.at(id2)));
+
+	return PyLong_FromLong(id1);
 }
 
 // Returns dot product of two vectors
