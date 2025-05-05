@@ -1,11 +1,9 @@
 #include "box_collider.hpp"
 
-BoxCollider::BoxCollider() {
-  box = new sf::RectangleShape(sf::Vector2f(10, 10));
-  box->setPosition(sf::Vector2f(0, 0));
-}
+BoxCollider::BoxCollider() : BoxCollider({0, 0}, {10, 10}) {}
 
-BoxCollider::BoxCollider(sf::Vector2f position, sf::Vector2f size) {
+BoxCollider::BoxCollider(const sf::Vector2f &position,
+                         const sf::Vector2f &size) {
   box = new sf::RectangleShape(size);
   box->setPosition(position);
   box->setFillColor(sf::Color::Red);
@@ -30,15 +28,15 @@ bool BoxCollider::CollidesWith(BoxCollider *other) {
   sf::Vector2f size1 = box->getSize();
   sf::Vector2f size2 = other_box->getSize();
 
-  float d1x = pos1.x - (pos2.x + size2.x);
-  float d1y = pos1.y - (pos2.y + size2.y);
-  float d2x = pos2.x - (pos1.x + size1.x);
-  float d2y = pos2.y - (pos1.y + size1.y);
+  float d1x = pos1.x - pos2.x - size2.x;
+  float d1y = pos1.y - pos2.y - size2.y;
+  float d2x = pos2.x - pos1.x - size1.x;
+  float d2y = pos2.y - pos1.y - size1.y;
 
-  if (d1x > 0.0f || d1y > 0.f)
+  if (d1x > 0.0f || d1y > 0.0f)
     return false;
 
-  if (d2x > 0.0f || d2y > 0.f)
+  if (d2x > 0.0f || d2y > 0.0f)
     return false;
 
   return true;

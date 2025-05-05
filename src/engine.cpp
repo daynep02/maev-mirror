@@ -185,7 +185,7 @@ static PyMethodDef EngineMethods[] = {
     set_terminal_velo,
     apply_force,
     get_velocity,
-    Get_Srite_size,
+    Get_Sprite_size,
     {NULL, NULL, 0, NULL}};
 
 /**
@@ -330,6 +330,7 @@ int main(int argc, char *argv[]) {
 
     // Update the rigid bodies and time delta
     g_rigid_body_handler->UpdateCurrentAndTimeDelta();
+    g_rigid_body_handler->UpdateSim();
 
     // loads in update Key Function of Python Game
     pValue = PyObject_CallNoArgs(pFuncUpdate);
@@ -345,7 +346,7 @@ int main(int argc, char *argv[]) {
 
     // call the engine update after game update game forces are correctly
     // applied to physics
-    g_rigid_body_handler->Update();
+    g_rigid_body_handler->UpdateSim();
 
     // Update previous time before drawing, for an iOS friendly delta time
     g_rigid_body_handler->UpdatePreviousTime();

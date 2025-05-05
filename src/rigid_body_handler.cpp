@@ -41,27 +41,14 @@ void RigidBodyHandler::UpdateCurrentAndTimeDelta() {
 
 void RigidBodyHandler::UpdatePreviousTime() { previous_time = current_time; }
 
-void RigidBodyHandler::Update() {
-  UpdateForces();
-  UpdateAllBodies();
-  for (int i = 0; i < rigid_bodies.size(); i++) {
-    RigidBody *body_i = rigid_bodies.at(i);
-    for (int j = i + 1; j < rigid_bodies.size(); j++) {
-      RigidBody *body_j = rigid_bodies.at(j);
-      if (body_i->CollidesWith(body_j)) {
-        body_i->Collide(body_j);
-      }
-    }
-  }
-}
-
-void RigidBodyHandler::UpdateForces() {
-  for (auto &body : rigid_bodies) {
-    body->ApplyGravity(gravity);
-  }
-}
-
 void RigidBodyHandler::UpdateAllBodies() {
+  for (const auto& body : rigid_bodies) {
+    body->ApplyGravity(gravity);
+    body->UpdateByVelocity(gravity, delta_time.count());
+  }
+}
+
+void RigidBodyHandler::CollideBodies() {
 
   // check for collisions
   //  bug: suffers from a "too fast" problem where a collision won't be dfloat ,
@@ -71,9 +58,21 @@ void RigidBodyHandler::UpdateAllBodies() {
   //  fix: move it one pixel from it's previous position every step to check for
   //  a collision,
   //       too tired to implement it rn
-  for (auto& body : rigid_bodies) {
-    body->UpdateByVelocity(gravity, delta_time.count());
+  for (int i = 0; i < rigid_bodies.size(); i++) {
+    RigidBody *body_i = rigid_bodies.at(i);
+    for (int j = i + 1; j < rigid_bodies.size(); j++) {
+      RigidBody *body_j = rigid_bodies.at(j);
+      if (body_i->CollidesWith(body_j)) {
+        body_i->Collide(body_j, gravity);
+        continue;
+      }
+    }
   }
+}
+
+void RigidBodyHandler::UpdateSim() {
+  UpdateAllBodies();
+  CollideBodies();
 }
 
 void RigidBodyHandler::SetTerminalVelo(RigidBody *body,

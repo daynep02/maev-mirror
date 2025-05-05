@@ -15,10 +15,12 @@ public:
   ~RigidBodyHandler();
   void UpdateCurrentAndTimeDelta();
   void UpdatePreviousTime();
-  void Update();
   void UpdateForces();
   void UpdatePositions();
   void UpdateAllBodies();
+  void CollideBodies();
+  void UpdateConstraints();
+  void UpdateSim();
 
   // python Api helper func
   static void SetTerminalVelo(RigidBody *body, const sf::Vector2f &velo);
