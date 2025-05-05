@@ -16,8 +16,8 @@ FLAGS = -Wall -Wpedantic -Wextra
 
 all: engine
 
-engine: $(previous_dir)/src/engine.cpp object_handler.o keyboard.o box_collider.o box_collider_handler.o rigid_body.o rigid_body_handler.o vector.o audio_handler.o camera_handler.o text_handler.o callback_handler.o
-	g++ -g -o engine $(previous_dir)/src/engine.cpp object_handler.o keyboard.o box_collider.o box_collider_handler.o rigid_body.o rigid_body_handler.o vector.o audio_handler.o camera_handler.o text_handler.o callback_handler.o $(INCLUDE_PYTHON) $(INCLUDE_SFML) $(INCLUDE_FLAC)
+engine: $(previous_dir)/src/engine.cpp object_handler.o keyboard.o box_collider.o box_collider_handler.o rigid_body.o rigid_body_handler.o vector.o audio_handler.o camera_handler.o text_handler.o callback_handler.o window_handler.o
+	g++ -g -o engine $(previous_dir)/src/engine.cpp object_handler.o keyboard.o box_collider.o box_collider_handler.o rigid_body.o rigid_body_handler.o vector.o audio_handler.o camera_handler.o text_handler.o callback_handler.o window_handler.o $(INCLUDE_PYTHON) $(INCLUDE_SFML) $(INCLUDE_FLAC)
 
 object_handler.o: $(previous_dir)/src/object_handler.cpp
 	g++ -g -o object_handler.o -c $(previous_dir)/src/object_handler.cpp $(INCLUDE_PYTHON) $(INCLUDE_SFML)
@@ -52,6 +52,9 @@ text_handler.o: $(previous_dir)/src/text_handler.cpp
 callback_handler.o: $(previous_dir)/src/callback_handler.cpp
 	g++ -g -o callback_handler.o -c $(previous_dir)/src/callback_handler.cpp $(INCLUDE_PYTHON) $(INCLUDE_SFML)
 
+window_handler.o: $(previous_dir)/src/window_handler.cpp
+	g++ -g -o window_handler.o -c $(previous_dir)/src/window_handler.cpp $(INCLUDE_PYTHON) $(INCLUDE_SFML)
+
 run: all
 	LD_LIBRARY_PATH="$(previous_dir)/FLAC/lib:$LD_LIBRARY_PATH" ./engine $(previous_dir)/games/testing game.py
 
@@ -60,6 +63,10 @@ run_dochs: all
 
 r_debug: all 
 	LD_LIBRARY_PATH="$(previous_dir)/FLAC/lib:$LD_LIBRARY_PATH" gdb --args ./engine $(previous_dir)/games/testing game.py
+
+runD: all
+	LD_LIBRARY_PATH="$(previous_dir)/FLAC/lib:$LD_LIBRARY_PATH" ./engine $(previous_dir)/games/racing game.py
+
 
 clean:
 	rm -f engine 

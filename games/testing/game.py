@@ -29,13 +29,13 @@ class Control_Block:
 
     def block_up(self) -> None:
         if engine.key_is_pressed("Up"):
-            engine.apply_force(self.id, 0.0, -2.0)
+            engine.apply_force(self.id, 0.0, -20.0)
         if engine.key_is_pressed( "Down"):
-            engine.apply_force(self.id, 0.0, 1.0)
+            engine.apply_force(self.id, 0.0, 10.0)
         if engine.key_is_pressed("Left"):
-            engine.apply_force(self.id,-1.0, 0.0)
+            engine.apply_force(self.id,-10.0, 0.0)
         if engine.key_is_pressed("Right"):
-            engine.apply_force(self.id, 1.0, 0.0)
+            engine.apply_force(self.id, 10.0, 0.0)
         
 class Game:
     def __init__(self):
@@ -56,7 +56,7 @@ class Game:
         self.vec1 = engine.create_vector()
         self.vec2 = engine.create_vector(3, 5)
         #print(self.vec2, type(self.vec2), type(1))
-        print(engine.length(self.vec2))
+        print(engine.length(self.vec2), engine.x(self.vec2), engine.y(self.vec2))
         self.vec3 = engine.normalize(self.vec2)
         print(engine.length(self.vec3))
 
@@ -73,7 +73,7 @@ class Game:
         engine.set_text_color(self.text, (255,0,0,255))
 
         self.epic_music = engine.create_music("../games/testing/assets/epic_music.wav")
-        engine.set_gravity(0.0, 1.0)
+        engine.set_gravity(0.0, 9.8)
 
 def on_close():
     print("\"Window closed\", said the Python!")
@@ -84,7 +84,7 @@ first = True
 # Key Functions for Game
 def init():
     print("The screen dimensions were: ", engine.get_screen_width(), engine.get_screen_height())
-    engine.set_screen_width(1400);
+    engine.set_screen_size(1400, 600);
     print("But now the screen dimensions are: ", engine.get_screen_width(), engine.get_screen_height())
     global game
     game = Game()
