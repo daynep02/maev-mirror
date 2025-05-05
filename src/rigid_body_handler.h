@@ -237,6 +237,14 @@ PyDoc_STRVAR(engine_get_rigid_body_velocity_doc,
              "\n"
              "  :return: A tuple of floats (x,y).\n");
 
+PyDoc_STRVAR(engine_rigid_body_collides_with_doc, 
+  "function:: rigid_body_collides_with(id1,id2)\n"
+  "\n"
+  " check if a rigid body is colliding with anything\n"
+  "\n"
+  "::return bool"
+);
+
 static PyMethodDef set_gravity = {"set_gravity", RigidBodyHandler::SetGravity,
                                   METH_VARARGS, engine_set_gravity_doc};
 static PyMethodDef set_terminal_velo = {
