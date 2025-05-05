@@ -84,7 +84,7 @@ first = True
 # Key Functions for Game
 def init():
     print("The screen dimensions were: ", engine.get_screen_width(), engine.get_screen_height())
-    engine.set_screen_width(1400);
+    engine.set_screen_size(1400, 600);
     print("But now the screen dimensions are: ", engine.get_screen_width(), engine.get_screen_height())
     global game
     game = Game()

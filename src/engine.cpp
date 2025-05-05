@@ -16,11 +16,14 @@
 #include "rigid_body_handler.h"
 #include "text_handler.h"
 #include "vector.h"
+#include "callback_handler.h"
+#include "window_handler.h"
 #include <Python.h>
 #include <SFML/Graphics.hpp>
 
 sf::RenderWindow *g_window;
 // sf::View* g_camera;
+WindowHandler* g_window_handler;
 ObjectHandler *g_object_handler;
 BoxColliderHandler *g_box_collider_handler;
 RigidBodyHandler *g_rigid_body_handler;
@@ -161,10 +164,9 @@ static PyMethodDef EngineMethods[] = {
 
     {"set_on_close", CallbackHandler::SetOnClose, METH_VARARGS, engine_set_on_close_doc},
    
-    {"set_screen_width", Consts::SetScreenWidth, METH_VARARGS, engine_set_screen_width_doc},
-    {"set_screen_height", Consts::SetScreenHeight, METH_VARARGS, engine_set_screen_height_doc},
-    {"get_screen_width", Consts::GetScreenWidth, METH_VARARGS, engine_get_screen_width_doc},
-    {"get_screen_height", Consts::GetScreenHeight, METH_VARARGS, engine_get_screen_height_doc},
+    {"set_screen_size", WindowHandler::SetScreenSize, METH_VARARGS, engine_set_screen_size_doc},
+    {"get_screen_width", WindowHandler::GetScreenWidth, METH_VARARGS, engine_get_screen_width_doc},
+    {"get_screen_height", WindowHandler::GetScreenHeight, METH_VARARGS, engine_get_screen_height_doc},
 
     createVector,
     length,
@@ -278,12 +280,12 @@ int main(int argc, char *argv[]) {
   }
 
   // assign globals
-  g_window = new sf::RenderWindow(sf::VideoMode({SCREEN_WIDTH, SCREEN_HEIGHT}),
-                                  "Engine!");
-  // g_camera = new sf::View(sf::Vector2f(400.f, 250.f), sf::Vector2f(1024.f,
-  // 640.f)); g_window->setView(*g_camera);
+  g_window = new sf::RenderWindow(sf::VideoMode({1024, 600}), "Engine!");
+  // g_camera = new sf::View(sf::Vector2f(400.f, 250.f), sf::Vector2f(1024.f, 640.f));
+  // g_window->setView(*g_camera);
 
   // create object handlers
+  g_window_handler = new WindowHandler(g_window);
   g_object_handler = new ObjectHandler(g_window);
   g_box_collider_handler = new BoxColliderHandler(g_window);
   g_rigid_body_handler = new RigidBodyHandler(g_window);
@@ -361,6 +363,7 @@ int main(int argc, char *argv[]) {
 
   delete g_window;
   // delete g_camera;
+  delete g_window_handler;
   delete g_object_handler;
   delete g_box_collider_handler;
   delete g_rigid_body_handler;
