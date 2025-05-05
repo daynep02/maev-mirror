@@ -169,6 +169,12 @@ static PyMethodDef EngineMethods[] = {
     {"get_screen_height", WindowHandler::GetScreenHeight, METH_VARARGS, engine_get_screen_height_doc},
 
     createVector,
+	x,
+	y,
+	vec_add,
+	vec_sub,
+	vec_mul,
+	vec_div,
     length,
     normalize,
     dot,

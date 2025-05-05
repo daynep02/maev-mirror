@@ -63,6 +63,86 @@ PyObject* Vector::y(PyObject* self, PyObject* args) {
 	return PyFloat_FromDouble((*(vectors.at(id))).y);
 }
 
+// Adds scalar value to Vector
+PyObject* Vector::add(PyObject* self, PyObject* args) {
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 2) {
+		printf("engine.vec_add expects a single long and a single float as an argument\n");
+		PyErr_BadArgument();
+	}
+	// obtain argument contents
+	PyObject* ido = PyTuple_GetItem(args, 0);
+	PyObject* so = PyTuple_GetItem(args, 1);
+
+	long id = PyLong_AsLong(ido);
+	float s = PyFloat_AsDouble(so);
+	
+	(*(vectors.at(id))).x += s; 
+	(*(vectors.at(id))).y += s;
+
+	return PyLong_FromLong(id);
+}
+
+// Subtracts scalar value to Vector
+PyObject* Vector::sub(PyObject* self, PyObject* args) {
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 2) {
+		printf("engine.vec_add expects a single long and a single float as an argument\n");
+		PyErr_BadArgument();
+	}
+	// obtain argument contents
+	PyObject* ido = PyTuple_GetItem(args, 0);
+	PyObject* so = PyTuple_GetItem(args, 1);
+
+	long id = PyLong_AsLong(ido);
+	float s = PyFloat_AsDouble(so);
+	
+	(*(vectors.at(id))).x -= s; 
+	(*(vectors.at(id))).y -= s;
+
+	return PyLong_FromLong(id);
+}
+
+// Multiplies scalar value to Vector
+PyObject* Vector::mul(PyObject* self, PyObject* args) {
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 2) {
+		printf("engine.vec_add expects a single long and a single float as an argument\n");
+		PyErr_BadArgument();
+	}
+	// obtain argument contents
+	PyObject* ido = PyTuple_GetItem(args, 0);
+	PyObject* so = PyTuple_GetItem(args, 1);
+
+	long id = PyLong_AsLong(ido);
+	float s = PyFloat_AsDouble(so);
+	
+	(*(vectors.at(id))).x *= s; 
+	(*(vectors.at(id))).y *= s;
+
+	return PyLong_FromLong(id);
+}
+
+// Divides scalar value to Vector
+PyObject* Vector::div(PyObject* self, PyObject* args) {
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 2) {
+		printf("engine.vec_add expects a single long and a single float as an argument\n");
+		PyErr_BadArgument();
+	}
+	// obtain argument contents
+	PyObject* ido = PyTuple_GetItem(args, 0);
+	PyObject* so = PyTuple_GetItem(args, 1);
+
+	long id = PyLong_AsLong(ido);
+	float s = PyFloat_AsDouble(so);
+	
+	(*(vectors.at(id))).x /= s; 
+	(*(vectors.at(id))).y /= s;
+
+	return PyLong_FromLong(id);
+}
+
 // Returns length of vector
 PyObject* Vector::length(PyObject* self, PyObject* args) {
 	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
