@@ -156,16 +156,15 @@ static PyMethodDef EngineMethods[] = {
     {"set_text", TextHandler::SetText, METH_VARARGS, engine_set_text_doc},
     {"draw_text", TextHandler::DrawText, METH_VARARGS, engine_draw_text_doc},
 
-    {"set_camera_position", CameraHandler::SetPosition, METH_VARARGS,
-     engine_set_camera_position_doc},
+    {"set_camera_position", CameraHandler::SetPosition, METH_VARARGS, engine_set_camera_position_doc},
+    {"set_camera_size", CameraHandler::SetSize, METH_VARARGS, engine_set_camera_size_doc},
 
-    {"set_on_close", CallbackHandler::SetOnClose, METH_VARARGS,
-     engine_set_on_close_doc},
-
-    {"get_screen_width", Consts::GetScreenWidth, METH_VARARGS,
-     engine_get_screen_width_doc},
-    {"get_screen_height", Consts::GetScreenHeight, METH_VARARGS,
-     engine_get_screen_height_doc},
+    {"set_on_close", CallbackHandler::SetOnClose, METH_VARARGS, engine_set_on_close_doc},
+   
+    {"set_screen_width", Consts::SetScreenWidth, METH_VARARGS, engine_set_screen_width_doc},
+    {"set_screen_height", Consts::SetScreenHeight, METH_VARARGS, engine_set_screen_height_doc},
+    {"get_screen_width", Consts::GetScreenWidth, METH_VARARGS, engine_get_screen_width_doc},
+    {"get_screen_height", Consts::GetScreenHeight, METH_VARARGS, engine_get_screen_height_doc},
 
     createVector,
     length,

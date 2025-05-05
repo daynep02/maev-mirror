@@ -55,6 +55,9 @@ callback_handler.o: $(previous_dir)/src/callback_handler.cpp
 run: all
 	LD_LIBRARY_PATH="$(previous_dir)/FLAC/lib:$LD_LIBRARY_PATH" ./engine $(previous_dir)/games/testing game.py
 
+run_dochs: all
+	LD_LIBRARY_PATH="$(previous_dir)/FLAC/lib:$LD_LIBRARY_PATH" ./engine $(previous_dir)/games/dochs mvania.py
+
 r_debug: all 
 	LD_LIBRARY_PATH="$(previous_dir)/FLAC/lib:$LD_LIBRARY_PATH" gdb --args ./engine $(previous_dir)/games/testing game.py
 
