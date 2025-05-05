@@ -12,6 +12,8 @@ class Game:
         self.platforms = [engine.create_rigid_body((0,300), (100,20))]
         self.platforms.append(engine.create_rigid_body((150, 350), (500,10)))
         self.platforms.append(engine.create_rigid_body((660, 250), (200,10)))
+        self.platforms.append(engine.create_rigid_body((850, 00), (10,250)))
+        self.platforms.append(engine.create_rigid_body((-20, -10), (900, 10)))
         self.platforms.append(engine.create_rigid_body((570, 450), (500,10)))
         self.platforms.append(engine.create_rigid_body((950, 250), (500,10)))
         self.zone1 = engine.create_box_collider((1000, 0), (30,1000))
@@ -42,7 +44,8 @@ def update():
     delta = engine.delta_time()
 
     if game.scene == "P":
-        if engine.get_rigid_body_position(game.player)[1] < 0:
+        pos = engine.get_rigid_body_position(game.player)
+        if pos[1] < 0 or pos[1] > 1000:
             game.scene = "E"
             engine.set_camera_position((0,0))
             # print("game over")
