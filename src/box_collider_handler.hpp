@@ -22,6 +22,7 @@ class BoxColliderHandler {
         static PyObject* freeBoxCollider(PyObject* self, PyObject* args);
 
         static bool isBoxColliderIDInRange(long id);
+        static BoxCollider* getBoxCollider(long id);
 
 };
 

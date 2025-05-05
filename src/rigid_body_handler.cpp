@@ -753,8 +753,15 @@ PyObject* RigidBodyHandler::RigidBodyCollidesWith(PyObject* self, PyObject* args
     PyErr_BadArgument();
   }
 
-
-  Py_RETURN_TRUE;
+  // std::cout << rigid_bodies.at(rid) << std::endl;
+  // std::cout << bc << std::endl;
+  BoxCollider* bc = BoxColliderHandler::getBoxCollider(bcid);
+  if (rigid_bodies[rid]->CollidesWith(bc)) {
+    // std::cout << "They are colliding" << std::endl;
+    Py_RETURN_TRUE;
+  } else {
+    Py_RETURN_FALSE;
+  }
 }
 
 bool RigidBodyHandler::ApplyForce(RigidBody *body, const sf::Vector2f &force) {

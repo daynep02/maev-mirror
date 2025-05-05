@@ -12,7 +12,7 @@ class Game:
         self.platforms.append(engine.create_rigid_body((150, 350), (500,10)))
         self.platforms.append(engine.create_rigid_body((660, 250), (200,10)))
         self.platforms.append(engine.create_rigid_body((570, 450), (500,10)))
-        self.zone1 = engine.create_box_collider((660, 250), (200,10))
+        self.zone1 = engine.create_box_collider((500, 0), (500,1000))
 
         engine.set_rigid_body_static(self.player, False)
         engine.set_rigid_body_gravity(self.player, True)
@@ -50,7 +50,10 @@ def update():
     tup = engine.get_rigid_body_position(game.player)
     engine.set_camera_position(tup)
 
-    engine.rigid_body_collides_with(game.player, game.zone1)
+    if engine.rigid_body_collides_with(game.player, game.zone1):
+        print("Colliding")
+    else:
+        print("Not colliding")
 
 def draw():
     global game

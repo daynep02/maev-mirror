@@ -4,6 +4,7 @@
 #include "Python.h"
 #include "SFML/System/Vector2.hpp"
 #include "rigid_body.h"
+#include "box_collider_handler.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
