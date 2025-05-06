@@ -17,7 +17,9 @@ class Game:
         self.platforms.append(engine.create_rigid_body((570, 450), (500,10)))
         self.platforms.append(engine.create_rigid_body((950, 250), (500,10)))
         self.zone1 = engine.create_box_collider((1000, 0), (30,1000))
-        self.zone1_enabled = False
+        self.zone1_enabled = True
+        self.zone2 = engine.create_box_collider((1300, 0), (30, 1000))
+        self.zone2_enabled = True
 
         engine.set_rigid_body_static(self.player, False)
         engine.set_rigid_body_gravity(self.player, True)
@@ -31,7 +33,7 @@ class Game:
         self.font = engine.create_font("../games/platformer/assets/comic.ttf")
         self.text = engine.create_text(self.font)
         engine.set_text(self.text, "Game over")
-        engine.set_text_position(self.text, (0,0))
+        engine.set_text_position(self.text, (-110,0))
         engine.set_text_size(self.text, 50)
         engine.set_text_color(self.text, (255,0,0,255))
 
@@ -70,12 +72,20 @@ def update():
         tup = engine.get_rigid_body_position(game.player)
         engine.set_camera_position(tup)
 
-        if not game.zone1_enabled and engine.rigid_body_collides_with(game.player, game.zone1):
+        if game.zone1_enabled and engine.rigid_body_collides_with(game.player, game.zone1):
             print("Colliding")
             engine.set_gravity(0.0, -1.0)
-            game.zone1_enabled = True
+            game.zone1_enabled = False
+        if game.zone2_enabled and engine.rigid_body_collides_with(game.player, game.zone2):
+            print("Colliding")
+            game.zone1_enabled = False
+            engine.set_text(game.text, "You win!")
+            engine.set_camera_position((0,0))
+            engine.set_text_color(game.text, (0,255,0,255))
+            game.scene = "E"
+            return
         # else:
-        #     print("Not colliding")
+            # print("Not colliding")
 
 def draw():
     global game
