@@ -52,8 +52,7 @@ void RigidBody::ApplyForce(const sf::Vector2f &force) { velocity += force; }
 
 void RigidBody::ApplyGravity(const sf::Vector2f &gravity) {
   if (velocity.x < terminalX)
-    ApplyForce({0, gravity.x});
-
+    ApplyForce({gravity.x, 0});
   if (velocity.y < terminalY)
     ApplyForce({0, gravity.y});
 

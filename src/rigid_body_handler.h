@@ -5,6 +5,7 @@
 #include "SFML/System/Vector2.hpp"
 #include "methodobject.h"
 #include "rigid_body.h"
+#include "box_collider_handler.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
@@ -51,6 +52,8 @@ public:
 
   static PyObject *SetGravity(PyObject *self, PyObject *args);
   static PyObject *SetTerminalVelo(PyObject *self, PyObject *args);
+
+  static PyObject* RigidBodyCollidesWith(PyObject* self, PyObject* args);
 
   /**
    * @param self required for python api functions
@@ -235,6 +238,14 @@ PyDoc_STRVAR(engine_get_rigid_body_velocity_doc,
              "  Gets the velocity of the a rigid body with the specified id.\n"
              "\n"
              "  :return: A tuple of floats (x,y).\n");
+
+PyDoc_STRVAR(engine_rigid_body_collides_with_doc, 
+  "function:: rigid_body_collides_with(id1,id2)\n"
+  "\n"
+  " check if a rigid body is colliding with anything\n"
+  "\n"
+  "::return bool"
+);
 
 static PyMethodDef set_gravity = {"set_gravity", RigidBodyHandler::SetGravity,
                                   METH_VARARGS, engine_set_gravity_doc};
