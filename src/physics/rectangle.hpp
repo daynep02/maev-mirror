@@ -16,16 +16,16 @@
 class Rectangle : public Hittable {
 public:
   /**
-  * @brief creates a circle at 0,0, with size 1
+  * @brief creates a rectangle at 0,0, with size 0,0
   */
   Rectangle();
 
 
   /**
-  * @param position the position at wich the ball is to be created
-  * @param radius the radius of the ball
+  * @param position the position at wich the rectangle is to be created
+  * @param size the size of the created rectangle
   */
-  Rectangle(const sf::Vector2f& position, float radius);
+  Rectangle(const sf::Vector2f& position, const sf::Vector2f& size);
 
   /**
   * @brief destructor for this class, no cleanup needed
@@ -34,21 +34,21 @@ public:
 
 
   /**
-  * @param other the other object to be check for collisin
+  * @param other the other circle to be check for collisin
   * @return true if the objects collide, false otherwise
   */
-  bool CollidesWith(Hittable *other) override;
+  bool CollidesWith(Circle *other) override;
 
   /**
-  * @param other the other circle to collide with
+  * @param other the other rectangle to collide with
   * @return true if the objects collide
   */
-  bool CollidesWith(Rectangle *other);
+  bool CollidesWith(Rectangle *other) override;
 
 private:
-
   sf::RectangleShape shape;
-  Aabb boundingBox;
+  sf::Vector2f vertices[4];
+  sf::Vector2f edges[4];
 
 };
 #endif // CIRCLE_CPP

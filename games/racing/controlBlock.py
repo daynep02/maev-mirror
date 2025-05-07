@@ -15,6 +15,9 @@ class ControlBlock:
         self.max_x = 100
         self.max_y = 100
 
+        self.edge_x = 100
+        self.edge_y = 100
+
         if sprite:
          #   print("Setting sprite")
             self.set_sprite(sprite)
@@ -28,7 +31,6 @@ class ControlBlock:
 
     def set_gravity(self, x: bool) -> None:
         engine.set_rigid_body_gravity(self.id, x)
-
 
     def get_position(self) -> tuple:
         return engine.get_rigid_body_position(self.id)
@@ -44,16 +46,16 @@ class ControlBlock:
         appliedy = 0.0
 
         if self.velocity[0] > 0.0:
-            appliedx = -2.0
+            appliedx = -1.0
 
         if self.velocity[0] < 0.0:
-            appliedx = 2.0
+            appliedx = 1.0
 
         if self.velocity[1] > 0.0:
-            appliedx = -2.0
+            appliedy = -1.0
 
         if self.velocity[1] < 0.0:
-            appliedx = 2.0
+            appliedy = 1.0
 
         engine.apply_force(self.id, appliedx, appliedy)
 
@@ -84,15 +86,16 @@ class ControlBlock:
         if self.position[0] <= 0:
             engine.set_rigid_body_position(self.id, (0, self.position[1]))
 
-        if self.position[0] >= 400:
-            engine.set_rigid_body_position(self.id, (400, self.position[1]))
+        if self.position[0] + self.size[0] >= self.edge_x:
+            engine.set_rigid_body_position(self.id, (self.edge_x - self.size[0], self.position[1]))
 
         if self.position[1] <= 0:
             engine.set_rigid_body_position(self.id, (self.position[0], 0))
 
-        if self.position[1] >= 400:
-            engine.set_rigid_body_position(self.id, (self.position[0], 400))
+        if self.position[1] + self.size[1] >= self.edge_y:
+            engine.set_rigid_body_position(self.id, (self.position[0], self.max_y - self.size[1]))
         return
+
 
     def update(self) -> None:
 
@@ -105,6 +108,7 @@ class ControlBlock:
         if self.controlled: self.controlledUpdate()
 
         self.uncontrolledUpdate()
+
         return
 
     def draw(self) -> None:
