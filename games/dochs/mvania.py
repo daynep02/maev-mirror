@@ -22,7 +22,7 @@ class Player:
     def set_terminal_velo(self, x: float, y: float) -> None:
         engine.set_terminal_velo(self.rb, x, y)
 
-    def block_up(self) -> None:
+    def movement(self) -> None:
         if engine.key_is_pressed("Up"):
             engine.apply_force(self.rb, 0.0, -2.0)
         if engine.key_is_pressed( "Down"):
@@ -34,8 +34,6 @@ class Player:
         
 class Game:
     def __init__(self):
-        self.background = engine.create_sprite("../games/testing/assets/vector.jpg")
-        engine.set_sprite_position(self.background,(0,0))
 
         self.player = Player()
 
@@ -45,7 +43,6 @@ class Game:
         self.platform = engine.create_rigid_body((0,300),(500,20))
         engine.set_rigid_body_static(self.platform,True)
 
-        self.epic_music = engine.create_music("../games/testing/assets/epic_music.wav")
         engine.set_gravity(0.0, 1.0)
     
     def set_camera_size(self, width, height):
@@ -57,26 +54,42 @@ def on_close():
 game = None
 first = True
 
+def fun(lists, index=0, path=[], res=[]):  # function defination
+    if index == len(lists): # base case 
+        res.append(path[:])  
+        return res
+        
+    for item in lists[index]: # recursive case 
+        path.append(item)
+        fun(lists, index + 1, path, res)
+        path.pop()
+    return res
+
+a = [1, 3, 4]
+b = [6, 7, 9]
+c = [8, 10, 5]
+
+d = [a, b, c]
+result = fun(d) # function calling 
+print(result)
+
 # Key Functions for Game
 def init():
     global game
     game = Game()
     engine.set_on_close(on_close)
 
-    engine.play_music(game.epic_music)
-
 def update():
     global game
     
     engine.set_camera_position(engine.get_rigid_body_position(game.player.rb))
 
-    game.player.block_up()
+    game.player.movement()
 
 
 def draw():
     global game
 
-    engine.draw_sprite(game.background)
     game.player.draw()
     engine.draw_rigid_body_collider(game.platform)
 

@@ -20,6 +20,10 @@ public:
   static PyObject *CreateSprite(PyObject *self, PyObject *args);
   static PyObject *SetSpritePosition(PyObject *self, PyObject *args);
   static PyObject *SetSpriteScale(PyObject *self, PyObject *args);
+  static PyObject *GetSpriteRotation(PyObject *self, PyObject *args);
+  static PyObject *SetSpriteRotation(PyObject *self, PyObject *args);
+  static PyObject *SpriteRotate(PyObject *self, PyObject *args);
+  static PyObject *GetSpriteSize(PyObject *self, PyObject *args);
   // Draws the Sprite with the given vector index
   static PyObject *DrawSprite(PyObject *self, PyObject *args);
   // Frees the Sprite with the given vector index, allowing the memory to be
@@ -39,11 +43,13 @@ public:
   static PyObject *SetRectFillColor(PyObject *self, PyObject *args);
   static PyObject *SetRectPosition(PyObject *self, PyObject *args);
   static PyObject *SetRectScale(PyObject *self, PyObject *args);
+  static PyObject *GetRectRotation(PyObject *self, PyObject *args);
+  static PyObject *SetRectRotation(PyObject *self, PyObject *args);
+  static PyObject *RectRotate(PyObject *self, PyObject *args);
   static PyObject *SetRectSize(PyObject *self, PyObject *args);
   static PyObject *SetRectOutlineThickness(PyObject *self, PyObject *args);
   static PyObject *SetRectOutlineColor(PyObject *self, PyObject *args);
   static PyObject *DrawRect(PyObject *self, PyObject *args);
-  static PyObject *GetSpriteSize(PyObject *self, PyObject *args);
 
   ///// Physics Engine /////
   static PyObject *CollidesWith(PyObject *self, PyObject *args);
@@ -78,6 +84,35 @@ PyDoc_STRVAR(engine_set_sprite_scale_doc,
              "provided in the tuple (second arg)\n"
              "\n"
              "  :return: Nothing.\n");
+
+PyDoc_STRVAR(engine_get_sprite_rotation_doc,
+    ".. function:: get_sprite_rotation(id)\n"
+    "\n"
+    "  Gets the rotation of the sprite with the given id\n"
+    "\n"
+    "  :return: a float representing the angle in degrees.\n");
+
+PyDoc_STRVAR(engine_set_sprite_rotation_doc,
+    ".. function:: set_sprite_rotation(id, angle)\n"
+    "\n"
+    "  Sets the rotation of the sprite with the given id at the angle in degrees\n"
+    "\n"
+    "  :return: Nothing.\n");
+
+PyDoc_STRVAR(engine_sprite_rotate_doc,
+        ".. function:: sprite_rotate(id, angle)\n"
+        "\n"
+        "  Sets the rotation of the sprite with the given id by the angle in degrees, relative to its current angle\n"
+        "\n"
+        "  :return: Nothing.\n");
+
+PyDoc_STRVAR(engine_get_sprite_size_doc,
+            ".. function:: get_sprite_size(id1)\n"
+            "\n"
+            "  Gets the size of a sprite.\n"
+            "\n"
+            "  :return: a tuple containing the x and "
+            "y values of the size of a sprite.\n");
 
 // corresponding documentation for engine_draw_sprite
 PyDoc_STRVAR(engine_draw_sprite_doc, ".. function:: draw_sprite(id)\n"
@@ -180,6 +215,27 @@ PyDoc_STRVAR(engine_set_rect_scale_doc,
              "\n"
              "  :return: Nothing.\n");
 
+PyDoc_STRVAR(engine_get_rect_rotation_doc,
+    ".. function:: get_rect_rotation(id)\n"
+    "\n"
+    "  Gets the rotation of the rect with the given id\n"
+    "\n"
+    "  :return: a float representing the angle in degrees.\n");
+
+PyDoc_STRVAR(engine_set_rect_rotation_doc,
+    ".. function:: set_rect_rotation(id, angle)\n"
+    "\n"
+    "  Sets the rotation of the rect with the given id at the angle in degrees\n"
+    "\n"
+    "  :return: Nothing.\n");
+
+PyDoc_STRVAR(engine_rect_rotate_doc,
+    ".. function:: rect_rotate(id, angle)\n"
+    "\n"
+    "  Sets the rotation of the rect with the given id by the angle in degrees, relative to its current angle\n"
+    "\n"
+    "  :return: Nothing.\n");
+
 // corresponding documentation for set_rect_size
 PyDoc_STRVAR(engine_set_rect_size_doc,
              ".. function:: set_rect_radius(id, (w,h))\n"
@@ -213,14 +269,6 @@ PyDoc_STRVAR(engine_draw_rect_doc, ".. function:: draw_rect(id)\n"
                                    "  Draws the rect with the given id.\n"
                                    "\n"
                                    "  :return: Nothing.\n");
-
-PyDoc_STRVAR(engine_get_sprite_size_doc,
-             ".. function:: get_sprite_size(id1)\n"
-             "\n"
-             "  Gets the size of a sprite.\n"
-             "\n"
-             "  :return: a tuple containing the x and "
-             "y values of the size of a sprite.\n");
 
 // corresponding documentation for set_circle_radius
 PyDoc_STRVAR(engine_set_circle_radius_doc,

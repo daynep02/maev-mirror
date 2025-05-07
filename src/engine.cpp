@@ -41,6 +41,10 @@ static PyMethodDef EngineMethods[] = {
      engine_set_sprite_position_doc},
     {"set_sprite_scale", ObjectHandler::SetSpriteScale, METH_VARARGS,
      engine_set_sprite_scale_doc},
+     {"get_sprite_rotation", ObjectHandler::GetSpriteRotation, METH_VARARGS, engine_get_sprite_rotation_doc},
+     {"set_sprite_rotation", ObjectHandler::SetSpriteRotation, METH_VARARGS, engine_set_sprite_rotation_doc},
+     {"sprite_rotate", ObjectHandler::SpriteRotate, METH_VARARGS, engine_sprite_rotate_doc},
+     Get_Sprite_size,
     {"draw_sprite", ObjectHandler::DrawSprite, METH_VARARGS,
      engine_draw_sprite_doc},
     {"free_sprite", ObjectHandler::FreeSprite, METH_VARARGS,
@@ -69,6 +73,10 @@ static PyMethodDef EngineMethods[] = {
      engine_set_rect_position_doc},
     {"set_rect_scale", ObjectHandler::SetRectScale, METH_VARARGS,
      engine_set_rect_scale_doc},
+     {"get_rect_rotation", ObjectHandler::GetRectRotation, METH_VARARGS, engine_get_rect_rotation_doc},
+     {"set_rect_rotation", ObjectHandler::SetRectRotation, METH_VARARGS, engine_set_rect_rotation_doc},
+     {"rect_rotate", ObjectHandler::RectRotate, METH_VARARGS, engine_rect_rotate_doc},
+
     {"set_rect_size", ObjectHandler::SetRectSize, METH_VARARGS,
      engine_set_rect_size_doc},
     {"set_rect_outline_thickness", ObjectHandler::SetRectOutlineThickness,
@@ -185,7 +193,6 @@ static PyMethodDef EngineMethods[] = {
     set_terminal_velo,
     apply_force,
     get_velocity,
-    Get_Sprite_size,
     {NULL, NULL, 0, NULL}};
 
 /**

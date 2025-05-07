@@ -186,6 +186,107 @@ ObjectHandler::~ObjectHandler()
 	Py_RETURN_NONE;
 }
 
+/*static*/ PyObject *ObjectHandler::GetSpriteRotation(PyObject *self, PyObject *args) {
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 1)
+	{
+		printf(
+			"engine.get_sprite_rotation expects a long as an argument\n");
+		PyErr_BadArgument();
+	}
+	PyObject *pId = PyTuple_GetItem(args, 0);
+	if (!PyLong_Check(pId))
+	{
+		Py_XDECREF(pId);
+		printf(
+			"engine.get_sprite_rotation expects a long as an argument\n");
+		PyErr_BadArgument();
+	}
+
+	long id = PyLong_AsLong(pId);
+
+	if (sprites.size() <= id || id < 0)
+	{
+		Py_XDECREF(pId);
+		printf("engine.get_sprite_rotation got a sprite id out of range\n");
+		PyErr_BadArgument();
+	}
+
+	double angle = (double)sprites.at(id)->getRotation().asDegrees();
+
+	return PyFloat_FromDouble(angle);
+}
+
+/*static*/ PyObject *ObjectHandler::SetSpriteRotation(PyObject *self, PyObject *args) {
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 2)
+	{
+		printf(
+			"engine.set_sprite_rotation expects a long and a float as an argument\n");
+		PyErr_BadArgument();
+	}
+	PyObject *pId = PyTuple_GetItem(args, 0);
+	if (!PyLong_Check(pId))
+	{
+		Py_XDECREF(pId);
+		printf(
+			"engine.set_sprite_rotation expects a long and a float as an argument\n");
+		PyErr_BadArgument();
+	}
+
+	long id = PyLong_AsLong(pId);
+
+	if (sprites.size() <= id || id < 0)
+	{
+		Py_XDECREF(pId);
+		printf("engine.set_sprite_rotation got a sprite id out of range\n");
+		PyErr_BadArgument();
+	}
+
+	PyObject *pAngle = PyTuple_GetItem(args, 1);
+
+	float angle = PyFloat_AsDouble(pAngle);
+
+	sprites.at(id)->setRotation(sf::Angle(sf::degrees(angle)));
+
+	Py_RETURN_NONE;
+}
+
+/*static*/ PyObject *ObjectHandler::SpriteRotate(PyObject *self, PyObject *args) {
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 2)
+	{
+		printf(
+			"engine.sprite_rotate expects a long and a float as an argument\n");
+		PyErr_BadArgument();
+	}
+	PyObject *pId = PyTuple_GetItem(args, 0);
+	if (!PyLong_Check(pId))
+	{
+		Py_XDECREF(pId);
+		printf(
+			"engine.sprite_rotate expects a long and a float as an argument\n");
+		PyErr_BadArgument();
+	}
+
+	long id = PyLong_AsLong(pId);
+
+	if (sprites.size() <= id || id < 0)
+	{
+		Py_XDECREF(pId);
+		printf("engine.sprite_rotate got a sprite id out of range\n");
+		PyErr_BadArgument();
+	}
+
+	PyObject *pAngle = PyTuple_GetItem(args, 1);
+
+	float angle = PyFloat_AsDouble(pAngle);
+
+	sprites.at(id)->rotate(sf::Angle(sf::degrees(angle)));
+
+	Py_RETURN_NONE;
+}
+
 /*static*/ PyObject *ObjectHandler::GetSpriteSize(PyObject *self,
 												   PyObject *args)
 {
@@ -783,6 +884,107 @@ ObjectHandler::~ObjectHandler()
 	// Py_XDECREF(pPosition);
 	// Py_XDECREF(pX);
 	// Py_XDECREF(pY);
+
+	Py_RETURN_NONE;
+}
+
+/*static*/ PyObject *ObjectHandler::GetRectRotation(PyObject *self, PyObject *args) {
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 1)
+	{
+		printf(
+			"engine.get_rect_rotation expects a long as an argument\n");
+		PyErr_BadArgument();
+	}
+	PyObject *pId = PyTuple_GetItem(args, 0);
+	if (!PyLong_Check(pId))
+	{
+		Py_XDECREF(pId);
+		printf(
+			"engine.get_rect_rotation expects a long as an argument\n");
+		PyErr_BadArgument();
+	}
+
+	long id = PyLong_AsLong(pId);
+
+	if (rects.size() <= id || id < 0)
+	{
+		Py_XDECREF(pId);
+		printf("engine.get_rect_rotation got a rect id out of range\n");
+		PyErr_BadArgument();
+	}
+
+	double angle = (double)rects.at(id)->getRotation().asDegrees();
+
+	return PyFloat_FromDouble(angle);
+}
+
+/*static*/ PyObject *ObjectHandler::SetRectRotation(PyObject *self, PyObject *args) {
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 2)
+	{
+		printf(
+			"engine.set_rect_rotation expects a long and a float as an argument\n");
+		PyErr_BadArgument();
+	}
+	PyObject *pId = PyTuple_GetItem(args, 0);
+	if (!PyLong_Check(pId))
+	{
+		Py_XDECREF(pId);
+		printf(
+			"engine.set_rect_rotation expects a long and a float as an argument\n");
+		PyErr_BadArgument();
+	}
+
+	long id = PyLong_AsLong(pId);
+
+	if (rects.size() <= id || id < 0)
+	{
+		Py_XDECREF(pId);
+		printf("engine.set_rect_rotation got a sprite id out of range\n");
+		PyErr_BadArgument();
+	}
+
+	PyObject *pAngle = PyTuple_GetItem(args, 1);
+
+	float angle = PyFloat_AsDouble(pAngle);
+
+	rects.at(id)->setRotation(sf::Angle(sf::degrees(angle)));
+
+	Py_RETURN_NONE;
+}
+
+/*static*/ PyObject *ObjectHandler::RectRotate(PyObject *self, PyObject *args) {
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 2)
+	{
+		printf(
+			"engine.rect_rotate expects a long and a float as an argument\n");
+		PyErr_BadArgument();
+	}
+	PyObject *pId = PyTuple_GetItem(args, 0);
+	if (!PyLong_Check(pId))
+	{
+		Py_XDECREF(pId);
+		printf(
+			"engine.rect_rotate expects a long and a float as an argument\n");
+		PyErr_BadArgument();
+	}
+
+	long id = PyLong_AsLong(pId);
+
+	if (rects.size() <= id || id < 0)
+	{
+		Py_XDECREF(pId);
+		printf("engine.rect_rotate got a rect id out of range\n");
+		PyErr_BadArgument();
+	}
+
+	PyObject *pAngle = PyTuple_GetItem(args, 1);
+
+	float angle = PyFloat_AsDouble(pAngle);
+
+	rects.at(id)->rotate(sf::Angle(sf::degrees(angle)));
 
 	Py_RETURN_NONE;
 }
