@@ -61,7 +61,7 @@ private:
   sf::Vector2f terminalVelo = {0.0f, 100.0f};
 
   float weight = 1.0f;
-  sf::Vector2f friction = {0.0f, 0.0f};
+  float frictionCoeff = 0.0f;
   sf::Vector2f previousPosition = {0.0f, 0.0f};
 
   std::vector<sf::Vector2f> forcesToApply;

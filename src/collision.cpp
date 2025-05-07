@@ -51,6 +51,7 @@ sf::Vector2f Collision::Solve(const sf::Vector2f &top_min,
                               const sf::Vector2f &top_max,
                               const sf::Vector2f &bot_min,
                               const sf::Vector2f &bot_max) const {
+
   return sf::Vector2f(0.0, top_max.y - bot_min.y);
 }
 

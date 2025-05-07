@@ -44,18 +44,19 @@ class ControlBlock:
     def uncontrolledUpdate(self) -> None:
         appliedx = 0.0
         appliedy = 0.0
+        additive = 0.01
 
         if self.velocity[0] > 0.0:
-            appliedx = -1.0
+            appliedx = -additive
 
         if self.velocity[0] < 0.0:
-            appliedx = 1.0
+            appliedx = additive
 
         if self.velocity[1] > 0.0:
-            appliedy = -1.0
+            appliedy = -additive
 
         if self.velocity[1] < 0.0:
-            appliedy = 1.0
+            appliedy = additive
 
         engine.apply_force(self.id, appliedx, appliedy)
 
@@ -93,7 +94,8 @@ class ControlBlock:
             engine.set_rigid_body_position(self.id, (self.position[0], 0))
 
         if self.position[1] + self.size[1] >= self.edge_y:
-            engine.set_rigid_body_position(self.id, (self.position[0], self.max_y - self.size[1]))
+            engine.set_rigid_body_position(self.id, (self.position[0], self.edge_y - self.size[1]))
+
         return
 
 
