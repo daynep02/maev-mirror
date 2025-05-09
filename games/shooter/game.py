@@ -2,16 +2,25 @@ import engine
 import math
 import random
 
+ORIG_SCREEN_SIZE = (1024, 600)
+NEW_SCREEN_SIZE = (1080, 720)
+
 class Ball:
     def __init__(self):
-        self.body = engine.create_circle(15.0)
-        self.x = 200	# should be center of screen
-        self.y = 200	# should be center of screen
+        body_size = 15.0
+        self.body = engine.create_circle(body_size)
+       
+        ratio_w = NEW_SCREEN_SIZE[0] / ORIG_SCREEN_SIZE[0]
+        ratio_h = NEW_SCREEN_SIZE[1] / ORIG_SCREEN_SIZE[1]
+
+		# ball centering not consistent due to how screen gets resized
+        self.x = ((ORIG_SCREEN_SIZE[0] / 2) - (0.5 * body_size) * (ratio_w))
+        self.y = ((ORIG_SCREEN_SIZE[1] / 2) - (0.5 * body_size) * (ratio_h))
+        engine.set_circle_position(self.body, (self.x, self.y))
 
 # game handler object
 class Game:
 	def __init__(self):
-		# TODO: no global sizes (screen height, width, etc.)
 		self.player = Ball()
 
 		# creates n enemies
@@ -23,6 +32,7 @@ class Game:
 
 
 def init():
+	engine.set_screen_size(NEW_SCREEN_SIZE[0], NEW_SCREEN_SIZE[1])
 	global game
 	game = Game()
 
