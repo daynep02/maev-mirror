@@ -3,11 +3,11 @@ import math
 import random
 
 ORIG_SCREEN_SIZE = (1024, 600)
-NEW_SCREEN_SIZE = (1080, 720)
+NEW_SCREEN_SIZE = (1920, 1080)
 
 class Ball:
     def __init__(self):
-        body_size = 15.0
+        body_size = 10.0
         self.body = engine.create_circle(body_size)
        
         ratio_w = NEW_SCREEN_SIZE[0] / ORIG_SCREEN_SIZE[0]
@@ -17,6 +17,19 @@ class Ball:
         self.x = ((ORIG_SCREEN_SIZE[0] / 2) - (0.5 * body_size) * (ratio_w))
         self.y = ((ORIG_SCREEN_SIZE[1] / 2) - (0.5 * body_size) * (ratio_h))
         engine.set_circle_position(self.body, (self.x, self.y))
+
+    def move(self, direction):
+        if direction == "up":
+            self.y -= 0.1
+        elif direction == "down":
+            self.y += 0.1
+        if direction == "left":
+            self.x -= 0.1
+        elif direction == "right":
+            self.x += 0.1
+        engine.set_circle_position(self.body, (self.x, self.y))
+
+		
 
 # game handler object
 class Game:
@@ -28,7 +41,7 @@ class Game:
 		self.enemies = []
 		for i in range(n):
 			a, b = random.randint(0, 600), random.randint(0, 600)
-			self.enemies.append(engine.create_rigid_body((a, b), (20,20)))
+			self.enemies.append(engine.create_rigid_body((a, b), (15,15)))
 
 
 def init():
@@ -37,13 +50,24 @@ def init():
 	game = Game()
 
 def update():
-	# TODO: how to move everything given camera?
-	# how to keep player centered if player is thing moving?
-	global game
-	...
+    global game
+     
+    # player movement
+    if engine.key_is_pressed("W"):
+        game.player.move("up")
+    elif engine.key_is_pressed("S"):
+        game.player.move("down")
+    if engine.key_is_pressed("A"):
+        game.player.move("left")
+    elif engine.key_is_pressed("D"):
+        game.player.move("right")
+
+    # keep camera centered on player
+    engine.set_camera_position((game.player.x, game.player.y))
 
 def draw():
 	global game
 	engine.draw_circle(game.player.body)
+     
 	for i in game.enemies:
 		engine.draw_rigid_body_collider(i)
