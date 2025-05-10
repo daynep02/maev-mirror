@@ -88,6 +88,7 @@ static PyMethodDef EngineMethods[] = {
      engine_collides_with_doc},
 
     keyPressed,
+	mousePressed,
 
     {"create_box_collider", BoxColliderHandler::createBoxCollider, METH_VARARGS,
      engine_create_box_collider_doc},
