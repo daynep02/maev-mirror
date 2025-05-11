@@ -33,6 +33,21 @@ PyObject* Vector::create_vector(PyObject* self, PyObject* args) {
 	return PyLong_FromLong(id);
 }
 
+// converts a vector found or made elsewhere in engine to Vector2f and places into the vector of Vectors
+long Vector::convert_vector(sf::Vector2i vec) {
+	long id = -1;
+	vectors.push_back(new sf::Vector2f(vec.x, vec.y));
+	id = vectors.size() - 1;
+	return id;
+}
+
+long Vector::convert_vector(sf::Vector2u vec) {
+	long id = -1;
+	vectors.push_back(new sf::Vector2f(vec.x, vec.y));
+	id = vectors.size() - 1;
+	return id;
+}
+
 // Returns current x value of vector
 PyObject* Vector::x(PyObject* self, PyObject* args) {
 	Py_ssize_t nargs = PyTuple_GET_SIZE(args);

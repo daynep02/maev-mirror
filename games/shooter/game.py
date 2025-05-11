@@ -29,6 +29,9 @@ class Ball:
             self.x += 0.1
         engine.set_circle_position(self.body, (self.x, self.y))
 
+    def fire(self, mouse):
+        ...
+
 		
 
 # game handler object
@@ -49,6 +52,7 @@ def init():
 	global game
 	game = Game()
 
+
 def update():
     # TODO: fire vectors
     global game
@@ -64,8 +68,10 @@ def update():
         game.player.move("right")
 
     # player firing vectors
-    if engine.mouse_button_is_pressed("Left"):
+    l = engine.mouse_button_is_pressed("Left")
+    if l > 0:
         print("click!")
+        print(engine.x(l), engine.y(l))
 
     # keep camera centered on player
     engine.set_camera_position((game.player.x, game.player.y))

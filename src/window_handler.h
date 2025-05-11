@@ -12,6 +12,7 @@ class WindowHandler {
 	static PyObject* SetScreenSize(PyObject* self, PyObject* args);
 
 	// getters for engine
+    static sf::RenderWindow* getWindow();
 	static PyObject* GetScreenWidth(PyObject* self, PyObject* args);
 	static PyObject* GetScreenHeight(PyObject* self, PyObject* args);
 

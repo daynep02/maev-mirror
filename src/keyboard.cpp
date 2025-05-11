@@ -6,6 +6,8 @@
 #ifndef keyboard_cpp
 #define keyboard_cpp
 #include "keyboard.h"
+#include "vector.h"
+#include "window_handler.h"
 #include "SFML/Window/Keyboard.hpp"
 #include "SFML/Window/Event.hpp"
 #include <SFML/Graphics.hpp>
@@ -49,11 +51,13 @@ PyObject *Keyboard::mouse_button_is_pressed(PyObject *self, PyObject *args) {
   }
   std::string button = PyUnicode_AsUTF8(button_o);
 
+  // if button pressed, return position: else return no vector id
   if (isMousePressed(button)) {
-    Py_RETURN_TRUE;
+    sf::Vector2i localPosition = sf::Mouse::getPosition(*WindowHandler::getWindow());
+    return PyLong_FromLong(Vector::convert_vector(localPosition));
   }
 
-  Py_RETURN_FALSE;
+  return PyLong_FromLong(-1);
 }
 
 bool Keyboard::isPressed(std::string key) {

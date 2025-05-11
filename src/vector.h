@@ -8,6 +8,8 @@ class Vector {
 	public:
 	// Constructor
 	static PyObject* create_vector(PyObject* self, PyObject* args);
+	static long convert_vector(sf::Vector2i vector);
+	static long convert_vector(sf::Vector2u vector);
 
 	// Attributes
 	static PyObject* x(PyObject* self, PyObject* args);
