@@ -15,6 +15,7 @@ class WindowHandler {
     static sf::RenderWindow* getWindow();
 	static PyObject* GetScreenWidth(PyObject* self, PyObject* args);
 	static PyObject* GetScreenHeight(PyObject* self, PyObject* args);
+    static PyObject* Exit(PyObject* self, PyObject* args);
 
 	private:
 };
@@ -22,7 +23,7 @@ class WindowHandler {
 // Vectorf Docs
 PyDoc_STRVAR(
     engine_set_screen_size_doc,
-    ".. function:: SetScreenWidth\n"
+    ".. function:: set_screen_size(w,h)\n"
     "\n"
     "  Modifies the engine's internal screen width and height settings."
     "\n"
@@ -31,7 +32,7 @@ PyDoc_STRVAR(
 
 PyDoc_STRVAR(
     engine_get_screen_width_doc,
-    ".. function:: GetScreenWidth\n"
+    ".. function:: get_screen_width()\n"
     "\n"
     "  Returns the engine's internal screen width setting."
     "\n"
@@ -40,12 +41,20 @@ PyDoc_STRVAR(
 
 PyDoc_STRVAR(
     engine_get_screen_height_doc,
-    ".. function:: GetScreenHeight\n"
+    ".. function:: get_screen_width()\n"
     "\n"
     "  Returns the engine's internal screen height setting."
 	"\n"
     "  :return: Screen height as a long type."
 );
 
+PyDoc_STRVAR(
+	engine_exit_doc,
+	".. function:: exit()\n"
+	"\n"
+	"  Exits the game window.\n"
+	"\n"
+	"  :return: Nothing.\n");
 
-#endif // consts.h
+
+#endif // _CONSTS_H_

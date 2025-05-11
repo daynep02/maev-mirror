@@ -46,3 +46,7 @@ PyObject* WindowHandler::GetScreenHeight(PyObject* self, PyObject* args) {
 	return PyLong_FromLong(h);
 }
 
+PyObject* WindowHandler::Exit(PyObject* self, PyObject* args) {
+    r_window->close();
+	Py_RETURN_NONE;
+}

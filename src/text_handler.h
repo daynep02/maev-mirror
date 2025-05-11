@@ -19,6 +19,7 @@ class TextHandler {
     static PyObject* CreateFont(PyObject *self, PyObject *args);
 	// Creates a sf::Text object from a given Font id, stores it in the texts vector, and returns it's id (i.e. vector index)
 	static PyObject* CreateText(PyObject *self, PyObject *args);
+	static PyObject* GetTextPosition(PyObject *self, PyObject *args);
     static PyObject* SetTextPosition(PyObject *self, PyObject *args);
 	static PyObject* SetTextSize(PyObject *self, PyObject *args);
 	static PyObject* SetTextColor(PyObject *self, PyObject *args);
@@ -49,6 +50,15 @@ PyDoc_STRVAR(
 	"  Creates a text object from the given font id.\n"
 	"\n"
 	"  :return: an integer representing the text's id.\n");
+
+// corresponding documentation for get_text_position
+PyDoc_STRVAR(
+	engine_get_text_position_doc,
+	".. function:: get_text_position(id)\n"
+	"\n"
+	"  Gets the position of the text with the given id, relative to its center\n"
+	"\n"
+	"  :return: A tuple of two floats in the form(x,y).\n");
 
 // corresponding documentation for set_text_position
 PyDoc_STRVAR(
