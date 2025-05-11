@@ -120,6 +120,7 @@ static PyMethodDef EngineMethods[] = {
      engine_get_rigid_body_size_doc},
     {"set_rigid_body_size", RigidBodyHandler::SetRigidBodySize, METH_VARARGS,
      engine_set_rigid_body_size_doc},
+    {"set_rigid_body_callback", RigidBodyHandler::SetRigidBodyCallback, METH_VARARGS, engine_set_rigid_body_callback_doc},
     {"rigid_body_collides_with", RigidBodyHandler::RigidBodyCollidesWith, METH_VARARGS, engine_rigid_body_collides_with_doc},
     {"draw_rigid_body_collider", RigidBodyHandler::DrawRigidBodyCollider,
      METH_VARARGS, engine_draw_rigid_body_collider_doc},

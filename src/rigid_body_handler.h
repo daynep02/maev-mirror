@@ -47,6 +47,8 @@ public:
   static PyObject *SetRigidBodySize(PyObject *self, PyObject *args);
   static PyObject *GetRigidBodySize(PyObject *self, PyObject *args);
 
+  static PyObject *SetRigidBodyCallback(PyObject *self, PyObject *args);
+
   static PyObject *DrawRigidBodyCollider(PyObject *self, PyObject *args);
   static PyObject *FreeRigidBody(PyObject *self, PyObject *args);
 
@@ -186,6 +188,15 @@ PyDoc_STRVAR(engine_set_rigid_body_size_doc,
              "\n"
              "  Sets the size of the a rigid body with the specified id to the "
              "new width and height.\n"
+             "\n"
+             "  :return: Nothing.\n");
+
+// corresponding documentation for engine_set_rigid_body_callback
+PyDoc_STRVAR(engine_set_rigid_body_callback_doc,
+             ".. function:: set_rigid_body_callback(id, callback)\n"
+             "\n"
+             "  Sets a function callback to be called upon the specified object"
+             "  colliding with another rigid body.\n"
              "\n"
              "  :return: Nothing.\n");
 
