@@ -5,7 +5,12 @@ import random
 ORIG_SCREEN_SIZE = (1024, 600)
 NEW_SCREEN_SIZE = (1920, 1080)
 
-class Ball:
+# TODO: enemies
+# TODO: levels
+# TODO: title screen
+# TODO: player health, weapon types, etc.
+
+class Player:
     def __init__(self):
         body_size = 10.0
         self.body = engine.create_circle(body_size)
@@ -32,18 +37,17 @@ class Ball:
     def fire(self, mouse):
         ...
 
-		
 
 # game handler object
 class Game:
 	def __init__(self):
-		self.player = Ball()
+		self.player = Player()
 
 		# creates n enemies
-		n = 5
+		n = 15
 		self.enemies = []
 		for i in range(n):
-			a, b = random.randint(0, 600), random.randint(0, 600)
+			a, b = random.randint(0, 2000), random.randint(0, 2000)
 			self.enemies.append(engine.create_rigid_body((a, b), (15,15)))
 
 
@@ -67,14 +71,21 @@ def update():
     elif engine.key_is_pressed("D"):
         game.player.move("right")
 
+    # keep camera centered on player
+    engine.set_camera_position((game.player.x, game.player.y))
+
     # player firing vectors
     l = engine.mouse_button_is_pressed("Left")
     if l > 0:
-        print("click!")
-        print(engine.x(l), engine.y(l))
+        # ensure mouse click is within screen bounds
+        if 0 <= engine.x(l) <= NEW_SCREEN_SIZE[0] and 0 <= engine.y(l) <= NEW_SCREEN_SIZE[1]:
+            bullet = engine.create_vector(engine.x(l), engine.y(l))
+            
+            # bullet calculations here
+            
+            engine.destroy_vector(bullet)
+            # TODO: how to draw vector as line?
 
-    # keep camera centered on player
-    engine.set_camera_position((game.player.x, game.player.y))
 
 def draw():
 	global game
