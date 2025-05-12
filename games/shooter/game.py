@@ -23,6 +23,8 @@ class Player:
         self.y = ((ORIG_SCREEN_SIZE[1] / 2) - (0.5 * body_size) * (ratio_h))
         engine.set_circle_position(self.body, (self.x, self.y))
 
+        self.health = 1000
+
     def move(self, direction):
         if direction == "up":
             self.y -= 0.1
@@ -38,17 +40,48 @@ class Player:
         ...
 
 
+class Enemy:
+    def __init__(self):
+        self.x, self.y = random.randint(0, 2000), random.randint(0, 2000)
+        self.body = engine.create_rigid_body((self.x, self.y), (15,15))
+        self.health = 1000
+        self.seek_player = False
+
+    def move(self):
+        # pursue player directly
+        if self.seek_player:
+            if self.x > game.player.x:
+                self.x -= 0.05
+            elif self.x < game.player.x:
+                self.x += 0.05
+            if self.y > game.player.y:
+                self.y -= 0.05
+            elif self.y < game.player.y:
+                self.y += 0.05
+        
+        # like an idle animation
+        else:
+            i = random.randint(0, 100)
+            if i == 1:
+                self.x -= 0.05
+            elif i == 2:
+                self.x += 0.05
+            if i == 3:
+                self.y -= 0.05
+            elif i == 4:
+                self.y += 0.05
+        engine.set_rigid_body_position(self.body, (self.x, self.y))
+
+
 # game handler object
 class Game:
-	def __init__(self):
-		self.player = Player()
+    def __init__(self):
+        self.player = Player()
 
-		# creates n enemies
-		n = 15
-		self.enemies = []
-		for i in range(n):
-			a, b = random.randint(0, 2000), random.randint(0, 2000)
-			self.enemies.append(engine.create_rigid_body((a, b), (15,15)))
+        n = 15
+        self.enemies = []
+        for i in range(n):
+            self.enemies.append(Enemy())
 
 
 def init():
@@ -71,6 +104,16 @@ def update():
     elif engine.key_is_pressed("D"):
         game.player.move("right")
 
+    for i in game.enemies:
+        # how close enemies need to be to pursue
+        crit_dist_x = (NEW_SCREEN_SIZE[0] / 10)
+        crit_dist_y = (NEW_SCREEN_SIZE[1] / 10)
+
+        if ((game.player.x - crit_dist_x) <= i.x <= (game.player.x + crit_dist_x)) and \
+        ((game.player.y - crit_dist_y) <= i.y <= (game.player.y + crit_dist_y)):
+            i.seek_player = True
+        i.move()
+
     # keep camera centered on player
     engine.set_camera_position((game.player.x, game.player.y))
 
@@ -92,4 +135,4 @@ def draw():
 	engine.draw_circle(game.player.body)
      
 	for i in game.enemies:
-		engine.draw_rigid_body_collider(i)
+		engine.draw_rigid_body_collider(i.body)
