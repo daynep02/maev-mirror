@@ -26,6 +26,9 @@ public:
   */
   static PyObject *key_is_pressed(PyObject *self, PyObject *args);
 
+
+  static PyObject* mouse_button_is_pressed(PyObject *self, PyObject *args);
+
   /**
   * @param keyName the name of the key we are querying if pressed
   * @return bool
@@ -33,15 +36,21 @@ public:
   */
   static bool isPressed(std::string keyName);
 
+  static bool isMousePressed(std::string button);
+
 
   /**
    * @brief a simple abstraction so we don't have to type so much
    */
   using kb = sf::Keyboard::Key;
+
+  using mb = sf::Mouse::Button;
   /**
   * @brief An unordered map to hopefully efficiently translate between a string and an SFML keybind
   */
   static const std::unordered_map<std::string, kb> keys;
+
+  static const std::unordered_map<std::string, mb> buttons;
 };
 
 PyDoc_STRVAR(key_is_pressed_doc,
@@ -56,5 +65,8 @@ PyDoc_STRVAR(key_is_pressed_doc,
   */
 static PyMethodDef keyPressed = {"key_is_pressed", Keyboard::key_is_pressed,
                                  METH_VARARGS, key_is_pressed_doc};
+
+static PyMethodDef mousePressed = {"mouse_button_is_pressed", Keyboard::mouse_button_is_pressed,
+                                  METH_VARARGS, key_is_pressed_doc};
 
 #endif // keyboard_h

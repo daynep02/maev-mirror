@@ -116,3 +116,6 @@ void RigidBody::Collide(RigidBody *other, const sf::Vector2f &gravity) {
 }
 
 BoxCollider *RigidBody::GetBox() const { return box; }
+
+PyObject* RigidBody::GetCallback(){return callback;}
+void RigidBody::SetCallback(PyObject* new_callback){callback = new_callback;}

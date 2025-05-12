@@ -47,6 +47,9 @@ public:
 
   void ApplyAllForces();
 
+  PyObject* GetCallback();
+  void SetCallback(PyObject* new_callback);
+
 
 private:
 
@@ -57,6 +60,7 @@ private:
   float terminalY = 100.f;
 
   BoxCollider *box;
+  PyObject *callback = NULL;
 
   sf::Vector2f terminalVelo = {0.0f, 100.0f};
 

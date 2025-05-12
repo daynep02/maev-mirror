@@ -6,7 +6,10 @@
 #ifndef keyboard_cpp
 #define keyboard_cpp
 #include "keyboard.h"
+#include "vector.h"
+#include "window_handler.h"
 #include "SFML/Window/Keyboard.hpp"
+#include "SFML/Window/Event.hpp"
 #include <SFML/Graphics.hpp>
 #include <unordered_map>
 
@@ -32,6 +35,31 @@ PyObject *Keyboard::key_is_pressed(PyObject *self, PyObject *args) {
   Py_RETURN_FALSE;
 }
 
+PyObject *Keyboard::mouse_button_is_pressed(PyObject *self, PyObject *args) {
+  Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+  if (nargs != 1) {
+    printf("engine.mouse_button_is_pressed expects 1 argument\n");
+    PyErr_BadArgument();
+  }
+
+  PyObject* button_o = PyTuple_GetItem(args, 0);
+
+  // type checking
+  if(!PyUnicode_Check(button_o)) {
+    printf("engine.mouse_button_is_pressed expects a string\n");
+    PyErr_BadArgument();
+  }
+  std::string button = PyUnicode_AsUTF8(button_o);
+
+  // if button pressed, return position: else return no vector id
+  if (isMousePressed(button)) {
+    sf::Vector2i localPosition = sf::Mouse::getPosition(*WindowHandler::getWindow());
+    return PyLong_FromLong(Vector::convert_vector(localPosition));
+  }
+
+  return PyLong_FromLong(-1);
+}
+
 bool Keyboard::isPressed(std::string key) {
   auto sample = keys.find(key);
 
@@ -39,6 +67,16 @@ bool Keyboard::isPressed(std::string key) {
     return false;
   // printf("Testing %s\n", sample->first.c_str());
   return sf::Keyboard::isKeyPressed(sample->second);
+}
+
+bool Keyboard::isMousePressed(std::string button) {
+  auto sample = buttons.find(button);
+
+  if (sample == buttons.end()) {
+    return false;
+  }
+
+  return sf::Mouse::isButtonPressed(sample->second);
 }
 
 using kb = sf::Keyboard::Key;
@@ -114,5 +152,12 @@ const std::unordered_map<std::string, kb> Keyboard::keys = {
     {"Right", kb::Right},
     {"Up", kb::Up},
     {"Down", kb::Down}};
+
+using mb = sf::Mouse::Button;
+const std::unordered_map<std::string, mb> Keyboard::buttons = {
+  {"Left", mb::Left},
+  {"Right", mb::Right},
+  {"Mid", mb::Middle}
+};
 
 #endif // keyboard_cpp

@@ -34,6 +34,10 @@ PyObject* WindowHandler::SetScreenSize(PyObject* self, PyObject* args) {
 }
 
 // getters for engine
+sf::RenderWindow* WindowHandler::getWindow() {
+    return r_window;
+}
+
 PyObject* WindowHandler::GetScreenWidth(PyObject* self, PyObject* args) {
     return PyLong_FromLong(w);
 }
@@ -42,3 +46,7 @@ PyObject* WindowHandler::GetScreenHeight(PyObject* self, PyObject* args) {
 	return PyLong_FromLong(h);
 }
 
+PyObject* WindowHandler::Exit(PyObject* self, PyObject* args) {
+    r_window->close();
+	Py_RETURN_NONE;
+}

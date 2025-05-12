@@ -64,6 +64,20 @@ void RigidBodyHandler::CollideBodies() {
       RigidBody *body_j = rigid_bodies.at(j);
       if (body_i->CollidesWith(body_j)) {
         body_i->Collide(body_j, gravity);
+        if(body_i->GetCallback()!=NULL) {
+          PyObject* args = PyTuple_New(2);
+          PyTuple_SetItem(args,0,PyLong_FromLong(i));
+          PyTuple_SetItem(args,1,PyLong_FromLong(j));
+          PyObject_Call(body_i->GetCallback(),args,NULL);
+          Py_DecRef(args);
+        }
+        if(body_j->GetCallback()!=NULL) {
+          PyObject* args = PyTuple_New(2);
+          PyTuple_SetItem(args,0,PyLong_FromLong(j));
+          PyTuple_SetItem(args,1,PyLong_FromLong(i));
+          PyObject_Call(body_j->GetCallback(),args,NULL);
+          Py_DecRef(args);
+        }
         continue;
       }
     }
@@ -528,6 +542,44 @@ PyObject *RigidBodyHandler::SetRigidBodyVelocity(PyObject *self,
   rigid_bodies.at(id)->SetSize(sf::Vector2f(x, y));
 
   Py_RETURN_NONE;
+}
+
+/*static*/ PyObject* RigidBodyHandler::SetRigidBodyCallback(PyObject *self, PyObject *args) {
+    Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 2)
+	{
+		printf("engine.set_rigid_body_callback expects a long and a function reference as "
+			   "arguments\n");
+		PyErr_BadArgument();
+	}
+  PyObject *pId = PyTuple_GetItem(args, 0);
+  if (!PyLong_Check(pId)) {
+    Py_XDECREF(pId);
+    printf("engine.set_rigid_body_callback expects a long and a function reference as "
+           "arguments\n");
+    PyErr_BadArgument();
+  }
+
+  long id = PyLong_AsLong(pId);
+
+  if (rigid_bodies.size() <= id || 0 > id) {
+    Py_XDECREF(pId);
+    printf("engine.set_rigid_body_callback got a rigid body id out of range\n");
+    PyErr_BadArgument();
+  }
+
+	PyObject *pCallback = PyTuple_GetItem(args, 1);
+	if (!PyCallable_Check(pCallback))
+	{
+		Py_XDECREF(pCallback);
+		printf("engine.set_rigid_body_callback expects a long and a function reference as "
+           "arguments\n");
+		PyErr_BadArgument();
+	}
+
+  rigid_bodies.at(id)->SetCallback(pCallback);
+
+	Py_RETURN_NONE;
 }
 
 /*static*/ PyObject *RigidBodyHandler::DrawRigidBodyCollider(PyObject *self,

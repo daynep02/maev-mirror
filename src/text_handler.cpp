@@ -35,7 +35,7 @@ TextHandler::~TextHandler() {
   
     std::string name = PyUnicode_AsUTF8(pName);
   
-    printf("engine.create_font: Creating Font from %s\n", name.c_str());
+    //printf("engine.create_font: Creating Font from %s\n", name.c_str());
     sf::Font *font = new sf::Font;
     bool res = font->openFromFile(name.c_str());
     if (!res) {
@@ -47,7 +47,7 @@ TextHandler::~TextHandler() {
     fonts.push_back(font);
     loc = fonts.size() - 1;
   
-    printf("engine.create_font: Returning ID %ld\n", loc);
+    //printf("engine.create_font: Returning ID %ld\n", loc);
   
     //Py_XDECREF(pName);
   
@@ -72,7 +72,7 @@ TextHandler::~TextHandler() {
     PyErr_BadArgument();
   }
 
-  printf("engine.create_text: Creating Text from font %ld\n", font_id);
+  //printf("engine.create_text: Creating Text from font %ld\n", font_id);
 
   long loc;
   sf::Text *text = new sf::Text(*fonts.at(font_id));
@@ -80,11 +80,42 @@ TextHandler::~TextHandler() {
   texts.push_back(text);
   loc = texts.size() - 1;
 
-  printf("engine.create_text: Returning ID %ld\n", loc);
+  //printf("engine.create_text: Returning ID %ld\n", loc);
 
   //Py_XDECREF(pName);
 
   return PyLong_FromLong(loc);
+}
+
+/*static*/ PyObject *TextHandler::GetTextPosition(PyObject *self,
+                                                      PyObject *args) {
+  Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+  if (nargs != 1) {
+    printf("engine.get_text_position expects a long as an argument\n");
+    PyErr_BadArgument();
+  }
+  PyObject *pId = PyTuple_GetItem(args, 0);
+  if (!PyLong_Check(pId)) {
+    Py_XDECREF(pId);
+    printf("engine.get_text_position expects a long as an argument\n");
+    PyErr_BadArgument();
+  }
+
+  long id = PyLong_AsLong(pId);
+
+  if (texts.size() <= id || id < 0) {
+    Py_XDECREF(pId);
+    printf("engine.get_text_position got a text id out of range\n");
+    PyErr_BadArgument();
+  }
+
+  //sf::Vector2f pos = texts.at(id)->getPosition();
+  sf::FloatRect rect = texts.at(id)->getGlobalBounds();
+  sf::Vector2f pos = rect.getCenter();
+
+  //printf("engine.get_text_position: returning (%f, %f)\n",pos.x,pos.y);
+
+  return PyTuple_Pack(2, PyFloat_FromDouble((double)pos.x), PyFloat_FromDouble((double)pos.y));
 }
 
 /*static*/ PyObject *TextHandler::SetTextPosition(PyObject *self,
@@ -118,17 +149,11 @@ TextHandler::~TextHandler() {
   double x = PyFloat_AsDouble(pX);
   double y = PyFloat_AsDouble(pY);
 
-  printf("engine.set_text_position: setting position\n");
+  //printf("engine.set_text_position: setting position\n");
 
   texts.at(id)->setPosition(sf::Vector2f(x, y));
 
-  printf("engine.set_text_position: done setting position\n");
-
-	// TODO: free() getting invalid pointer somewhere here?
-  //Py_XDECREF(pId);
-  //Py_XDECREF(pPosition);
-  //Py_XDECREF(pX);
-  //Py_XDECREF(pY);
+  //printf("engine.set_text_position: done setting position\n");
 
   Py_RETURN_NONE;
 }
@@ -163,11 +188,6 @@ TextHandler::~TextHandler() {
   
     texts.at(id)->setCharacterSize(size);
   
-    // TODO: free() getting invalid pointer somewhere here?
-    //Py_XDECREF(pId);
-    //Py_XDECREF(pPosition);
-    //Py_XDECREF(pX);
-    //Py_XDECREF(pY);
   
     Py_RETURN_NONE;
   }
