@@ -3,42 +3,38 @@ from controlBlock import ControlBlock
 from asteroid import AsteroidList
 import math
 import engine
+from title import Title
+from run import Run
+from controls import Controls
+from state import *
 
 
-class Vec:
-    def __init__(self, x: float, y: float):
-        self.x: float = x
-        self.y: float = y
 
 class Game:
-    class Window:
-        size: Vec = Vec(0,0)
 
-    def __init__(self) -> None:
+    states = [None] * 3
+    index = 1
+    def __init__(self):
 
-        self.controlAbles: list = [ControlBlock(40,40, 50,50 , "../games/racing/assets/PixelSpaceRage/256px/PlayerBlue_Frame_01_png_processed.png")]
+        self.states[TITLE] = Title()
+        self.states[CONTROLS] = Controls()
+        self.states[RUN] = Run()
 
-        self.window: Game.Window= Game.Window()
+        self.state = self.states[self.index]
 
-        self.window.size.x, self.window.size.y = engine.get_screen_width(), engine.get_screen_height()
-
-        for block in self.controlAbles:
-            block.edge_x, block.edge_y = self.window.size.x, self.window.size.y
-
-        print("Window x, y = ", self.window.size.x, self.window.size.y)
-
-        self.aList: list = AsteroidList(self.window.size.x, self.window.size.y)
-
-        return
+        self.state_cooldown = engine.current_time()
 
     def update(self):
-        for block in self.controlAbles:
-            block.update()
+
+        val :int = self.state.update()
+
+        if val >= 0:
+            self.state = self.states[val]
+
 
     def draw(self):
-        for block in self.controlAbles:
-            block.draw()
-        self.aList.draw()
+        self.state.draw()
+    
         
 
 game = None
