@@ -179,6 +179,8 @@ static PyMethodDef EngineMethods[] = {
     {"exit", WindowHandler::Exit, METH_VARARGS, engine_exit_doc},
 
     createVector,
+    destroyVector,
+    cleanseVectors,
 	x,
 	y,
 	sca_add,

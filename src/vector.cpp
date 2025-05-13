@@ -9,7 +9,7 @@ PyObject* Vector::create_vector(PyObject* self, PyObject* args) {
 	long id = -1;
 	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
 	if (nargs == 0) {
-		printf("engine.create_vector: Creating Vector of 0 0\n");
+		//printf("engine.create_vector: Creating Vector of 0 0\n");
 		vectors.push_back(new sf::Vector2f());
 		id = vectors.size() - 1;
 	}
@@ -21,7 +21,7 @@ PyObject* Vector::create_vector(PyObject* self, PyObject* args) {
 		float x = PyFloat_AsDouble(xo);
 		float y = PyFloat_AsDouble(yo);
 		
-		printf("engine.create_vector: Creating Vector of %f %f\n", x, y);
+		//printf("engine.create_vector: Creating Vector of %f %f\n", x, y);
 		vectors.push_back(new sf::Vector2f(x, y));
 		id = vectors.size() - 1;
 	}
@@ -31,6 +31,34 @@ PyObject* Vector::create_vector(PyObject* self, PyObject* args) {
 	}
 
 	return PyLong_FromLong(id);
+}
+
+// Destroys Vector of given id so as to not infinitely hold onto every Vector that literally ever existed
+PyObject* Vector::destroy_vector(PyObject* self, PyObject* args) {
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 1) {
+		printf("engine.destroy_vector expects a single long as an argument\n");
+		PyErr_BadArgument();
+	}
+	// obtain argument contents
+	PyObject* ido = PyTuple_GetItem(args, 0);
+
+	long id = PyLong_AsLong(ido);
+
+	vectors.erase(vectors.begin() + id);
+	Py_RETURN_NONE;
+}
+
+// Destroys all Vectors currently being held so as to not infinitely hold onto every Vector that literally ever existed
+PyObject* Vector::cleanse_vectors(PyObject* self, PyObject* args) {
+	Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 0) {
+		printf("engine.cleanse_vectors takes no arguments\n");
+		PyErr_BadArgument();
+	}
+
+	std::vector<sf::Vector2<float>*>().swap(vectors);   // like vectors.clear(), but guarantees reallocating
+	Py_RETURN_NONE;
 }
 
 // converts a vector found or made elsewhere in engine to Vector2f and places into the vector of Vectors
@@ -173,7 +201,7 @@ PyObject* Vector::length(PyObject* self, PyObject* args) {
 	// return length
 	sf::Vector2<float> v = *(vectors.at(id));
 
-	printf("engine.length: returning length\n");
+	//printf("engine.length: returning length\n");
 	return PyFloat_FromDouble((v.length()));
 }
 
@@ -195,7 +223,7 @@ PyObject* Vector::normalize(PyObject* self, PyObject* args) {
 	vectors.push_back(new sf::Vector2f(v.x, v.y));
 	id = vectors.size() - 1;
 
-	printf("engine.normalize: returning normalized Vector\n");
+	//printf("engine.normalize: returning normalized Vector\n");
 	return PyLong_FromLong(id);
 }
 
@@ -254,7 +282,7 @@ PyObject* Vector::dot(PyObject* self, PyObject* args) {
 	// calculate dot product
 	float d = (*(vectors.at(id1))).dot((*(vectors.at(id2))));
 
-	printf("engine.dot: returning dot product of two Vectors\n");
+	//printf("engine.dot: returning dot product of two Vectors\n");
 	return PyFloat_FromDouble(d);
 }
 
@@ -274,7 +302,7 @@ PyObject* Vector::cross(PyObject* self, PyObject* args) {
 	// calculate dot product
 	float d = (*(vectors.at(id1))).cross((*(vectors.at(id2))));
 
-	printf("engine.cross: returning cross product of two Vectors\n");
+	//printf("engine.cross: returning cross product of two Vectors\n");
 	return PyFloat_FromDouble(d);
 }
 
