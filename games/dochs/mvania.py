@@ -2,8 +2,8 @@ import engine # type: ignore
 import time
 import math
 from player import Player
+from enemy import Enemy
 from title import Title
-
 
 class Game:
     def __init__(self):
@@ -11,25 +11,40 @@ class Game:
         self.player = Player()
         engine.set_rigid_body_callback(self.player.rb,on_player_collision)
 
+        self.enemy = Enemy()
+
         self.set_camera_size(600,400)
 
         #The platform to collide with
-        self.platform = engine.create_rigid_body((0,300),(500,20))
-        engine.set_rigid_body_static(self.platform,True)
+        self.bottom_platform = engine.create_rigid_body((25,300),(700,20))
+        engine.set_rigid_body_static(self.bottom_platform,True)
+
+        #self.top_platform = engine.create_rigid_body((25,0),(500,20))
+        #engine.set_rigid_body_static(self.top_platform,True)
+        self.left_platform = engine.create_rigid_body((20,10),(10,280))
+        engine.set_rigid_body_static(self.left_platform,True)
+        self.right_platform = engine.create_rigid_body((720,10),(10,280))
+        engine.set_rigid_body_static(self.right_platform,True)
 
         engine.set_gravity(0.0, .62)
     
     def update_game(self):
         engine.set_camera_position(engine.get_rigid_body_position(self.player.rb))
         self.player.movement()
+        self.enemy.update()
     
     def draw_game(self):
         self.player.draw()
-        engine.draw_rigid_body_collider(self.platform)
+        self.enemy.draw()
+
+        #draw platforms
+        engine.draw_rigid_body_collider(self.bottom_platform)
+        #engine.draw_rigid_body_collider(self.top_platform)
+        engine.draw_rigid_body_collider(self.left_platform)
+        engine.draw_rigid_body_collider(self.right_platform)
     
     def set_camera_size(self, width, height):
         engine.set_camera_size((width,height))
-
 
 
 game = None
@@ -52,7 +67,7 @@ def update():
 
     if state == 0:
         title.update_title()
-        if engine.key_is_pressed("Enter") or engine.key_is_pressed("E"):
+        if engine.key_is_pressed("E") or engine.key_is_pressed("ENTER"):
             if title.state == 0:
                 game = Game()
                 state = 1
@@ -77,5 +92,14 @@ def on_close():
 def on_player_collision(player_rb,collider_rb):
     global game
 
-    if collider_rb == game.platform:
+    if collider_rb == game.bottom_platform:
         game.player.grounded = True
+    elif collider_rb == game.left_platform:
+        game.player.slide_left = 0
+        game.player.slide_time = engine.current_time()
+    elif collider_rb == game.right_platform:
+        game.player.slide_right = 0
+        game.player.slide_time = engine.current_time()
+
+    if collider_rb == game.enemy.rb:
+        game.player.take_damage(1)
