@@ -15,11 +15,14 @@ class ControlBlock:
         self.max_x = 100
         self.max_y = 100
 
+        self.edge_x = 100
+        self.edge_y = 100
+
         if sprite:
-         #   print("Setting sprite")
+            #   print("Setting sprite")
             self.set_sprite(sprite)
-         #   print("Sprite = ", self.sprite)
-    
+        #   print("Sprite = ", self.sprite)
+
     def set_terminal_velo(self, x: float, y: float) -> None:
         engine.set_terminal_velo(self.id, x, y)
 
@@ -28,7 +31,6 @@ class ControlBlock:
 
     def set_gravity(self, x: bool) -> None:
         engine.set_rigid_body_gravity(self.id, x)
-
 
     def get_position(self) -> tuple:
         return engine.get_rigid_body_position(self.id)
@@ -42,18 +44,19 @@ class ControlBlock:
     def uncontrolledUpdate(self) -> None:
         appliedx = 0.0
         appliedy = 0.0
+        additive = 0.01
 
         if self.velocity[0] > 0.0:
-            appliedx = -2.0
+            appliedx = -additive
 
         if self.velocity[0] < 0.0:
-            appliedx = 2.0
+            appliedx = additive
 
         if self.velocity[1] > 0.0:
-            appliedx = -2.0
+            appliedy = -additive
 
         if self.velocity[1] < 0.0:
-            appliedx = 2.0
+            appliedy = additive
 
         engine.apply_force(self.id, appliedx, appliedy)
 
@@ -69,6 +72,7 @@ class ControlBlock:
         engine.set_sprite_position(self.sprite, self.position)
 
     def controlledUpdate(self) -> None:
+
         if self.velocity[1] > -self.max_y and engine.key_is_pressed("Up"):
             engine.apply_force(self.id, 0.0, -5.0)
 
@@ -81,23 +85,14 @@ class ControlBlock:
         if  self.velocity[0] < self.max_x and engine.key_is_pressed("Right"):
             engine.apply_force(self.id, 5.0, 0.0)
 
-        if self.position[0] <= 0:
-            engine.set_rigid_body_position(self.id, (0, self.position[1]))
-
-        if self.position[0] >= 400:
-            engine.set_rigid_body_position(self.id, (400, self.position[1]))
-
-        if self.position[1] <= 0:
-            engine.set_rigid_body_position(self.id, (self.position[0], 0))
-
-        if self.position[1] >= 400:
-            engine.set_rigid_body_position(self.id, (self.position[0], 400))
         return
+
+
+
 
     def update(self) -> None:
 
         self.update_velo()
-
         self.position = self.get_position()
 
         if self.sprite is not None: engine.set_sprite_position(self.sprite, self.position)
@@ -105,12 +100,12 @@ class ControlBlock:
         if self.controlled: self.controlledUpdate()
 
         self.uncontrolledUpdate()
-        return
+
 
     def draw(self) -> None:
 
         if self.sprite is not None: 
             engine.draw_sprite(self.sprite)
-            
+
         else:
             engine.draw_rigid_body_collider(self.id)

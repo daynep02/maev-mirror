@@ -1,23 +1,41 @@
 import time
 from controlBlock import ControlBlock
+from asteroid import AsteroidList
 import math
+import engine
+from title import Title
+from run import Run
+from controls import Controls
+from state import *
+
 
 
 class Game:
 
-    def __init__(self) -> None:
-        self.controlAbles = [ControlBlock(40,40, 50,50 , "../games/racing/assets/soup.jpg")]
-        return
+    states = [None] * 3
+    index = 1
+    def __init__(self):
+
+        self.states[TITLE] = Title()
+        self.states[CONTROLS] = Controls()
+        self.states[RUN] = Run()
+
+        self.state = self.states[self.index]
+
+        self.state_cooldown = engine.current_time()
 
     def update(self):
-        for block in self.controlAbles:
-            block.update()
+
+        val :int = self.state.update()
+
+        if val >= 0:
+            self.state = self.states[val]
+
 
     def draw(self):
-        for block in self.controlAbles:
-            block.draw()
-
-
+        self.state.draw()
+    
+        
 
 game = None
 

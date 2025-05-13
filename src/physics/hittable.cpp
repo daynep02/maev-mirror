@@ -17,4 +17,5 @@ bool Hittable::HitsBox(Hittable *other) {
   return bounding_box->CollidesWith(other->bounding_box);
 }
 
+
 #endif // !HITTABLE_CPP

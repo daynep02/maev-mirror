@@ -36,13 +36,13 @@ public:
   * @param other the other object to be check for collisin
   * @return true if the objects collide, false otherwise
   */
-  bool CollidesWith(Hittable *other) override;
+  bool CollidesWith(Rectangle *other) override;
 
   /**
   * @param other the other circle to collide with
   * @return true if the objects collide
   */
-  bool CollidesWith(Circle *other);
+  bool CollidesWith(Circle *other) override;
 
 private:
 

@@ -6,8 +6,11 @@
 */
 #ifndef HITTABLE_HPP
 #define HITTABLE_HPP
+#include "System/Vector2.hpp"
+#include "aabb.hpp"
 
-class Aabb;
+class Circle;
+class Rectangle;
 class Hittable {
 public:
 
@@ -17,10 +20,16 @@ public:
 
   virtual ~Hittable() = 0;
 
-  virtual bool CollidesWith(Hittable *other) = 0;
+  virtual bool CollidesWith(Circle *other) = 0;
+  virtual bool CollidesWith(Rectangle *other) = 0;
   bool HitsBox(Hittable* other);
 
+  const Aabb* BoundingBox();
+
 private:
+  int numberOfVertices;
+  sf::Vector2f* vertices;
+  sf::Vector2f* edges;
   Aabb* bounding_box;
 };
 
