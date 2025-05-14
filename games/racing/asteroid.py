@@ -17,19 +17,25 @@ class AsteroidList:
     def __init__(self, max_x, max_y):
         # randomly create up to 20 asteroids
         for i in range(random.randint(0, 20)):
+            self.add((10, 10), (max_x, max_y))
 
-            sprite_to_use = self.path + self.names[random.randint(0, 3)]
-
-            self.position = (random.randint(0, max_x), random.randint(0, max_y))
-
-            new_asteroid = self.Asteroid(sprite_to_use, self.position)
-
-            self.asteroids.append(new_asteroid)
     
     def draw(self):
         for roid in self.asteroids:
-            # just call the draw function for ever asteroid
+            # just call the draw function for every asteroid
             roid.draw()
+
+    def add(self, min_position: tuple, max_position: tuple):
+
+        sprite_to_use = self.path + self.names[random.randint(0, 3)]
+
+        position = (random.randint(min_position[0], max_position[0]), random.randint(min_position[1], max_position[1]))
+
+        new_asteroid = self.Asteroid(sprite_to_use, position)
+
+        self.asteroids.append(new_asteroid)
+        
+
 
     class Asteroid:
         def __init__(self, name: str, position: tuple):

@@ -111,8 +111,8 @@ void RigidBody::Collide(RigidBody *other, const sf::Vector2f &gravity) {
     other->SetPosition(other->previousPosition);
     other->ApplyGravity(-gravity);
   }
-  velocity += collisionVelo;
-  other->velocity += collisionVelo;
+  other->SetPosition(other->previousPosition);
+  SetPosition(previousPosition);
 }
 
 BoxCollider *RigidBody::GetBox() const { return box; }
