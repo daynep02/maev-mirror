@@ -218,8 +218,20 @@ void RigidBody::Collide(RigidBody *other, const sf::Vector2f &gravity,
     return;
   }
 
-  other->SetPosition(other->previousPosition);
-  SetPosition(previousPosition);
+  sf::Vector2f normal = {0,0};
+  if (!GetFaceCollisionNormal(this, other, normal)) return;
+  if (normal.y != 0.0f) {
+    this->SetPosition({this->GetPosition().x, this->previousPosition.y});
+    other->SetPosition({other->GetPosition().x, other->previousPosition.y});
+  }
+
+  if (normal.x != 0.0) {
+    this->SetPosition({this->previousPosition.x, this->GetPosition().y});
+    other->SetPosition({other->previousPosition.x, other->GetPosition().y});
+  }
+
+  return;
+
 
 }
 
@@ -229,8 +241,10 @@ void RigidBody::StaticCollide(RigidBody *moving, RigidBody *r_static,
   if (!GetFaceCollisionNormal(moving, r_static, normal)) return;
   if (normal.y != 0.0f)
     moving->SetPosition({moving->GetPosition().x, moving->previousPosition.y});
+
   if (normal.x != 0.0)
     moving->SetPosition({moving->previousPosition.x, moving->GetPosition().y});
+
   return;
 
   // Below code is NOT utilized
