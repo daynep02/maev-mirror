@@ -15,14 +15,13 @@
 #include "rigid_body_handler.h"
 #include "text_handler.h"
 #include "vector.h"
-#include "callback_handler.h"
 #include "window_handler.h"
 #include <Python.h>
 #include <SFML/Graphics.hpp>
 
 sf::RenderWindow *g_window;
 // sf::View* g_camera;
-WindowHandler* g_window_handler;
+WindowHandler *g_window_handler;
 ObjectHandler *g_object_handler;
 BoxColliderHandler *g_box_collider_handler;
 RigidBodyHandler *g_rigid_body_handler;
@@ -41,10 +40,13 @@ static PyMethodDef EngineMethods[] = {
      engine_set_sprite_position_doc},
     {"set_sprite_scale", ObjectHandler::SetSpriteScale, METH_VARARGS,
      engine_set_sprite_scale_doc},
-     {"get_sprite_rotation", ObjectHandler::GetSpriteRotation, METH_VARARGS, engine_get_sprite_rotation_doc},
-     {"set_sprite_rotation", ObjectHandler::SetSpriteRotation, METH_VARARGS, engine_set_sprite_rotation_doc},
-     {"sprite_rotate", ObjectHandler::SpriteRotate, METH_VARARGS, engine_sprite_rotate_doc},
-     Get_Sprite_size,
+    {"get_sprite_rotation", ObjectHandler::GetSpriteRotation, METH_VARARGS,
+     engine_get_sprite_rotation_doc},
+    {"set_sprite_rotation", ObjectHandler::SetSpriteRotation, METH_VARARGS,
+     engine_set_sprite_rotation_doc},
+    {"sprite_rotate", ObjectHandler::SpriteRotate, METH_VARARGS,
+     engine_sprite_rotate_doc},
+    Get_Sprite_size,
     {"draw_sprite", ObjectHandler::DrawSprite, METH_VARARGS,
      engine_draw_sprite_doc},
     {"free_sprite", ObjectHandler::FreeSprite, METH_VARARGS,
@@ -73,9 +75,12 @@ static PyMethodDef EngineMethods[] = {
      engine_set_rect_position_doc},
     {"set_rect_scale", ObjectHandler::SetRectScale, METH_VARARGS,
      engine_set_rect_scale_doc},
-     {"get_rect_rotation", ObjectHandler::GetRectRotation, METH_VARARGS, engine_get_rect_rotation_doc},
-     {"set_rect_rotation", ObjectHandler::SetRectRotation, METH_VARARGS, engine_set_rect_rotation_doc},
-     {"rect_rotate", ObjectHandler::RectRotate, METH_VARARGS, engine_rect_rotate_doc},
+    {"get_rect_rotation", ObjectHandler::GetRectRotation, METH_VARARGS,
+     engine_get_rect_rotation_doc},
+    {"set_rect_rotation", ObjectHandler::SetRectRotation, METH_VARARGS,
+     engine_set_rect_rotation_doc},
+    {"rect_rotate", ObjectHandler::RectRotate, METH_VARARGS,
+     engine_rect_rotate_doc},
 
     {"set_rect_size", ObjectHandler::SetRectSize, METH_VARARGS,
      engine_set_rect_size_doc},
@@ -88,7 +93,7 @@ static PyMethodDef EngineMethods[] = {
      engine_collides_with_doc},
 
     keyPressed,
-	mousePressed,
+    mousePressed,
 
     {"create_box_collider", BoxColliderHandler::createBoxCollider, METH_VARARGS,
      engine_create_box_collider_doc},
@@ -118,8 +123,10 @@ static PyMethodDef EngineMethods[] = {
      engine_get_rigid_body_size_doc},
     {"set_rigid_body_size", RigidBodyHandler::SetRigidBodySize, METH_VARARGS,
      engine_set_rigid_body_size_doc},
-    {"set_rigid_body_callback", RigidBodyHandler::SetRigidBodyCallback, METH_VARARGS, engine_set_rigid_body_callback_doc},
-    {"rigid_body_collides_with", RigidBodyHandler::RigidBodyCollidesWith, METH_VARARGS, engine_rigid_body_collides_with_doc},
+    {"set_rigid_body_callback", RigidBodyHandler::SetRigidBodyCallback,
+     METH_VARARGS, engine_set_rigid_body_callback_doc},
+    {"rigid_body_collides_with", RigidBodyHandler::RigidBodyCollidesWith,
+     METH_VARARGS, engine_rigid_body_collides_with_doc},
     {"draw_rigid_body_collider", RigidBodyHandler::DrawRigidBodyCollider,
      METH_VARARGS, engine_draw_rigid_body_collider_doc},
     {"free_rigid_body", RigidBodyHandler::FreeRigidBody, METH_VARARGS,
@@ -158,7 +165,8 @@ static PyMethodDef EngineMethods[] = {
      engine_create_font_doc},
     {"create_text", TextHandler::CreateText, METH_VARARGS,
      engine_create_text_doc},
-    {"get_text_position", TextHandler::GetTextPosition, METH_VARARGS, engine_get_text_position_doc},
+    {"get_text_position", TextHandler::GetTextPosition, METH_VARARGS,
+     engine_get_text_position_doc},
     {"set_text_position", TextHandler::SetTextPosition, METH_VARARGS,
      engine_set_text_position_doc},
     {"set_text_size", TextHandler::SetTextSize, METH_VARARGS,
@@ -168,29 +176,35 @@ static PyMethodDef EngineMethods[] = {
     {"set_text", TextHandler::SetText, METH_VARARGS, engine_set_text_doc},
     {"draw_text", TextHandler::DrawText, METH_VARARGS, engine_draw_text_doc},
 
-    {"set_camera_position", CameraHandler::SetPosition, METH_VARARGS, engine_set_camera_position_doc},
-    {"set_camera_size", CameraHandler::SetSize, METH_VARARGS, engine_set_camera_size_doc},
+    {"set_camera_position", CameraHandler::SetPosition, METH_VARARGS,
+     engine_set_camera_position_doc},
+    {"set_camera_size", CameraHandler::SetSize, METH_VARARGS,
+     engine_set_camera_size_doc},
 
-    {"set_on_close", CallbackHandler::SetOnClose, METH_VARARGS, engine_set_on_close_doc},
-   
-    {"set_screen_size", WindowHandler::SetScreenSize, METH_VARARGS, engine_set_screen_size_doc},
-    {"get_screen_width", WindowHandler::GetScreenWidth, METH_VARARGS, engine_get_screen_width_doc},
-    {"get_screen_height", WindowHandler::GetScreenHeight, METH_VARARGS, engine_get_screen_height_doc},
+    {"set_on_close", CallbackHandler::SetOnClose, METH_VARARGS,
+     engine_set_on_close_doc},
+
+    {"set_screen_size", WindowHandler::SetScreenSize, METH_VARARGS,
+     engine_set_screen_size_doc},
+    {"get_screen_width", WindowHandler::GetScreenWidth, METH_VARARGS,
+     engine_get_screen_width_doc},
+    {"get_screen_height", WindowHandler::GetScreenHeight, METH_VARARGS,
+     engine_get_screen_height_doc},
     {"exit", WindowHandler::Exit, METH_VARARGS, engine_exit_doc},
 
     createVector,
     destroyVector,
     cleanseVectors,
-	x,
-	y,
-	sca_add,
-	sca_sub,
-	sca_mul,
-	sca_div,
+    x,
+    y,
+    sca_add,
+    sca_sub,
+    sca_mul,
+    sca_div,
     length,
     normalize,
-	vec_add,
-	vec_sub,
+    vec_add,
+    vec_sub,
     dot,
     cross,
     set_gravity,
@@ -300,8 +314,8 @@ int main(int argc, char *argv[]) {
 
   // assign globals
   g_window = new sf::RenderWindow(sf::VideoMode({1024, 600}), "Engine!");
-  // g_camera = new sf::View(sf::Vector2f(400.f, 250.f), sf::Vector2f(1024.f, 640.f));
-  // g_window->setView(*g_camera);
+  // g_camera = new sf::View(sf::Vector2f(400.f, 250.f), sf::Vector2f(1024.f,
+  // 640.f)); g_window->setView(*g_camera);
 
   // create object handlers
   g_window_handler = new WindowHandler(g_window);
@@ -341,7 +355,7 @@ int main(int argc, char *argv[]) {
 
     // Update the rigid bodies and time delta
     g_rigid_body_handler->UpdateCurrentAndTimeDelta();
-    g_rigid_body_handler->UpdateSim();
+    // g_rigid_body_handler->UpdateSim();
 
     // loads in update Key Function of Python Game
     pValue = PyObject_CallNoArgs(pFuncUpdate);

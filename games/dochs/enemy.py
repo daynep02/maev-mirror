@@ -18,6 +18,7 @@ class Enemy:
         if engine.current_time()-self.patrol_time>self.patrol_duration:
             self.direction = self.direction * -1
             self.patrol_time = engine.current_time()
+        #print(engine.get_rigid_body_position(self.rb))
         
         #patrol in a direction
         velocity = engine.get_rigid_body_velocity(self.rb)

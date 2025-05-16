@@ -12,13 +12,12 @@ public:
             bool gravity_);
   ~RigidBody();
 
-
   bool IsStatic() const;
   void SetStatic(bool new_static);
   bool IsGravity() const;
   void SetGravity(bool new_gravity);
 
-  const sf::Vector2f& GetVelocity() const;
+  const sf::Vector2f &GetVelocity() const;
   void SetVelocity(float x, float y);
   void SetVelocity(const sf::Vector2f &new_velocity);
   void ModifyVelocity(float x, float y);
@@ -28,7 +27,7 @@ public:
   void ApplyForce(const sf::Vector2f &force);
   void ApplyGravity(const sf::Vector2f &gravity);
 
-  sf::Vector2f GetPosition() const ;
+  sf::Vector2f GetPosition() const;
   void SetPosition(const sf::Vector2f &new_position);
 
   sf::Vector2f GetSize() const;
@@ -38,21 +37,24 @@ public:
 
   bool CollidesWith(RigidBody *other) const;
   bool CollidesWith(BoxCollider *other) const;
-  
-  void SetTerminalVelo(const sf::Vector2f& terminalVelo);
-  
-  void Collide(RigidBody* other, const sf::Vector2f& gravity);
 
-  BoxCollider* GetBox() const;
+  void SetTerminalVelo(const sf::Vector2f &terminalVelo);
+
+  void Collide(RigidBody *other, const sf::Vector2f &gravity, float delta);
+
+  BoxCollider *GetBox() const;
 
   void ApplyAllForces();
 
-  PyObject* GetCallback();
-  void SetCallback(PyObject* new_callback);
+  PyObject *GetCallback();
+  void SetCallback(PyObject *new_callback);
 
+  static void StaticCollide(RigidBody *moving, RigidBody *r_static, float delta, const sf::Vector2f &gravity);
+  static bool RayVRect(const sf::Vector2f &origin, const sf::Vector2f &dir,
+                       const RigidBody *target, sf::Vector2f &point,
+                       sf::Vector2f &normal, float &t_hit);
 
 private:
-
   bool static_ = false;
   bool gravity = true;
   sf::Vector2f velocity = {0, 0};
@@ -63,13 +65,14 @@ private:
   PyObject *callback = NULL;
 
   sf::Vector2f terminalVelo = {0.0f, 100.0f};
+  bool GetFaceCollisionNormal(const RigidBody *other,
+                              sf::Vector2f &normal) const;
 
   float weight = 1.0f;
   float frictionCoeff = 0.0f;
   sf::Vector2f previousPosition = {0.0f, 0.0f};
 
   std::vector<sf::Vector2f> forcesToApply;
-
 };
 
 #endif //_RIGID_BODY_H_

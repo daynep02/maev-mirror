@@ -41,3 +41,8 @@ bool BoxCollider::CollidesWith(BoxCollider *other) {
 
   return true;
 }
+
+const sf::Vector2f BoxCollider::topNormal = {0.0, -1.0};
+const sf::Vector2f BoxCollider::bottomNormal = {0.0, 1.0};
+const sf::Vector2f BoxCollider::leftNormal = {-1.0, 0.0};
+const sf::Vector2f BoxCollider::rightNormal = {1.0, 0.0};

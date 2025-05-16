@@ -63,7 +63,7 @@ void RigidBodyHandler::CollideBodies() {
     for (int j = i + 1; j < rigid_bodies.size(); j++) {
       RigidBody *body_j = rigid_bodies.at(j);
       if (body_i->CollidesWith(body_j)) {
-        body_i->Collide(body_j, gravity);
+        body_i->Collide(body_j, gravity, delta_time.count());
         if(body_i->GetCallback()!=NULL) {
           PyObject* args = PyTuple_New(2);
           PyTuple_SetItem(args,0,PyLong_FromLong(i));

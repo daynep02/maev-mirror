@@ -34,7 +34,6 @@ class AsteroidList:
         new_asteroid = self.Asteroid(sprite_to_use, position)
 
         self.asteroids.append(new_asteroid)
-        
 
 
     class Asteroid:

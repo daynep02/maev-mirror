@@ -6,8 +6,8 @@
 #include "SFML/System/Vector2.hpp"
 #include "box_collider.hpp"
 #include <SFML/System.hpp>
+#include <cmath>
 #include <iterator>
-#include <stdexcept>
 
 RigidBody::RigidBody(sf::Vector2f new_position, sf::Vector2f new_size)
     : RigidBody(new_position, new_size, false, true) {}
@@ -55,14 +55,12 @@ void RigidBody::ApplyGravity(const sf::Vector2f &gravity) {
     ApplyForce({gravity.x, 0});
   if (velocity.y < terminalY)
     ApplyForce({0, gravity.y});
-
 }
 
 void RigidBody::UpdateByVelocity(const sf::Vector2f &gravity_, double delta) {
   previousPosition = box->getPosition();
   if (static_)
     return;
-  previousPosition = box->getPosition();
 
   box->getRect()->move(velocity * (float)delta);
 }
@@ -100,22 +98,162 @@ void RigidBody::SetTerminalVelo(const sf::Vector2f &terminalVelo) {
   terminalY = terminalVelo.y;
 }
 
-void RigidBody::Collide(RigidBody *other, const sf::Vector2f &gravity) {
+bool RigidBody::GetFaceCollisionNormal(const RigidBody *other,
+                                       sf::Vector2f &normal) const {
+
+  const auto &pos = GetPosition();
+  const auto &size = GetSize();
+  const auto &otherPos = other->GetPosition();
+  const auto &otherSize = other->GetSize();
+  // if (std::isnan(otherPos.x))
+  // throw std::logic_error("Somehow you got nan!");
+
+  const float dx = (pos.x + size.x / 2) - (otherPos.x + otherSize.x / 2);
+  const float dy = (pos.y + size.y / 2) - (otherPos.y + otherSize.y / 2);
+  const float w = (size.x + otherSize.x) / 2;
+  const float h = (size.y + otherSize.y) / 2;
+
+  const float crossW = w * dy;
+  const float crossH = h * dx;
+
+  if (std::abs(dx) <= w && std::abs(dy) <= h) {
+    if (crossW > crossH) {
+      normal = crossW > -crossH ? BoxCollider::bottomNormal
+                                : BoxCollider::leftNormal;
+    } else {
+      normal =
+          crossW > -crossH ? BoxCollider::rightNormal : BoxCollider::topNormal;
+    }
+    return true;
+  }
+  // printf("x = %f y = %f\n", normal.x, normal.y);
+  return false;
+}
+
+// The following code is sampled from OneLoneCoder and his rectangle engine,
+// available here
+// github.com/PixelGameEngine/SmallerProjects/OneLoneCoder_PGE_Rectangles.cpp
+
+bool RigidBody::RayVRect(const sf::Vector2f &origin, const sf::Vector2f &dir,
+                         const RigidBody *target, sf::Vector2f &point,
+                         sf::Vector2f &normal, float &t_hit) {
+  point = {0.0, 0.0};
+  normal = {0.0, 0.0};
+
+  //sf::Vector2f invdir = sf::Vector2f{1.0f / dir.x, 1.0f / dir.y};
+  sf::Vector2f invdir = -dir;
+
+  /*
+  if (dir.x == 0 && dir.y == 0)
+    return false;
+  else if (dir.x == 0)
+    invdir = {dir.x, 1.0f / dir.y};
+  else if (dir.y == 0)
+    invdir = {1.0f / dir.x, dir.y};
+  else
+    invdir = sf::Vector2f{1.0f, 1.0f}.componentWiseDiv(dir);
+  */
+
+  auto t_near = (target->GetPosition() - origin).componentWiseMul(invdir);
+  auto t_far = (target->GetPosition() + target->GetSize() - origin)
+                   .componentWiseMul(invdir);
+
+  if (std::isnan(t_far.y) || std::isnan(t_far.x))
+    return false;
+  if (std::isnan(t_near.y) || std::isnan(t_near.y))
+    return false;
+
+  if (t_near.x > t_far.x)
+    std::swap(t_near.x, t_far.x);
+  if (t_near.y > t_far.y)
+    std::swap(t_near.y, t_far.y);
+
+  if (t_near.x > t_far.y || t_near.y > t_far.x)
+    return false;
+
+  t_near.x = std::abs(t_near.x);
+  t_near.y = std::abs(t_near.y);
+  printf("t_near = (%f, %f)\n", t_near.x, t_near.y);
+
+  t_hit = std::max(t_near.x, t_near.y);
+
+  float t_hit_far = std::min(t_far.x, t_far.y);
+
+  if (t_hit_far < 0)
+    return false;
+
+  point = origin + t_hit * dir;
+
+  if (t_near.x > t_near.y) {
+
+    if (invdir.x < 0) {
+      normal = {1, 0};
+    } else {
+      normal = {-1, 0};
+    }
+  } else if (t_near.x < t_near.y) {
+    if (invdir.y < 0)
+      normal = {0, 1};
+    else
+      normal = {0, -1};
+  }
+  return true;
+}
+
+void RigidBody::Collide(RigidBody *other, const sf::Vector2f &gravity,
+                        float delta) {
+
+  // special thanks to this article
+  // https://stackoverflow.com/questions/29861096/detect-which-side-of-a-rectangle-is-colliding-with-another-rectangle
   const sf::Vector2f &otherVelo = other->velocity;
   const sf::Vector2f &collisionVelo = -(velocity + otherVelo) * 0.5f;
+
   if (other->static_) {
-    SetPosition(previousPosition);
-    ApplyGravity(-gravity);
+
+    StaticCollide(this, other, delta, gravity);
+    return;
   }
   if (static_) {
-    other->SetPosition(other->previousPosition);
-    other->ApplyGravity(-gravity);
+    StaticCollide(other, this, delta, gravity);
+    return;
   }
+
   other->SetPosition(other->previousPosition);
   SetPosition(previousPosition);
+
+}
+
+void RigidBody::StaticCollide(RigidBody *moving, RigidBody *r_static,
+                              float delta, const sf::Vector2f& gravity) {
+  if (moving->velocity.y != 0) moving->SetPosition({moving->GetPosition().x, moving->previousPosition.y});
+  return;
+
+  sf::Vector2f normal = {0, 0};
+  sf::Vector2f point = {0, 0};
+  if (moving->velocity.x == 0 && moving->velocity.y == 0)
+    return;
+  sf::Vector2f r = moving->GetPosition() + moving->GetSize() / 2.0f;
+  float time = 0.0f;
+  RigidBody temp(r_static->GetPosition() - moving->GetSize() / 2.0f,
+                 r_static->GetSize() + moving->GetSize());
+  temp.static_ = true;
+
+  if (!RayVRect(moving->GetPosition() + moving->GetSize() * 0.5f,
+                moving->GetVelocity().normalized() * delta , r_static, point, normal, time)) {
+
+    return;
+  }
+  if (time < 0.0f || time >= 1.0f)
+    return;
+  normal += normal.componentWiseMul(gravity);
+  auto force = (1 - delta) * normal.componentWiseMul(sf::Vector2f{
+                                         std::abs(moving->velocity.x),
+                                         std::abs(moving->velocity.y)});
+  printf("force = (%f, %f)\n", force.x, force.y);
+  moving->ApplyForce(force);
 }
 
 BoxCollider *RigidBody::GetBox() const { return box; }
 
-PyObject* RigidBody::GetCallback(){return callback;}
-void RigidBody::SetCallback(PyObject* new_callback){callback = new_callback;}
+PyObject *RigidBody::GetCallback() { return callback; }
+void RigidBody::SetCallback(PyObject *new_callback) { callback = new_callback; }

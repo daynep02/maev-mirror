@@ -3,7 +3,6 @@
 
 #include <Python.h>
 #include <SFML/Graphics.hpp>
-#include <vector>
 
 class BoxCollider {
     public:
@@ -17,6 +16,7 @@ class BoxCollider {
         void setPosition(float x, float y);
         sf::Vector2f getSize();
         void setSize(float w, float h);
+        static const sf::Vector2f topNormal, bottomNormal, leftNormal, rightNormal;
 
     private:
         sf::RectangleShape* box;

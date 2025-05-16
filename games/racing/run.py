@@ -6,11 +6,12 @@ from controlBlock import ControlBlock
 class Run:
     def __init__(self) -> None:
 
+        self.w, self.h = engine.get_screen_width(), engine.get_screen_height()
+
         self.controlable = ControlBlock(40,40, 50,50 , "../games/racing/assets/PixelSpaceRage/256px/PlayerBlue_Frame_01_png_processed.png")
 
         #self.window: Game.Window= Game.Window()
 
-        self.w, self.h = engine.get_screen_width(), engine.get_screen_height()
 
         self.controlable.edge_x, self.controlable.egde_x = self.w, self.h
 
