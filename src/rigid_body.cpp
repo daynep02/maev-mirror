@@ -98,13 +98,13 @@ void RigidBody::SetTerminalVelo(const sf::Vector2f &terminalVelo) {
   terminalY = terminalVelo.y;
 }
 
-bool RigidBody::GetFaceCollisionNormal(const RigidBody *other,
-                                       sf::Vector2f &normal) const {
+bool RigidBody::GetFaceCollisionNormal(const RigidBody* r1, const RigidBody *r2,
+                                       sf::Vector2f &normal) {
 
-  const auto &pos = GetPosition();
-  const auto &size = GetSize();
-  const auto &otherPos = other->GetPosition();
-  const auto &otherSize = other->GetSize();
+  const auto &pos = r1->GetPosition();
+  const auto &size = r1->GetSize();
+  const auto &otherPos = r2->GetPosition();
+  const auto &otherSize = r2->GetSize();
   // if (std::isnan(otherPos.x))
   // throw std::logic_error("Somehow you got nan!");
 
@@ -225,10 +225,15 @@ void RigidBody::Collide(RigidBody *other, const sf::Vector2f &gravity,
 
 void RigidBody::StaticCollide(RigidBody *moving, RigidBody *r_static,
                               float delta, const sf::Vector2f& gravity) {
-  if (moving->velocity.y != 0) moving->SetPosition({moving->GetPosition().x, moving->previousPosition.y});
+  sf::Vector2f normal = {0,0};
+  if (!GetFaceCollisionNormal(moving, r_static, normal)) return;
+  if (normal.y != 0.0f)
+    moving->SetPosition({moving->GetPosition().x, moving->previousPosition.y});
+  if (normal.x != 0.0)
+    moving->SetPosition({moving->previousPosition.x, moving->GetPosition().y});
   return;
 
-  sf::Vector2f normal = {0, 0};
+  // Below code is NOT utilized
   sf::Vector2f point = {0, 0};
   if (moving->velocity.x == 0 && moving->velocity.y == 0)
     return;

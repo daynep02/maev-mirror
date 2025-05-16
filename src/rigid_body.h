@@ -49,10 +49,13 @@ public:
   PyObject *GetCallback();
   void SetCallback(PyObject *new_callback);
 
-  static void StaticCollide(RigidBody *moving, RigidBody *r_static, float delta, const sf::Vector2f &gravity);
+  static void StaticCollide(RigidBody *moving, RigidBody *r_static, float delta,
+                            const sf::Vector2f &gravity);
   static bool RayVRect(const sf::Vector2f &origin, const sf::Vector2f &dir,
                        const RigidBody *target, sf::Vector2f &point,
                        sf::Vector2f &normal, float &t_hit);
+  static bool GetFaceCollisionNormal(const RigidBody *r1, const RigidBody *r2,
+                                     sf::Vector2f &normal);
 
 private:
   bool static_ = false;
@@ -65,8 +68,6 @@ private:
   PyObject *callback = NULL;
 
   sf::Vector2f terminalVelo = {0.0f, 100.0f};
-  bool GetFaceCollisionNormal(const RigidBody *other,
-                              sf::Vector2f &normal) const;
 
   float weight = 1.0f;
   float frictionCoeff = 0.0f;
