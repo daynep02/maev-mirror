@@ -28,6 +28,7 @@ RigidBodyHandler *g_rigid_body_handler;
 CameraHandler *g_camera_handler;
 TextHandler *g_text_handler;
 CallbackHandler *g_callback_handler;
+Vector *g_vector_handler;
 float g_gravity = 50.0f;
 
 /**
@@ -325,6 +326,7 @@ int main(int argc, char *argv[]) {
   g_camera_handler = new CameraHandler(g_window);
   g_text_handler = new TextHandler(g_window);
   g_callback_handler = new CallbackHandler();
+  g_vector_handler = new Vector();
 
   // Doing this so things don't fly off the screen in the first frame
   g_rigid_body_handler->UpdateCurrentAndTimeDelta();
@@ -403,6 +405,7 @@ int main(int argc, char *argv[]) {
   delete g_rigid_body_handler;
   delete g_camera_handler;
   delete g_text_handler;
+  delete g_vector_handler;
 
   printf("engine: Tearing Down\n");
 

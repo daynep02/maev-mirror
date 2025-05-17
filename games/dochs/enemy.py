@@ -5,11 +5,13 @@ class Enemy:
     def __init__(self):
         self.rb = engine.create_rigid_body((400,50),(25,35))
         print(f"creating enemy rigid: {self.rb}" )
-        engine.set_terminal_velo(self.rb, 0.0, 200.0)
+        engine.set_terminal_velo(self.rb, 0.0, 400.0)
         engine.set_rigid_body_static(self.rb, False)
         engine.set_rigid_body_gravity(self.rb, True)
-
-        self.speed = 80.0
+        
+        self.damage = 1
+        self.hp = 5
+        self.speed = 100.0
         self.direction = -1
         self.patrol_duration = 2.0
         self.patrol_time = engine.current_time()
@@ -18,7 +20,6 @@ class Enemy:
         if engine.current_time()-self.patrol_time>self.patrol_duration:
             self.direction = self.direction * -1
             self.patrol_time = engine.current_time()
-        #print(engine.get_rigid_body_position(self.rb))
         
         #patrol in a direction
         velocity = engine.get_rigid_body_velocity(self.rb)

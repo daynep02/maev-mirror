@@ -1,6 +1,4 @@
 import engine # type: ignore
-import time
-import math
 from player import Player
 from enemy import Enemy
 from title import Title
@@ -18,15 +16,19 @@ class Game:
         #The platform to collide with
         self.bottom_platform = engine.create_rigid_body((25,300),(700,20))
         engine.set_rigid_body_static(self.bottom_platform,True)
+        engine.set_rigid_body_gravity(self.bottom_platform,False)
 
         #self.top_platform = engine.create_rigid_body((25,0),(500,20))
         #engine.set_rigid_body_static(self.top_platform,True)
+        #engine.set_rigid_body_gravity(self.top_platform,False)
         self.left_platform = engine.create_rigid_body((20,10),(10,280))
         engine.set_rigid_body_static(self.left_platform,True)
+        engine.set_rigid_body_gravity(self.left_platform,False)
         self.right_platform = engine.create_rigid_body((720,10),(10,280))
         engine.set_rigid_body_static(self.right_platform,True)
+        engine.set_rigid_body_gravity(self.right_platform,False)
 
-        engine.set_gravity(0.0, .62)
+        engine.set_gravity(0.0, 0.62*4)
     
     def update_game(self):
         engine.set_camera_position(engine.get_rigid_body_position(self.player.rb))
@@ -101,5 +103,14 @@ def on_player_collision(player_rb,collider_rb):
         game.player.slide_right = 0
         game.player.slide_time = engine.current_time()
 
-    if collider_rb == game.enemy.rb:
-        game.player.take_damage(1)
+    if collider_rb == game.enemy.rb and not game.player.invincible:
+        p_pos = engine.get_rigid_body_position(player_rb)
+        e_pos = engine.get_rigid_body_position(collider_rb)
+        px = p_pos[0] - e_pos[0]
+        py = p_pos[1] - e_pos[1]
+        
+        direction = engine.normalize(engine.create_vector(px, py))
+        game.player.take_damage(game.enemy.damage, 500.0*engine.x(direction), 500.0*engine.y(direction))
+        print(direction)
+
+        engine.cleanse_vectors()
