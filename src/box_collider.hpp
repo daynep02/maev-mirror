@@ -12,13 +12,25 @@ class BoxCollider {
 
         bool CollidesWith(BoxCollider* other);
         sf::RectangleShape* getRect();
+
         sf::Vector2f getPosition();
         void setPosition(float x, float y);
+
         sf::Vector2f getSize();
         void setSize(float w, float h);
+
+        void Draw(sf::RenderWindow* window);
+
+        PyObject* GetCallback();
+        void SetCallback(PyObject *new_callback);
+
         static const sf::Vector2f topNormal, bottomNormal, leftNormal, rightNormal;
 
+        bool isTrigger = true;
+
+
     private:
+        PyObject* callback = NULL;
         sf::RectangleShape* box;
 };
 

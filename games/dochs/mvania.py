@@ -6,7 +6,7 @@ from title import Title
 class Game:
     def __init__(self):
 
-        self.player = Player()
+        self.player = Player(on_hitbox_collision)
         engine.set_rigid_body_callback(self.player.rb,on_player_collision)
 
         self.enemy = Enemy()
@@ -32,7 +32,7 @@ class Game:
     
     def update_game(self):
         engine.set_camera_position(engine.get_rigid_body_position(self.player.rb))
-        self.player.movement()
+        self.player.update()
         self.enemy.update()
     
     def draw_game(self):
@@ -111,6 +111,18 @@ def on_player_collision(player_rb,collider_rb):
         
         direction = engine.normalize(engine.create_vector(px, py))
         game.player.take_damage(game.enemy.damage, 500.0*engine.x(direction), 500.0*engine.y(direction))
-        print(direction)
+        #print(direction)
 
         engine.cleanse_vectors()
+
+def on_hitbox_collision(hit_bc,collider_rb):
+    global game
+
+    if collider_rb == game.enemy.rb:
+        if collider_rb not in game.player.boxes_hit:
+            print(f"hit {hit_bc} collided with {collider_rb} with direction {game.player.attack_direction}")
+            game.player.boxes_hit.append(collider_rb)
+            # launch player
+            game.player.launch(250.0*game.player.attack_direction[0]*-1, 400.0*game.player.attack_direction[1]*-1)
+            # launch enemy
+            game.enemy.take_damage(game.player.damage, game.player.attack_direction[0], game.player.attack_direction[1])

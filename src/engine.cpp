@@ -100,6 +100,15 @@ static PyMethodDef EngineMethods[] = {
      engine_create_box_collider_doc},
     {"free_box_collider", BoxColliderHandler::freeBoxCollider, METH_VARARGS,
      engine_free_box_collider_doc},
+    {"get_box_position", BoxColliderHandler::GetBoxPosition, METH_VARARGS, engine_get_box_position_doc},
+    {"set_box_position", BoxColliderHandler::SetBoxPosition, METH_VARARGS, engine_set_box_position_doc},
+    {"get_box_size", BoxColliderHandler::GetBoxSize, METH_VARARGS, engine_get_box_size_doc},
+    {"set_box_size", BoxColliderHandler::SetBoxSize, METH_VARARGS, engine_set_box_size_doc},
+    {"get_box_trigger", BoxColliderHandler::GetBoxTrigger, METH_VARARGS, engine_get_box_trigger_doc},
+    {"set_box_trigger", BoxColliderHandler::SetBoxTrigger, METH_VARARGS, engine_set_box_trigger_doc},
+    {"set_box_callback", BoxColliderHandler::SetBoxCallback, METH_VARARGS, engine_set_box_callback_doc},
+    {"draw_box", BoxColliderHandler::DrawBox, METH_VARARGS, engine_draw_box_doc},
+
     {"current_time", RigidBodyHandler::GetCurrentTime, METH_VARARGS,
      engine_current_time_doc},
     {"delta_time", RigidBodyHandler::GetDeltaTime, METH_VARARGS,
@@ -398,7 +407,6 @@ int main(int argc, char *argv[]) {
   }
 
   delete g_window;
-  // delete g_camera;
   delete g_window_handler;
   delete g_object_handler;
   delete g_box_collider_handler;

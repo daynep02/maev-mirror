@@ -60,6 +60,7 @@ void RigidBodyHandler::CollideBodies() {
   //       too tired to implement it rn
   for (int i = 0; i < rigid_bodies.size(); i++) {
     RigidBody *body_i = rigid_bodies.at(i);
+    // checking other rigid bodies
     for (int j = i + 1; j < rigid_bodies.size(); j++) {
       RigidBody *body_j = rigid_bodies.at(j);
       if (body_i->CollidesWith(body_j)) {
@@ -78,7 +79,22 @@ void RigidBodyHandler::CollideBodies() {
           PyObject_Call(body_j->GetCallback(),args,NULL);
           Py_DecRef(args);
         }
-        continue;
+        //continue;
+      }
+    }
+    //checking box colliders that are active triggers
+    std::vector<BoxCollider*>*boxes = BoxColliderHandler::GetBoxVector();
+    for (int b = 0; b < boxes->size(); b++) {
+      BoxCollider *box = boxes->at(b);
+      if (box->isTrigger) {
+        if (body_i->CollidesWith(box)) {
+          if(box->GetCallback()!= NULL) {
+            PyTuple_Pack(2, PyLong_FromLong(b), PyLong_FromLong(i));
+            PyObject* args1 = PyTuple_Pack(2, PyLong_FromLong(b), PyLong_FromLong(i));
+            PyObject_Call(box->GetCallback(),args1,NULL);
+            Py_DecRef(args1);
+          }
+        }
       }
     }
   }
