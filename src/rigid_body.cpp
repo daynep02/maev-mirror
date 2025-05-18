@@ -142,13 +142,14 @@ bool RigidBody::GetFaceCollisionNormal(const RigidBody* r1, const RigidBody *r2,
 bool RigidBody::RayVRect(const sf::Vector2f &origin, const sf::Vector2f &dir,
                          const RigidBody *target, sf::Vector2f &point,
                          sf::Vector2f &normal, float &t_hit) {
+  return false;
+  /*
   point = {0.0, 0.0};
   normal = {0.0, 0.0};
 
   //sf::Vector2f invdir = sf::Vector2f{1.0f / dir.x, 1.0f / dir.y};
   sf::Vector2f invdir = -dir;
 
-  /*
   if (dir.x == 0 && dir.y == 0)
     return false;
   else if (dir.x == 0)
@@ -157,7 +158,6 @@ bool RigidBody::RayVRect(const sf::Vector2f &origin, const sf::Vector2f &dir,
     invdir = {1.0f / dir.x, dir.y};
   else
     invdir = sf::Vector2f{1.0f, 1.0f}.componentWiseDiv(dir);
-  */
 
   auto t_near = (target->GetPosition() - origin).componentWiseMul(invdir);
   auto t_far = (target->GetPosition() + target->GetSize() - origin)
@@ -203,6 +203,7 @@ bool RigidBody::RayVRect(const sf::Vector2f &origin, const sf::Vector2f &dir,
       normal = {0, -1};
   }
   return true;
+  */
 }
 
 void RigidBody::Collide(RigidBody *other, const sf::Vector2f &gravity,
@@ -234,7 +235,6 @@ void RigidBody::Collide(RigidBody *other, const sf::Vector2f &gravity,
     this->SetPosition({this->previousPosition.x, this->GetPosition().y});
     other->SetPosition({other->previousPosition.x, other->GetPosition().y});
   }
-
   return;
 
 

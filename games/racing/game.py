@@ -6,6 +6,7 @@ import engine
 from title import Title
 from run import Run
 from controls import Controls
+from camera import Camera
 from state import *
 
 
@@ -16,9 +17,13 @@ class Game:
     index = 1
     def __init__(self):
 
-        self.states[TITLE] = Title()
+        self.camera = Camera(0,0, 600, 400)
+
+        self.states[TITLE] = Title(self.camera)
+
         self.states[CONTROLS] = Controls()
-        self.states[RUN] = Run()
+
+        self.states[RUN] = Run(self.camera)
 
         self.state = self.states[self.index]
 
@@ -30,6 +35,9 @@ class Game:
 
         if val >= 0:
             self.state = self.states[val]
+            self.state.start()
+
+        self.camera.update()
 
 
     def draw(self):

@@ -101,7 +101,6 @@ class ControlBlock:
 
         self.uncontrolledUpdate()
 
-
     def draw(self) -> None:
 
         if self.sprite is not None: 

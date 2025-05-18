@@ -23,6 +23,9 @@ class Controls:
             engine.set_text_color(opt, (255, 255, 255, 255))
             engine.set_text_position(opt, (tx/2,100+modi))
             modi+=50
+
+    def start(self):
+        pass
         
     def update(self):
         
