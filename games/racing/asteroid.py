@@ -25,6 +25,11 @@ class AsteroidList:
             # just call the draw function for every asteroid
             roid.draw()
 
+    def update(self):
+        for roid in self.asteroids:
+            roid.update()
+
+
     def add(self, min_position: tuple, max_position: tuple):
 
         sprite_to_use = self.path + self.names[random.randint(0, 3)]
@@ -39,6 +44,9 @@ class AsteroidList:
     class Asteroid:
         def __init__(self, name: str, position: tuple):
 
+            # keep track of the position here so it can be changed later
+            self.positon = position
+
             # create the sprite and get the id
             self.sprite :float = engine.create_sprite(name)
 
@@ -52,9 +60,19 @@ class AsteroidList:
             # create a rigid body at the same location
             self.rigid_body :float = engine.create_rigid_body(position, self.size)
 
-            # make these static for now
-            engine.set_rigid_body_static(self.rigid_body, True)
+            engine.set_rigid_body_velocity(self.rigid_body, (1.0, 100.0))
+
+
+
 
         def draw(self):
             engine.draw_sprite(self.sprite)
+            pass
+
+        def update(self):
+
+            self.position = engine.get_rigid_body_position(self.rigid_body)
+
+            engine.set_sprite_position(self.sprite, self.position)
+
             pass

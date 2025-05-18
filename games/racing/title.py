@@ -2,19 +2,24 @@ import engine #type: ignore
 from state import *
 
 class Title:
-    def __init__(self):
+    def __init__(self, camera):
+        self.camera = camera
+
         self.font = engine.create_font("../games/racing/assets/MesloLGS_NF_Regular.ttf")
         self.select_color = (255,255,255,255)
         self.deselect_color = (255,255,255,128)
 
         w = engine.get_screen_width()
         h = engine.get_screen_height()
-        engine.set_camera_size((w,h))
+
+        #engine.set_camera_size((w,h))
 
         self.title_text = engine.create_text(self.font)
         engine.set_text(self.title_text, "This a racing game, believe it or not")
+
         engine.set_text_size(self.title_text, 50)
         engine.set_text_color(self.title_text, (255,0,0,255))
+
         tx, ty = engine.get_text_position(self.title_text)
         engine.set_camera_position((tx, ty+200))
 
@@ -31,6 +36,10 @@ class Title:
         
         self.state = 0
         self.state_cooldown = 0
+
+
+    def start(self):
+        pass
 
     def move_states(self):
 
