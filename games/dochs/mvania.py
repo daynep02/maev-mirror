@@ -2,12 +2,15 @@ import engine # type: ignore
 from player import Player
 from enemy import Enemy
 from title import Title
+from particles import ParticleHandler
 
 class Game:
     def __init__(self):
 
         self.player = Player(on_hitbox_collision)
         engine.set_rigid_body_callback(self.player.rb,on_player_collision)
+
+        self.p_handler = ParticleHandler()
 
         self.enemy = Enemy()
 
@@ -34,10 +37,12 @@ class Game:
         engine.set_camera_position(engine.get_rigid_body_position(self.player.rb))
         self.player.update()
         self.enemy.update()
+        self.p_handler.update()
     
     def draw_game(self):
         self.player.draw()
         self.enemy.draw()
+        self.p_handler.draw()
 
         #draw platforms
         engine.draw_rigid_body_collider(self.bottom_platform)
@@ -120,9 +125,13 @@ def on_hitbox_collision(hit_bc,collider_rb):
 
     if collider_rb == game.enemy.rb:
         if collider_rb not in game.player.boxes_hit:
-            print(f"hit {hit_bc} collided with {collider_rb} with direction {game.player.attack_direction}")
+            #print(f"hit {hit_bc} collided with {collider_rb} with direction {game.player.attack_direction}")
             game.player.boxes_hit.append(collider_rb)
             # launch player
             game.player.launch(250.0*game.player.attack_direction[0]*-1, 400.0*game.player.attack_direction[1]*-1)
             # launch enemy
             game.enemy.take_damage(game.player.damage, game.player.attack_direction[0], game.player.attack_direction[1])
+
+            # start particles
+            sposx, sposy = engine.get_rigid_body_position(collider_rb)
+            game.p_handler.spawn_classic(sposx, sposy)

@@ -13,6 +13,7 @@ std::vector<sf::Texture *> textures;
 std::vector<sf::Sprite *> sprites;
 std::vector<long> free_sprites;
 std::vector<sf::CircleShape *> circles;
+std::vector<long> free_circles;
 std::vector<sf::RectangleShape *> rects;
 
 // stores the window to be accessible from the static Python functions
@@ -411,13 +412,18 @@ ObjectHandler::~ObjectHandler()
 	PyObject *pRadius = PyTuple_GetItem(args, 0);
 
 	double radius = PyFloat_AsDouble(pRadius);
+	long loc; 
+	if (!free_circles.empty()) {
+		loc = free_circles.back();
+		free_circles.pop_back();
+		delete circles.at(loc);
+		circles.at(loc) = new sf::CircleShape(radius);
+	} else {
+		circles.push_back(new sf::CircleShape(radius));
+		loc = circles.size() - 1;
+	}
 
-	circles.push_back(new sf::CircleShape(radius));
-	long id = circles.size() - 1;
-
-	// Py_XDECREF(pRadius);
-
-	return PyLong_FromLong(id);
+	return PyLong_FromLong(loc);
 }
 
 /*static*/ PyObject *ObjectHandler::SetCircleFillColor(PyObject *self,
@@ -720,6 +726,35 @@ ObjectHandler::~ObjectHandler()
 	// Py_XDECREF(pId);
 
 	Py_RETURN_NONE;
+}
+
+/*static*/ PyObject *ObjectHandler::FreeCircle(PyObject *self,
+                                                     PyObject *args) {
+  Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+  if (nargs != 1) {
+    printf("engine.free_circle expects a single long as an argument\n");
+    PyErr_BadArgument();
+  }
+  PyObject *pId = PyTuple_GetItem(args, 0);
+  if (!PyLong_Check(pId)) {
+    Py_XDECREF(pId);
+    printf("engine.free_circle expects a single long as an argument\n");
+    PyErr_BadArgument();
+  }
+
+  long id = PyLong_AsLong(pId);
+
+  if (circles.size() <= id || 0 > id) {
+    Py_XDECREF(pId);
+    printf("engine.free_circle got a circle id out of range\n");
+    PyErr_BadArgument();
+  }
+
+  free_circles.push_back(id);
+
+  // Py_XDECREF(pId);
+
+  Py_RETURN_NONE;
 }
 
 //// RECTANGLE ////

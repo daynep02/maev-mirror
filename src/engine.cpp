@@ -68,6 +68,7 @@ static PyMethodDef EngineMethods[] = {
      METH_VARARGS, engine_set_circle_outline_color_doc},
     {"draw_circle", ObjectHandler::DrawCircle, METH_VARARGS,
      engine_draw_circle_doc},
+     {"free_circle", ObjectHandler::FreeCircle, METH_VARARGS, engine_free_circle_doc},
     {"create_rect", ObjectHandler::CreateRect, METH_VARARGS,
      engine_create_rect_doc},
     {"set_rect_fill_color", ObjectHandler::SetRectFillColor, METH_VARARGS,
