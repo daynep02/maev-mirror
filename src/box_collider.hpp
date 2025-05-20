@@ -4,6 +4,8 @@
 #include <Python.h>
 #include <SFML/Graphics.hpp>
 
+#include "collision_layers.h"
+
 class BoxCollider {
     public:
         BoxCollider();
@@ -21,6 +23,9 @@ class BoxCollider {
 
         void Draw(sf::RenderWindow* window);
 
+        CollisionLayer GetCollisionLayer();
+        void SetCollisionLayer(CollisionLayer new_layer);
+
         PyObject* GetCallback();
         void SetCallback(PyObject *new_callback);
 
@@ -30,6 +35,8 @@ class BoxCollider {
 
 
     private:
+        CollisionLayer layer = DEFAULT;
+
         PyObject* callback = NULL;
         sf::RectangleShape* box;
 };

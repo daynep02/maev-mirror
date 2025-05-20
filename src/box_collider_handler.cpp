@@ -260,6 +260,74 @@ PyObject *BoxColliderHandler::freeBoxCollider(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
+/*static*/ PyObject *BoxColliderHandler::GetBoxLayer(PyObject *self, PyObject *args){
+  Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+  if (nargs != 1) {
+    printf(
+        "engine.get_box_layer expects a single long as an argument\n");
+    PyErr_BadArgument();
+  }
+  PyObject *pId = PyTuple_GetItem(args, 0);
+  if (!PyLong_Check(pId)) {
+    Py_XDECREF(pId);
+    printf(
+        "engine.get_box_layer expects a single long as an argument\n");
+    PyErr_BadArgument();
+  }
+
+  long id = PyLong_AsLong(pId);
+
+  if (box_colliders.size() <= id || 0 > id) {
+    Py_XDECREF(pId);
+    printf("engine.get_box_layer got a box collider id out of range\n");
+    PyErr_BadArgument();
+  }
+
+  return PyLong_FromLong(box_colliders.at(id)->GetCollisionLayer());
+}
+
+/*static*/ PyObject *BoxColliderHandler::SetBoxLayer(PyObject *self, PyObject *args){
+  Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+  if (nargs != 2) {
+    printf("engine.set_box_layer expects a single long and a long as "
+           "arguments\n");
+    PyErr_BadArgument();
+  }
+  PyObject *pId = PyTuple_GetItem(args, 0);
+  if (!PyLong_Check(pId)) {
+    Py_XDECREF(pId);
+    printf("engine.set_box_layer expects a single long and a long as "
+           "arguments\n");
+    PyErr_BadArgument();
+  }
+  PyObject *pLayer = PyTuple_GetItem(args, 1);
+  if (!PyLong_Check(pLayer)) {
+    Py_XDECREF(pLayer);
+    printf("engine.set_box_layer expects a single long and a long as "
+           "arguments\n");
+    PyErr_BadArgument();
+  }
+
+  long id = PyLong_AsLong(pId);
+  long b = PyLong_AsLong(pLayer);
+  if (b > 7 || b <0) {
+    printf("engine.set_box_layer got layer out of range, ignoring...\n");
+    PyErr_BadArgument();
+    Py_RETURN_NONE;
+  }
+
+  if (box_colliders.size() <= id || 0 > id) {
+    Py_XDECREF(pId);
+    Py_XDECREF(pLayer);
+    printf("engine.set_box_layer got a box collider id out of range\n");
+    PyErr_BadArgument();
+  }
+
+  box_colliders.at(id)->SetCollisionLayer((CollisionLayer)b);
+
+  Py_RETURN_NONE;
+}
+
 /*static*/ PyObject *BoxColliderHandler::SetBoxCallback(PyObject *self, PyObject *args)
 {
     Py_ssize_t nargs = PyTuple_GET_SIZE(args);

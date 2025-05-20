@@ -39,6 +39,9 @@ public:
   static PyObject *IsRigidBodyGravity(PyObject *self, PyObject *args);
   static PyObject *SetRigidBodyGravity(PyObject *self, PyObject *args);
 
+  static PyObject *GetRigidBodyLayer(PyObject *self, PyObject *args);
+  static PyObject *SetRigidBodyLayer(PyObject *self, PyObject *args);
+
   static PyObject *SetRigidBodyVelocity(PyObject *self, PyObject *args);
 
   static PyObject *GetRigidBodyPosition(PyObject *self, PyObject *args);
@@ -148,9 +151,26 @@ PyDoc_STRVAR(engine_set_rigid_body_gravity_doc,
              "\n"
              "  :return: Nothing.\n");
 
-// corresponding documentation for engine_set_rigid_body_gravity
+// corresponding documentation for engine_get_rigid_body_layer
+PyDoc_STRVAR(engine_get_rigid_body_layer_doc,
+             ".. function:: get_rigid_body_layer(id)\n"
+             "\n"
+             "  Gets and returns the rigid body's collision layer.\n"
+             "\n"
+             "  :return: A long.\n");
+
+// corresponding documentation for engine_set_rigid_body_layer
+PyDoc_STRVAR(engine_set_rigid_body_layer_doc,
+             ".. function:: set_rigid_body_layer(id, layer)\n"
+             "\n"
+             "  Sets the rigid body to be on the provided collision layer"
+             "  , a long in the range 0-7 inclusive.\n"
+             "\n"
+             "  :return: Nothing.\n");
+
+// corresponding documentation for engine_set_rigid_body_velocity
 PyDoc_STRVAR(engine_set_rigid_body_velocity_doc,
-             ".. function:: engine_set_rigid_body_velocity_doc(id, tuple(float "
+             ".. function:: set_rigid_body_velocity(id, tuple(float "
              "x, float y)))\n"
              "\n"
              "  Sets the rigid body to have the speicified velocity.\n"

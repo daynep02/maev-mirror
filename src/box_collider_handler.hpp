@@ -27,6 +27,9 @@ class BoxColliderHandler {
         static PyObject* GetBoxTrigger(PyObject* self, PyObject* args);
         static PyObject* SetBoxTrigger(PyObject* self, PyObject* args);
 
+        static PyObject *GetBoxLayer(PyObject *self, PyObject *args);
+        static PyObject *SetBoxLayer(PyObject *self, PyObject *args);
+
         static PyObject* SetBoxCallback(PyObject* self, PyObject* args);
         static PyObject* DrawBox(PyObject* self, PyObject* args);
 
@@ -103,12 +106,29 @@ PyDoc_STRVAR(engine_set_box_trigger_doc,
              "\n"
              "  :return: Nothing.\n");
 
+// corresponding documentation for engine_get_box_layer
+PyDoc_STRVAR(engine_get_box_layer_doc,
+             ".. function:: get_box_layer(id)\n"
+             "\n"
+             "  Gets and returns the box collider's collision layer.\n"
+             "\n"
+             "  :return: A long.\n");
+
+// corresponding documentation for engine_set_box_layer
+PyDoc_STRVAR(engine_set_box_layer_doc,
+             ".. function:: set_box_layer(id, layer)\n"
+             "\n"
+             "  Sets the box collider to be on the provided collision layer"
+             "  , a long in the range 0-7 inclusive.\n"
+             "\n"
+             "  :return: Nothing.\n");
+
 // corresponding documentation for engine_set_box_callback
 PyDoc_STRVAR(engine_set_box_callback_doc,
              ".. function:: set_box_callback(id, callback)\n"
              "\n"
              "  Sets a function callback to be called upon the specified box"
-             "  colliding with a rigid body.\n"
+             "  colliding with a box collider.\n"
              "\n"
              "  :return: Nothing.\n");
 

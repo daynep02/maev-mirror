@@ -33,7 +33,14 @@ void BoxCollider::Draw(sf::RenderWindow* window) {
 PyObject* BoxCollider::GetCallback() {return callback;}
 void BoxCollider::SetCallback(PyObject *new_callback) { callback = new_callback; }
 
+CollisionLayer BoxCollider::GetCollisionLayer() {return layer;}
+void BoxCollider::SetCollisionLayer(CollisionLayer new_layer) {layer = new_layer;}
+
 bool BoxCollider::CollidesWith(BoxCollider *other) {
+  if (!GetLayerAt(layer,other->GetCollisionLayer())) {
+    return false;
+  }
+
   sf::RectangleShape *other_box = other->getRect();
   sf::Vector2f pos1 = box->getPosition();
   sf::Vector2f pos2 = other_box->getPosition();

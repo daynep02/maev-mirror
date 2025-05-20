@@ -3,12 +3,18 @@ from player import Player
 from enemy import Enemy
 from title import Title
 from particles import ParticleHandler
+from layers import Layer
 
 class Game:
     def __init__(self):
 
         self.player = Player(on_hitbox_collision)
         engine.set_rigid_body_callback(self.player.rb,on_player_collision)
+
+        engine.set_collision_layer_value(Layer.PLAYER,Layer.PLATFORM,True)
+        engine.print_collision_layer_matrix()
+
+        engine.set_rigid_body_layer(self.player.rb, Layer.PLAYER)
 
         self.p_handler = ParticleHandler()
 
@@ -20,6 +26,7 @@ class Game:
         self.bottom_platform = engine.create_rigid_body((25,300),(700,20))
         engine.set_rigid_body_static(self.bottom_platform,True)
         engine.set_rigid_body_gravity(self.bottom_platform,False)
+        engine.set_rigid_body_layer(self.bottom_platform, Layer.PLATFORM)
 
         #self.top_platform = engine.create_rigid_body((25,0),(500,20))
         #engine.set_rigid_body_static(self.top_platform,True)

@@ -107,6 +107,8 @@ static PyMethodDef EngineMethods[] = {
     {"set_box_size", BoxColliderHandler::SetBoxSize, METH_VARARGS, engine_set_box_size_doc},
     {"get_box_trigger", BoxColliderHandler::GetBoxTrigger, METH_VARARGS, engine_get_box_trigger_doc},
     {"set_box_trigger", BoxColliderHandler::SetBoxTrigger, METH_VARARGS, engine_set_box_trigger_doc},
+    {"get_box_layer", BoxColliderHandler::GetBoxLayer,METH_VARARGS,engine_get_box_layer_doc},
+    {"set_box_layer", BoxColliderHandler::SetBoxLayer,METH_VARARGS,engine_set_box_layer_doc},
     {"set_box_callback", BoxColliderHandler::SetBoxCallback, METH_VARARGS, engine_set_box_callback_doc},
     {"draw_box", BoxColliderHandler::DrawBox, METH_VARARGS, engine_draw_box_doc},
 
@@ -124,6 +126,8 @@ static PyMethodDef EngineMethods[] = {
      METH_VARARGS, engine_is_rigid_body_gravity_doc},
     {"set_rigid_body_gravity", RigidBodyHandler::SetRigidBodyGravity,
      METH_VARARGS, engine_set_rigid_body_gravity_doc},
+    {"get_rigid_body_layer", RigidBodyHandler::GetRigidBodyLayer,METH_VARARGS,engine_get_rigid_body_layer_doc},
+    {"set_rigid_body_layer", RigidBodyHandler::SetRigidBodyLayer,METH_VARARGS,engine_set_rigid_body_layer_doc},
     {"set_rigid_body_velocity", RigidBodyHandler::SetRigidBodyVelocity,
      METH_VARARGS, engine_set_rigid_body_velocity_doc},
     {"get_rigid_body_position", RigidBodyHandler::GetRigidBodyPosition,
@@ -203,6 +207,12 @@ static PyMethodDef EngineMethods[] = {
      engine_get_screen_height_doc},
     {"exit", WindowHandler::Exit, METH_VARARGS, engine_exit_doc},
     {"set_framerate_limit", WindowHandler::SetFramerateLimit, METH_VARARGS, engine_set_framerate_limit_doc},
+    
+    {"set_collision_layer_value", CollisionLayerHandler::SetCollisionLayerValue, METH_VARARGS, engine_set_collision_layer_value_doc},
+    {"get_collision_layer_value", CollisionLayerHandler::GetCollisionLayerValue, METH_VARARGS, engine_get_collision_layer_value_doc},
+    {"enable_all_collision_layers", CollisionLayerHandler::EnableAllCollisionLayers, METH_VARARGS, engine_enable_all_collision_layers_doc},
+    {"disable_all_collision_layers", CollisionLayerHandler::DisableAllCollisionLayers, METH_VARARGS, engine_disable_all_collision_layers_doc},
+    {"print_collision_layer_matrix", CollisionLayerHandler::PrintCollisionLayerMatrix, METH_VARARGS, engine_print_collision_layer_matrix_doc},
 
     createVector,
     destroyVector,

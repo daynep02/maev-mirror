@@ -17,6 +17,9 @@ public:
   bool IsGravity() const;
   void SetGravity(bool new_gravity);
 
+  CollisionLayer GetCollisionLayer();
+  void SetCollisionLayer(CollisionLayer new_layer);
+
   const sf::Vector2f &GetVelocity() const;
   void SetVelocity(float x, float y);
   void SetVelocity(const sf::Vector2f &new_velocity);

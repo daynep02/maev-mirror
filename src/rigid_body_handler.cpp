@@ -51,8 +51,7 @@ void RigidBodyHandler::UpdateAllBodies() {
 void RigidBodyHandler::CollideBodies() {
 
   // check for collisions
-  //  bug: suffers from a "too fast" problem where a collision won't be dfloat ,
-  //  float yetected
+  //  bug: suffers from a "too fast" problem where a collision won't be detected
   //       if a body is going so fast that it basically teleports across a body
   //       inbetween frames
   //  fix: move it one pixel from it's previous position every step to check for
@@ -319,6 +318,74 @@ void RigidBodyHandler::SetTerminalVelo(RigidBody *body,
   }
 
   rigid_bodies.at(id)->SetGravity(b);
+
+  Py_RETURN_NONE;
+}
+
+/*static*/ PyObject *RigidBodyHandler::GetRigidBodyLayer(PyObject *self, PyObject *args){
+  Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+  if (nargs != 1) {
+    printf(
+        "engine.get_rigid_body_layer expects a single long as an argument\n");
+    PyErr_BadArgument();
+  }
+  PyObject *pId = PyTuple_GetItem(args, 0);
+  if (!PyLong_Check(pId)) {
+    Py_XDECREF(pId);
+    printf(
+        "engine.get_rigid_body_layer expects a single long as an argument\n");
+    PyErr_BadArgument();
+  }
+
+  long id = PyLong_AsLong(pId);
+
+  if (rigid_bodies.size() <= id || 0 > id) {
+    Py_XDECREF(pId);
+    printf("engine.get_rigid_body_layer got a rigid body id out of range\n");
+    PyErr_BadArgument();
+  }
+
+  return PyLong_FromLong(rigid_bodies.at(id)->GetCollisionLayer());
+}
+
+/*static*/ PyObject *RigidBodyHandler::SetRigidBodyLayer(PyObject *self, PyObject *args){
+  Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+  if (nargs != 2) {
+    printf("engine.set_rigid_body_layer expects a single long and a long as "
+           "arguments\n");
+    PyErr_BadArgument();
+  }
+  PyObject *pId = PyTuple_GetItem(args, 0);
+  if (!PyLong_Check(pId)) {
+    Py_XDECREF(pId);
+    printf("engine.set_rigid_body_layer expects a single long and a long as "
+           "arguments\n");
+    PyErr_BadArgument();
+  }
+  PyObject *pLayer = PyTuple_GetItem(args, 1);
+  if (!PyLong_Check(pLayer)) {
+    Py_XDECREF(pLayer);
+    printf("engine.set_rigid_body_layer expects a single long and a long as "
+           "arguments\n");
+    PyErr_BadArgument();
+  }
+
+  long id = PyLong_AsLong(pId);
+  long b = PyLong_AsLong(pLayer);
+  if (b > 7 || b <0) {
+    printf("engine.set_rigid_body_layer got layer out of range, ignoring...\n");
+    PyErr_BadArgument();
+    Py_RETURN_NONE;
+  }
+
+  if (rigid_bodies.size() <= id || 0 > id) {
+    Py_XDECREF(pId);
+    Py_XDECREF(pLayer);
+    printf("engine.set_rigid_body_layer got a rigid body id out of range\n");
+    PyErr_BadArgument();
+  }
+
+  rigid_bodies.at(id)->SetCollisionLayer((CollisionLayer)b);
 
   Py_RETURN_NONE;
 }
