@@ -110,6 +110,7 @@ PyObject *BoxColliderHandler::freeBoxCollider(PyObject *self, PyObject *args)
 
     // delete box_colliders[id];
     free_box_colliders.push_back(id);
+    box_colliders.at(id)->freed = true;
 
     Py_RETURN_NONE;
 }

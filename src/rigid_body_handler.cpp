@@ -718,6 +718,7 @@ PyObject *RigidBodyHandler::SetRigidBodyVelocity(PyObject *self,
   }
 
   free_rigid_bodies.push_back(id);
+  rigid_bodies.at(id)->Free();
 
   // Py_XDECREF(pId);
 

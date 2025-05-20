@@ -40,6 +40,9 @@ bool BoxCollider::CollidesWith(BoxCollider *other) {
   if (!GetLayerAt(layer,other->GetCollisionLayer())) {
     return false;
   }
+  if (freed || other->freed) {
+    return false;
+  }
 
   sf::RectangleShape *other_box = other->getRect();
   sf::Vector2f pos1 = box->getPosition();

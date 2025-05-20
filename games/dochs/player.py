@@ -1,10 +1,8 @@
 import engine # type: ignore
+from layers import Layer
 
 class Player:
     # movement variables
-    slide_left = 1
-    slide_right = 1
-    slide_time = 0.0
     grounded = False
     coyote_time = 0.0
     jumping = False
@@ -35,6 +33,7 @@ class Player:
         engine.set_terminal_velo(self.rb, 0.0, 400.0)
         engine.set_rigid_body_static(self.rb, False)
         engine.set_rigid_body_gravity(self.rb, True)
+        engine.set_rigid_body_layer(self.rb, Layer.PLAYER)
 
         self.hit_callback = callback
         player_position = engine.get_rigid_body_position(self.rb)
@@ -193,11 +192,6 @@ class Player:
             self.coyote_time = engine.current_time()
             self.grounded = False
             engine.set_rigid_body_velocity(self.rb, (velocity[0],0.0))
-        
-        if engine.current_time()-self.slide_time>0.30:
-            self.slide_left = 1
-            self.slide_right = 1
-            self.slide_time = 0.0
         
         if engine.current_time()-self.invincible_time>1 and self.invincible:
             self.invincible_time = 0.0

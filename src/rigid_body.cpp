@@ -36,6 +36,8 @@ void RigidBody::SetGravity(bool new_gravity) { gravity = new_gravity; }
 
 CollisionLayer RigidBody::GetCollisionLayer() { return box->GetCollisionLayer();}
 
+void RigidBody::Free() {box->freed = true;}
+
 void RigidBody::SetCollisionLayer(CollisionLayer new_layer) {box->SetCollisionLayer(new_layer);}
 
 const sf::Vector2f &RigidBody::GetVelocity() const { return velocity; }

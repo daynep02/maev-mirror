@@ -32,7 +32,7 @@ class BoxCollider {
         static const sf::Vector2f topNormal, bottomNormal, leftNormal, rightNormal;
 
         bool isTrigger = true;
-
+        bool freed = false;
 
     private:
         CollisionLayer layer = DEFAULT;

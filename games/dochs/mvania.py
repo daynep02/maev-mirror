@@ -7,18 +7,17 @@ from layers import Layer
 
 class Game:
     def __init__(self):
-
         self.player = Player(on_hitbox_collision)
         engine.set_rigid_body_callback(self.player.rb,on_player_collision)
-
-        engine.set_collision_layer_value(Layer.PLAYER,Layer.PLATFORM,True)
-
-        #engine.set_rigid_body_layer(self.player.rb, Layer.PLAYER)
-
-        self.p_handler = ParticleHandler()
-
         self.enemy = Enemy()
 
+        # collision layer settings
+        engine.set_collision_layer_value(Layer.PLATFORM,Layer.PLATFORM,False)
+
+        # particle handler
+        self.p_handler = ParticleHandler()
+
+        # starting camera
         self.set_camera_size(600,400)
 
         #The platform to collide with
@@ -33,9 +32,11 @@ class Game:
         self.left_platform = engine.create_rigid_body((20,10),(10,280))
         engine.set_rigid_body_static(self.left_platform,True)
         engine.set_rigid_body_gravity(self.left_platform,False)
+        engine.set_rigid_body_layer(self.left_platform, Layer.PLATFORM)
         self.right_platform = engine.create_rigid_body((720,10),(10,280))
         engine.set_rigid_body_static(self.right_platform,True)
         engine.set_rigid_body_gravity(self.right_platform,False)
+        engine.set_rigid_body_layer(self.right_platform, Layer.PLATFORM)
 
         engine.set_gravity(0.0, 1463.0) # 2.48 before delta, 1463.0? after
         engine.print_collision_layer_matrix()
@@ -111,18 +112,13 @@ def on_close():
 
 def on_player_collision(player_rb,collider_rb):
     global game
+    p_pos = engine.get_rigid_body_position(player_rb)
 
-    if collider_rb == game.bottom_platform:
-        game.player.grounded = True
-    elif collider_rb == game.left_platform:
-        game.player.slide_left = 0
-        game.player.slide_time = engine.current_time()
-    elif collider_rb == game.right_platform:
-        game.player.slide_right = 0
-        game.player.slide_time = engine.current_time()
+    if engine.get_rigid_body_layer(collider_rb) == Layer.PLATFORM:
+        if collider_rb == game.bottom_platform:
+            game.player.grounded = True
 
     if collider_rb == game.enemy.rb and not game.player.invincible:
-        p_pos = engine.get_rigid_body_position(player_rb)
         e_pos = engine.get_rigid_body_position(collider_rb)
         px = p_pos[0] - e_pos[0]
         py = p_pos[1] - e_pos[1]

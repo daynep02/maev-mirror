@@ -1,4 +1,5 @@
 import engine # type: ignore
+from layers import Layer
 
 class Enemy:
     knockback = (0.0,0.0)
@@ -12,6 +13,7 @@ class Enemy:
         engine.set_terminal_velo(self.rb, 0.0, 400.0)
         engine.set_rigid_body_static(self.rb, False)
         engine.set_rigid_body_gravity(self.rb, True)
+        engine.set_rigid_body_layer(self.rb, Layer.ENEMY)
         
         self.damage = 1
         self.hp = 5
