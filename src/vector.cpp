@@ -1,5 +1,6 @@
 #include "vector.h"
 #include "common_helpers.h"
+#include "window_handler.h"
 #include <vector>
 #include <cmath>
 #include <algorithm>
@@ -195,6 +196,44 @@ PyObject* Vector::scaDiv(PyObject* self, PyObject* args) {
 	(*(vectors.at(id))).y /= s;
 
 	return PyLong_FromLong(id);
+}
+
+// draws a Vector on the game Window
+PyObject* Vector::drawVector(PyObject* self, PyObject* args) {
+    Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+	if (nargs != 3) {
+		printf("engine.draw_vector expects a single long and two tuples as arguments\n");
+		PyErr_BadArgument();
+	}
+
+    PyObject* ido = PyTuple_GetItem(args, 0);
+    long id = PyLong_AsLong(ido);
+
+    // tuple for Vector start position
+    PyObject *start = PyTuple_GetItem(args, 1);
+	PyObject *sxo = PyTuple_GetItem(start, 0);
+	PyObject *syo = PyTuple_GetItem(start, 1);
+    float sx = PyFloat_AsDouble(sxo);
+	float sy = PyFloat_AsDouble(syo);
+
+    // tuple for Vector end position
+    PyObject *end = PyTuple_GetItem(args, 2);
+	PyObject *exo = PyTuple_GetItem(end, 0);
+	PyObject *eyo = PyTuple_GetItem(end, 1);
+    float ex = PyFloat_AsDouble(exo);
+	float ey = PyFloat_AsDouble(eyo);
+
+    //printf("%f %f %f %f \n", sx, sy, ex, ey);
+
+    // construct line for Vector to be drawn
+    std::array line = {
+    sf::Vertex{sf::Vector2f(sx, sy)},
+    sf::Vertex{sf::Vector2f(ex, ey)}
+    };
+
+    WindowHandler::getWindow()->draw(line.data(), line.size(), sf::PrimitiveType::Lines);
+
+    Py_RETURN_NONE;
 }
 
 // Returns length of vector

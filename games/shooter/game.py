@@ -159,6 +159,9 @@ def update():
         # ensure mouse click is within screen bounds
         if 0 <= engine.x(l) <= NEW_SCREEN_SIZE[0] and 0 <= engine.y(l) <= NEW_SCREEN_SIZE[1]:
             bullet = engine.create_vector(engine.x(l), engine.y(l))
+
+            # can't be in draw function: bullet is destroyed in same update frame its created
+            engine.draw_vector(bullet, (game.player.x, game.player.y), (engine.x(l), engine.y(l)))
             
             # bullet calculations here
             

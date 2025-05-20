@@ -22,11 +22,11 @@ class Vector {
 	static PyObject* y(PyObject* self, PyObject* args);
 
 	// Intra-Vector methods
-	// TODO: add draw?
 	static PyObject* scaAdd(PyObject* self, PyObject* args);
 	static PyObject* scaSub(PyObject* self, PyObject* args);
 	static PyObject* scaMul(PyObject* self, PyObject* args);
 	static PyObject* scaDiv(PyObject* self, PyObject* args);
+    static PyObject* drawVector(PyObject* self, PyObject* args);
 	
 	static PyObject* length(PyObject* self, PyObject* args);
 	static PyObject* normalize(PyObject* self, PyObject* args);
@@ -124,6 +124,15 @@ PyDoc_STRVAR(
 );
 
 PyDoc_STRVAR(
+	draw_doc,
+	".. function:: drawVector(long id, sf::Vector2f start, sf::Vector2f end)\n"
+	"\n"
+	"  Draws the Vector of a given id on the game's Window set up by the engine."
+	"\n"
+	"  :return: Nothing."
+);
+
+PyDoc_STRVAR(
 	length_doc,
 	".. function:: length(long id)\n"
 	"\n"
@@ -186,6 +195,7 @@ static PyMethodDef sca_add = {"sca_add", Vector::scaAdd, METH_VARARGS, add_doc};
 static PyMethodDef sca_sub = {"sca_sub", Vector::scaSub, METH_VARARGS, sub_doc};
 static PyMethodDef sca_mul = {"sca_mul", Vector::scaMul, METH_VARARGS, mul_doc};
 static PyMethodDef sca_div = {"sca_div", Vector::scaDiv, METH_VARARGS, div_doc};
+static PyMethodDef draw_vector = {"draw_vector", Vector::drawVector, METH_VARARGS, draw_doc};
 static PyMethodDef length = {"length", Vector::length, METH_VARARGS, length_doc};
 static PyMethodDef normalize = {"normalize", Vector::normalize, METH_VARARGS, normalize_doc};
 static PyMethodDef vec_add = {"vec_add", Vector::vecAdd, METH_VARARGS, vec_add_doc};
