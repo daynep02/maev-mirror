@@ -16,6 +16,7 @@ class WindowHandler {
 	static PyObject* GetScreenWidth(PyObject* self, PyObject* args);
 	static PyObject* GetScreenHeight(PyObject* self, PyObject* args);
     static PyObject* Exit(PyObject* self, PyObject* args);
+    static PyObject* SetFramerateLimit(PyObject* self, PyObject* args);
 
 	private:
 };
@@ -56,5 +57,13 @@ PyDoc_STRVAR(
 	"\n"
 	"  :return: Nothing.\n");
 
+PyDoc_STRVAR(
+	engine_set_framerate_limit_doc,
+	".. function:: set_framerate_limit(limit)\n"
+	"\n"
+	"  Sets the game's framerate limit to the given long (can't be negative)."
+    "  Set to 0 if you want it to be uncapped (the default setting).\n"
+	"\n"
+	"  :return: Nothing.\n");
 
 #endif // _CONSTS_H_

@@ -202,6 +202,7 @@ static PyMethodDef EngineMethods[] = {
     {"get_screen_height", WindowHandler::GetScreenHeight, METH_VARARGS,
      engine_get_screen_height_doc},
     {"exit", WindowHandler::Exit, METH_VARARGS, engine_exit_doc},
+    {"set_framerate_limit", WindowHandler::SetFramerateLimit, METH_VARARGS, engine_set_framerate_limit_doc},
 
     createVector,
     destroyVector,

@@ -65,5 +65,3 @@ class ParticleHandler:
             if self.classic[i].ttl < 0.0:
                 engine.free_circle(self.classic[i].circle)
                 del self.classic[i]
-
-    

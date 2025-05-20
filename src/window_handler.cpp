@@ -50,3 +50,22 @@ PyObject* WindowHandler::Exit(PyObject* self, PyObject* args) {
     r_window->close();
 	Py_RETURN_NONE;
 }
+
+PyObject* WindowHandler::SetFramerateLimit(PyObject* self, PyObject* args) {
+    Py_ssize_t nargs = PyTuple_GET_SIZE(args);
+    if (nargs != 1) {
+        printf("engine.set_framerate_limit expects one unsigned long as an argument\n");
+        PyErr_BadArgument();
+    }
+
+    PyObject* pLimit = PyTuple_GetItem(args,0);
+    if (!PyLong_Check(pLimit)) {
+        printf("engine.set_framerate_limit expects one unsigned long as an argument\n");
+        PyErr_BadArgument();
+    }
+
+    unsigned long limit = PyLong_AsUnsignedLong(pLimit);
+
+    r_window->setFramerateLimit(limit);
+    Py_RETURN_NONE;
+}

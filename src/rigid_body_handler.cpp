@@ -43,7 +43,7 @@ void RigidBodyHandler::UpdatePreviousTime() { previous_time = current_time; }
 
 void RigidBodyHandler::UpdateAllBodies() {
   for (const auto& body : rigid_bodies) {
-    body->ApplyGravity(gravity);
+    body->ApplyGravity(gravity*(float)delta_time.count());
     body->UpdateByVelocity(gravity, delta_time.count());
   }
 }

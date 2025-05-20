@@ -31,9 +31,13 @@ class Game:
         engine.set_rigid_body_static(self.right_platform,True)
         engine.set_rigid_body_gravity(self.right_platform,False)
 
-        engine.set_gravity(0.0, 0.62*4)
+        engine.set_gravity(0.0, 1463.0) # 2.48 before delta, 1463.0? after
+        
     
     def update_game(self):
+        #global my_list
+        #print(f"delta: {engine.delta_time()}, gravity {0.62*4}, should be {engine.delta_time()*1000}")
+        #my_list.append(engine.delta_time())
         engine.set_camera_position(engine.get_rigid_body_position(self.player.rb))
         self.player.update()
         self.enemy.update()
@@ -63,6 +67,7 @@ def init():
     global game, title, state
 
     engine.set_on_close(on_close)
+    engine.set_framerate_limit(240)
     
     if state == 0:
         title = Title()
@@ -94,6 +99,7 @@ def draw():
         game.draw_game()
 
 def on_close():
+    #print("Averge delta: ", (sum(my_list) / len(my_list)))
     print("\"Window closed\", said the Python!")
 
 def on_player_collision(player_rb,collider_rb):
