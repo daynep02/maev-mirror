@@ -223,6 +223,7 @@ static PyMethodDef EngineMethods[] = {
     sca_sub,
     sca_mul,
     sca_div,
+    draw_vector,
     length,
     normalize,
     vec_add,
