@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-//  DEFAULT  L1    L2    L3    L4    L5    L6    L7
+//                        DEFAULT  L1    L2    L3    L4    L5    L6    L7
 bool layer_matrix[8][8] = {{true, true, true, true, true, true, true, true}, // LAYER7
                            {true, true, true, true, true, true, true},       // LAYER6
                            {true, true, true, true, true, true},             // LAYER5
@@ -15,6 +15,7 @@ bool layer_matrix[8][8] = {{true, true, true, true, true, true, true, true}, // 
 void SetLayerAt(CollisionLayer first, CollisionLayer second, bool value)
 {
     layer_matrix[7 - second][first] = value;
+    layer_matrix[7 - first][second] = value;
 }
 
 bool GetLayerAt(CollisionLayer first, CollisionLayer second)
@@ -26,7 +27,7 @@ void EnableAllLayers()
 {
     for (int i = 0; i < 8; i++)
     {
-        for (int j = 0; j < 8 - i; j++)
+        for (int j = 0; j < 8; j++)
         {
             layer_matrix[i][j] = true;
         }
@@ -37,7 +38,7 @@ void DisableAllLayers()
 {
     for (int i = 0; i < 8; i++)
     {
-        for (int j = 0; j < 8 - i; j++)
+        for (int j = 0; j < 8 ; j++)
         {
             layer_matrix[i][j] = false;
         }

@@ -349,6 +349,9 @@ int main(int argc, char *argv[]) {
   g_callback_handler = new CallbackHandler();
   g_vector_handler = new Vector();
 
+  // Setting this to default all layers to collide
+  EnableAllLayers();
+
   // Doing this so things don't fly off the screen in the first frame
   g_rigid_body_handler->UpdateCurrentAndTimeDelta();
   g_rigid_body_handler->UpdatePreviousTime();

@@ -174,9 +174,9 @@ class Player:
         velocity = engine.get_rigid_body_velocity(self.rb)
         direction = 0
         if engine.key_is_pressed("Left") or engine.key_is_pressed("A"):
-            direction += -1*self.slide_left
+            direction += -1
         if engine.key_is_pressed("Right") or engine.key_is_pressed("D"):
-            direction += 1*self.slide_right
+            direction += 1
         #print(direction)
         if direction != 0:
             self.face_direction = direction
@@ -189,8 +189,10 @@ class Player:
             #print("Shouldn't be called")
 
         if self.grounded:
+            velocity = engine.get_rigid_body_velocity(self.rb)
             self.coyote_time = engine.current_time()
             self.grounded = False
+            engine.set_rigid_body_velocity(self.rb, (velocity[0],0.0))
         
         if engine.current_time()-self.slide_time>0.30:
             self.slide_left = 1

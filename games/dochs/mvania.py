@@ -12,9 +12,8 @@ class Game:
         engine.set_rigid_body_callback(self.player.rb,on_player_collision)
 
         engine.set_collision_layer_value(Layer.PLAYER,Layer.PLATFORM,True)
-        engine.print_collision_layer_matrix()
 
-        engine.set_rigid_body_layer(self.player.rb, Layer.PLAYER)
+        #engine.set_rigid_body_layer(self.player.rb, Layer.PLAYER)
 
         self.p_handler = ParticleHandler()
 
@@ -39,6 +38,7 @@ class Game:
         engine.set_rigid_body_gravity(self.right_platform,False)
 
         engine.set_gravity(0.0, 1463.0) # 2.48 before delta, 1463.0? after
+        engine.print_collision_layer_matrix()
         
     
     def update_game(self):
