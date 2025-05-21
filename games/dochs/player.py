@@ -21,6 +21,7 @@ class Player:
     boxes_hit = []
 
     # game variables
+    max_hp = 10
     hp = 10
     damage = 2
     face_direction = 1

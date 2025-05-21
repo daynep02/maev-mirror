@@ -60,7 +60,7 @@ public:
                        const RigidBody *target, sf::Vector2f &point,
                        sf::Vector2f &normal, float &t_hit);
   static bool GetFaceCollisionNormal(const RigidBody *r1, const RigidBody *r2,
-                                     sf::Vector2f &normal);
+                                     sf::Vector2i &normal);
 
 private:
   bool static_ = false;
