@@ -28,6 +28,8 @@ class Arena:
                           Platform(600,0,10,300), # right platform
                           Platform(610,400,200,20)] # win platform
         
+        self.platforms[4].set_color((255,215,0,255))
+
         self.left_gate = Platform(-5,200,10,100)
         self.right_gate = Platform(605,300,10,100)
         self.gate_movement = 100

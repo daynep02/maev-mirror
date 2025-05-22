@@ -27,7 +27,7 @@ class Run:
 
         centerx, centery = (self.right + self.left) / 2, (self.top + self.bottom) /2 
 
-        self.controlable :ControlBlock = ControlBlock(centerx, centery, 
+        self.controlable :ControlBlock = ControlBlock(centerx, self.bottom - 60, 
                                                       50, 50, 
                                                       collision_callback, "../games/racing/assets/PixelSpaceRage/256px/PlayerBlue_Frame_01_png_processed.png")
 

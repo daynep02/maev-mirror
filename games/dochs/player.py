@@ -14,7 +14,8 @@ class Player:
     # attack variables
     attacking = False
     attack_time = 0.0
-    attack_speed = 0.25
+    attack_speed = 0.35
+    attack_cooldown = 0.20
     attack_direction = (0,0)
     hitbox = None
     hitboxes = {"up": -1,"down":-1,"left":-1,"right":-1}
@@ -30,7 +31,7 @@ class Player:
     invincible_time = 0.0
 
     def __init__(self, callback):
-        self.rb = engine.create_rigid_body((125,50),(25,25))
+        self.rb = engine.create_rigid_body((-900,350),(25,25))
         print(f"creating player rigid: {self.rb}" )
         engine.set_terminal_velo(self.rb, 0.0, 400.0)
         engine.set_rigid_body_static(self.rb, False)
@@ -47,6 +48,8 @@ class Player:
         for key in self.hitboxes.keys():
             engine.set_box_trigger(self.hitboxes[key], False)
             engine.set_box_callback(self.hitboxes[key], self.hit_callback)
+        self.hit_sound = engine.create_sound("../games/dochs/assets/woosh.ogg")
+        self.damage_sound = engine.create_sound("../games/dochs/assets/hit.ogg")
 
         self.sprite = engine.create_rect((25,25))
         self.color = (255,107,4,255)
@@ -80,6 +83,7 @@ class Player:
         self.hp -= amount
         print(f"Player: took {amount} damage! Now at {self.hp} HP.")
         self.launch(lx,ly,0.3)
+        engine.play_sound(self.damage_sound)
 
         if self.hp <= 0:
             self.hp = 0
@@ -153,13 +157,14 @@ class Player:
                 engine.set_box_trigger(self.hitboxes[self.hitbox], True)
                 self.attack_time = engine.current_time()
                 self.attacking = True
+                engine.play_sound(self.hit_sound)
         elif engine.current_time()-self.attack_time > self.attack_speed:
             self.attacking = False
             self.boxes_hit = []
         else:
             if self.hitbox != None:
                 # update hitbox
-                if engine.current_time()-self.attack_time > self.attack_speed-0.1:
+                if engine.current_time()-self.attack_time > self.attack_speed-self.attack_cooldown:
                     # hitbox end
                     engine.set_box_trigger(self.hitboxes[self.hitbox], False)
                     self.hitbox = None
