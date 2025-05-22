@@ -241,4 +241,5 @@ def on_arena_win(win_box, player_rb):
     if engine.get_rigid_body_layer(player_rb) == Layer.PLAYER:
         game.free_game()
         state = 3
+        engine.pause_music(game.music)
         engine.play_music(happy)

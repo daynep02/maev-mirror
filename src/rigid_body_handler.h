@@ -42,6 +42,7 @@ public:
   static PyObject *GetRigidBodyLayer(PyObject *self, PyObject *args);
   static PyObject *SetRigidBodyLayer(PyObject *self, PyObject *args);
 
+  static PyObject *GetRigidBodyVelocity(PyObject *self, PyObject *args);
   static PyObject *SetRigidBodyVelocity(PyObject *self, PyObject *args);
 
   static PyObject *GetRigidBodyPosition(PyObject *self, PyObject *args);
@@ -68,7 +69,7 @@ public:
    */
   static PyObject *ApplyForce(PyObject *self, PyObject *args);
 
-  static PyObject *GetRigidBodyVelocity(PyObject *self, PyObject *args);
+  
 
 private:
   /**

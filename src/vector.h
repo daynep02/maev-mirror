@@ -53,7 +53,7 @@ PyDoc_STRVAR(
 
 PyDoc_STRVAR(
 	destroy_vector_doc,
-	".. function:: destroy_vector()\n"
+	".. function:: destroy_vector(id)\n"
 	"\n"
 	"  Destroys a singular Vector that has already been created."
 	"\n"
@@ -71,7 +71,7 @@ PyDoc_STRVAR(
 
 PyDoc_STRVAR(
 	x_doc,
-	".. function:: x(long id)\n"
+	".. function:: x(id)\n"
 	"\n"
 	"  Returns the x value of the Vector of a given id."
 	"\n"
@@ -80,7 +80,7 @@ PyDoc_STRVAR(
 
 PyDoc_STRVAR(
 	y_doc,
-	".. function:: y(long id)\n"
+	".. function:: y(id)\n"
 	"\n"
 	"  Returns the y value of the Vector of a given id."
 	"\n"
@@ -89,7 +89,7 @@ PyDoc_STRVAR(
 
 PyDoc_STRVAR(
 	add_doc,
-	".. function:: scaAdd(long id, float s)\n"
+	".. function:: sca_add(long id, float s)\n"
 	"\n"
 	"  Performs addition of scalar value s to the Vector of a given id."
 	"\n"
@@ -98,7 +98,7 @@ PyDoc_STRVAR(
 
 PyDoc_STRVAR(
 	sub_doc,
-	".. function:: scaSub(long id, float s)\n"
+	".. function:: sca_sub(long id, float s)\n"
 	"\n"
 	"  Performs subtraction of scalar value s to the Vector of a given id."
 	"\n"
@@ -107,7 +107,7 @@ PyDoc_STRVAR(
 
 PyDoc_STRVAR(
 	mul_doc,
-	".. function:: scaMul(long id, float s)\n"
+	".. function:: sca_mul(long id, float s)\n"
 	"\n"
 	"  Performs multiplication of scalar value s to the Vector of a given id."
 	"\n"
@@ -116,7 +116,7 @@ PyDoc_STRVAR(
 
 PyDoc_STRVAR(
 	div_doc,
-	".. function:: scaDiv(long id, float s)\n"
+	".. function:: sca_div(long id, float s)\n"
 	"\n"
 	"  Performs division of scalar value s to the Vector of a given id."
 	"\n"
@@ -143,7 +143,7 @@ PyDoc_STRVAR(
 
 PyDoc_STRVAR(
 	vec_add_doc,
-	".. function:: vecAdd(long id, float s)\n"
+	".. function:: vec_add(long id, long id2)\n"
 	"\n"
 	"  Performs addition of a Vector of a given id to another Vector of a given id."
 	"\n"
@@ -152,7 +152,7 @@ PyDoc_STRVAR(
 
 PyDoc_STRVAR(
 	vec_sub_doc,
-	".. function:: vecSub(long id, float s)\n"
+	".. function:: vec_sub(long id, long id2)\n"
 	"\n"
 	"  Performs subtraction of a Vector of a given id to another Vector of a given id."
 	"\n"
