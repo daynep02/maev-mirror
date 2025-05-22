@@ -75,6 +75,9 @@ class AsteroidList:
             # keep track of the position here so it can be changed later
             self.positon = position
 
+            # keep track of the position here so it can be changed later
+            self.positon = position
+
             # create the sprite and get the id
             self.sprite :int = engine.create_sprite(name)
 

@@ -161,9 +161,9 @@ void RigidBodyHandler::SetTerminalVelo(RigidBody *body,
 
   if (!free_rigid_bodies.empty()) {
     loc = free_rigid_bodies.back();
-    printf("engine.create_rigid_body: Using Free Rigid Bodies\n");
+    //printf("engine.create_rigid_body: Using Free Rigid Bodies\n");
     free_rigid_bodies.pop_back();
-    printf("engine.create_rigid_body: Adding to Vector\n");
+    //printf("engine.create_rigid_body: Adding to Vector\n");
     RigidBody *body =
         new RigidBody(sf::Vector2f(x, y), sf::Vector2f(width, height));
     delete rigid_bodies.at(loc);
@@ -175,7 +175,7 @@ void RigidBodyHandler::SetTerminalVelo(RigidBody *body,
     loc = rigid_bodies.size() - 1;
   }
 
-  printf("engine.create_rigid_body: Returning ID %lu\n", loc);
+  //printf("engine.create_rigid_body: Returning ID %lu\n", loc);
 
   // Py_XDECREF(pName);
 
