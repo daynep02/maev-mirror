@@ -7,5 +7,5 @@ class Layer(IntEnum):
     PLATFORM = 3
     TRIGGER = 4
     DEAD = 5
-    LAYER6 = 6
+    SPIKE = 6
     LAYER7 = 7
