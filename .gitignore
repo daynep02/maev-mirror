@@ -8,3 +8,4 @@ build/*
 *.exe
 *.out
 docs
+helloworld
