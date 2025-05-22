@@ -43,8 +43,6 @@ class Title:
         pass
 
 
-    def start(self):
-        pass
 
     def move_states(self):
 

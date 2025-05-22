@@ -25,13 +25,17 @@ class GameOver:
         engine.set_text_size(self.title_text, 50)
         engine.set_text_color(self.title_text, (255,0,0,255))
 
+
         tx, ty = engine.get_text_position(self.title_text)
+
+        self.make_play_again(tx, ty)
 
         self.camera.set_position((tx, ty+200))
 
         self.options = []
 
         modi = 0
+
         for name in ["Yes", "No"]:
             opt = engine.create_text(self.font)
             self.options.append(opt)
@@ -46,15 +50,12 @@ class GameOver:
 
         pass
 
-    def make_play_again(self):
+    def make_play_again(self, tx, ty):
         self.play_again = engine.create_text(self.font)
         engine.set_text(self.play_again, "Play Again?")
-
+        engine.set_text_position(self.play_again, (tx / 2, ty + 50))
         engine.set_text_size(self.title_text, 50)
         engine.set_text_color(self.title_text, (255,0,0,255))
-
-        
-
 
     def move_states(self):
 
@@ -90,6 +91,7 @@ class GameOver:
 
         for i in range(0,len(self.options)):
             if i == self.state:
+                print(i)
                 engine.set_text_color(self.options[i],self.select_color)
             else:
                 engine.set_text_color(self.options[i],self.deselect_color)
@@ -98,6 +100,7 @@ class GameOver:
     
     def draw(self):
         engine.draw_text(self.title_text)
+        engine.draw_text(self.play_again)
         for opt in self.options:
             engine.draw_text(opt)
 

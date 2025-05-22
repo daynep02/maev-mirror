@@ -4,6 +4,8 @@ import random
 
 class AsteroidList:
 
+    startVelocity = 1.0
+
     path :str = "../games/racing/assets/PixelSpaceRage/128px/" 
 
     names :list = [
@@ -35,6 +37,7 @@ class AsteroidList:
             roid.draw()
 
     def update(self):
+        self.startVelocity += 1
 
         self.new_roid_timer -= 1
 
@@ -54,7 +57,7 @@ class AsteroidList:
 
         position = (random.uniform(self.min_x, self.max_x), self.min_y - 20)
 
-        new_asteroid = self.Asteroid(sprite_to_use, position)
+        new_asteroid = self.Asteroid(sprite_to_use, position, self.startVelocity)
         self.asteroids.append(new_asteroid)
 
     def remove(self, place: int):
@@ -66,8 +69,9 @@ class AsteroidList:
 
 
     class Asteroid:
-        def __init__(self, name: str, position: tuple):
 
+        def __init__(self, name: str, position: tuple, fall_velocity: float):
+            
             # keep track of the position here so it can be changed later
             self.positon = position
 
@@ -83,7 +87,8 @@ class AsteroidList:
             # create a rigid body at the same location
             self.rigid_body :int = engine.create_rigid_body(position, self.size)
 
-            engine.set_rigid_body_velocity(self.rigid_body, (1.0, 100.0))
+            engine.set_rigid_body_velocity(self.rigid_body, (0.0, fall_velocity))
+
             engine.set_rigid_body_layer(self.rigid_body, 1)
 
             engine.set_rigid_body_velocity(self.rigid_body, (1.0, 100.0))
@@ -97,8 +102,8 @@ class AsteroidList:
 
         def update(self):
 
+
             self.position = engine.get_rigid_body_position(self.rigid_body)
 
             engine.set_sprite_position(self.sprite, self.position)
-
             pass

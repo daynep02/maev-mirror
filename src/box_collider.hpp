@@ -34,8 +34,6 @@ class BoxCollider {
         bool isTrigger = true;
         bool freed = false;
 
-        bool isTrigger = true;
-        bool freed = false;
 
     private:
         CollisionLayer layer = DEFAULT;

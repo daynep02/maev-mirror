@@ -25,7 +25,7 @@ class Run:
 
         self.top :float = camera_pos[1] - self.h / 2
 
-        centerx, centery = (self.right + self.left / 2 ), (self.top + self.bottom / 2)
+        centerx, centery = (self.right + self.left) / 2, (self.top + self.bottom) /2 
 
         self.controlable :ControlBlock = ControlBlock(centerx, centery, 
                                                       50, 50, 

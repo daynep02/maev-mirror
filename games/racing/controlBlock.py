@@ -81,12 +81,13 @@ class ControlBlock:
         engine.set_sprite_position(self.sprite, self.position)
 
     def controlledUpdate(self) -> None:
-
+        '''
         if self.velocity[1] > -self.max_y and engine.key_is_pressed("Up"):
             engine.apply_force(self.id, 0.0, -5.0)
 
         if self.velocity[1] < self.max_y and engine.key_is_pressed( "Down"):
             engine.apply_force(self.id, 0.0, 5.0)
+        '''
 
         if self.velocity[0] > -self.max_x and engine.key_is_pressed("Left"):
             engine.apply_force(self.id,-5.0, 0.0)
@@ -94,9 +95,6 @@ class ControlBlock:
         if  self.velocity[0] < self.max_x and engine.key_is_pressed("Right"):
             engine.apply_force(self.id, 5.0, 0.0)
         return
-
-
-
 
     def update(self) -> None:
 
@@ -116,3 +114,5 @@ class ControlBlock:
 
         else:
             engine.draw_rigid_body_collider(self.id)
+
+
