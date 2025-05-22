@@ -24,7 +24,7 @@ class Game:
         engine.set_rigid_body_static(self.player, False)
         engine.set_rigid_body_gravity(self.player, True)
 
-        engine.set_gravity(0.0, 1.0)
+        engine.set_gravity(0.0, 100.0)
         engine.set_terminal_velo(self.player, 200.0, 200.0)
 
         for platform in self.platforms:
@@ -74,7 +74,7 @@ def update():
 
         if game.zone1_enabled and engine.rigid_body_collides_with(game.player, game.zone1):
             print("Colliding")
-            engine.set_gravity(0.0, -1.0)
+            engine.set_gravity(0.0, -100.0)
             game.zone1_enabled = False
         if game.zone2_enabled and engine.rigid_body_collides_with(game.player, game.zone2):
             print("Colliding")
