@@ -19,6 +19,8 @@ class Enemy:
         self.sprite = engine.create_circle(12.5)
         engine.set_circle_fill_color(self.sprite,(234,67,50,255))
         engine.set_circle_position(self.sprite, (x,y))
+
+        self.damage_sound = engine.create_sound("../games/dochs/assets/hit.ogg")
         
         self.damage = 1
         self.hp = 5
@@ -35,10 +37,13 @@ class Enemy:
         kb_lock = self.decay_knockback()
 
         #patrol in a direction
+        velocity = engine.get_rigid_body_velocity(self.rb)
         if not self.dead and not kb_lock:
-            velocity = engine.get_rigid_body_velocity(self.rb)
             if velocity[0] < self.speed + 10.0 and velocity[0] > -self.speed - 10.0:
                 engine.set_rigid_body_velocity(self.rb, (self.speed*self.direction,velocity[1]))
+        if self.dead and not kb_lock:
+            #print("the dead can't move")
+            engine.set_rigid_body_velocity(self.rb, (0.0,velocity[1]))
         
         x, y = engine.get_rigid_body_position(self.rb)
         engine.set_circle_position(self.sprite,(x,y))
@@ -66,6 +71,7 @@ class Enemy:
         if self.dead:
             return
         self.hp -= amount
+        engine.play_sound(self.damage_sound)
         if self.hp < 0:
             self.dead = True
             engine.set_rigid_body_layer(self.rb,Layer.DEAD)

@@ -6,7 +6,7 @@ class Spike:
     def __init__(self,x,y,w,h,dx,dy,callback):
         self.x, self.y = x, y
         self.box = engine.create_box_collider((x,y),(w,h))
-        engine.set_box_layer(self.box, Layer.TRIGGER)
+        engine.set_box_layer(self.box, Layer.SPIKE)
         engine.set_box_callback(self.box, callback)
         self.set_trigger(False)
 

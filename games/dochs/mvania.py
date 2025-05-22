@@ -4,6 +4,7 @@ from title import Title
 from particles import ParticleHandler
 from layers import Layer
 
+from tutorial import Tutorial
 from arena import Arena
 
 class Game:
@@ -17,19 +18,27 @@ class Game:
 
         # starting camera
         self.set_camera_size(600,400)
+        engine.set_camera_position(engine.get_rigid_body_position(self.player.rb))
+
+        self.tutorial = Tutorial(self.player, on_spike_collision,on_tutorial_start)
 
         self.arena = Arena(self.player, on_arena_start, on_arena_win, on_spike_collision)
+
+        self.music = engine.create_music("../games/dochs/assets/ai.ogg")
+        
 
         engine.set_gravity(0.0, 1463.0) # 2.48 before delta, 1463.0? after
     
     def update_game(self):
         engine.set_camera_position(engine.get_rigid_body_position(self.player.rb))
         self.player.update()
+        self.tutorial.update()
         self.arena.update()
         self.p_handler.update()
     
     def draw_game(self):
         self.player.draw()
+        self.tutorial.draw()
         self.arena.draw()
         self.p_handler.draw()
         
@@ -46,30 +55,39 @@ state = 0
 game_over = None
 game_won = None
 button_cooldown = 0.0
+happy = None
 
 # Key Functions for Game
 def init():
-    global title, game_over, game_won
+    global title, game_over, game_won, happy
 
     # collision layer settings
     engine.set_collision_layer_value(Layer.PLATFORM,Layer.PLATFORM,False)
     engine.set_collision_layer_value(Layer.ENEMY,Layer.ENEMY,False)
     engine.set_collision_layer_value(Layer.TRIGGER,Layer.PLATFORM, False)
     engine.set_collision_layer_value(Layer.TRIGGER,Layer.TRIGGER, False)
+    engine.set_collision_layer_value(Layer.TRIGGER,Layer.SPIKE, False)
     engine.set_collision_layer_value(Layer.DEAD,Layer.DEAD, False)
     engine.set_collision_layer_value(Layer.DEAD,Layer.PLAYER, False)
     engine.set_collision_layer_value(Layer.DEAD,Layer.ENEMY, False)
+    engine.set_collision_layer_value(Layer.DEAD,Layer.SPIKE, False)
+    engine.set_collision_layer_value(Layer.SPIKE,Layer.PLATFORM, False)
+    engine.set_collision_layer_value(Layer.SPIKE,Layer.TRIGGER, False)
+    engine.set_collision_layer_value(Layer.SPIKE,Layer.SPIKE, False)
     engine.print_collision_layer_matrix()
     
     engine.set_on_close(on_close)
     engine.set_framerate_limit(240)
+    
+    happy = engine.create_music("../games/dochs/assets/boogie.ogg")
+    engine.play_music(happy)
 
     title = Title(0)
     game_over = Title(1)
     game_won = Title(2)
 
 def update():
-    global game, title, state, game_over, game_won, button_cooldown
+    global game, title, state, game_over, game_won, button_cooldown, happy
 
     if state == 0:
         title.update_title()
@@ -77,6 +95,7 @@ def update():
             if engine.key_is_pressed("E") or engine.key_is_pressed("ENTER"):
                 if title.state == 0:
                     game = Game()
+                    engine.pause_music(happy)
                     state = 1
                 elif title.state == 1:
                     pass
@@ -98,6 +117,7 @@ def update():
                 elif game_over.state == 1:
                     state = 0
                     button_cooldown = engine.current_time()
+                    engine.play_music(happy)
     elif state == 3:
         game_won.update_title()
         if engine.current_time() - button_cooldown > 1.0:
@@ -144,7 +164,12 @@ def on_player_collision(player_rb,collider_rb):
         py = p_pos[1] - e_pos[1]
         
         direction = engine.normalize(engine.create_vector(px, py))
-        game.player.take_damage(game.arena.get_enemy_damage(collider_rb), 500.0*engine.x(direction), 500.0*engine.y(direction))
+        damage = 0
+        if collider_rb == game.tutorial.enemy.rb:
+            damage = game.tutorial.enemy.damage
+        else:
+            damage = game.arena.get_enemy_damage(collider_rb)
+        game.player.take_damage(damage, 500.0*engine.x(direction), 500.0*engine.y(direction))
         #print(direction)
 
         engine.cleanse_vectors()
@@ -160,15 +185,28 @@ def on_hitbox_collision(hit_bc,collider_rb):
             game.player.launch(200.0*game.player.attack_direction[0]*-1, 400.0*game.player.attack_direction[1]*-1,0.1)
             # launch enemy
             #game.enemy.take_damage(game.player.damage, game.player.attack_direction[0], game.player.attack_direction[1])
-            game.arena.deal_damage_to_enemy(collider_rb,game.player.damage,game.player.attack_direction[0], game.player.attack_direction[1])
+            if collider_rb == game.tutorial.enemy.rb:
+                game.tutorial.enemy.take_damage(game.player.damage,game.player.attack_direction[0], game.player.attack_direction[1])
+            else:
+                game.arena.deal_damage_to_enemy(collider_rb,game.player.damage,game.player.attack_direction[0], game.player.attack_direction[1])
 
             # start particles
             sposx, sposy = engine.get_rigid_body_position(collider_rb)
             game.p_handler.spawn_classic(sposx, sposy)
+    
 
 def on_spike_collision(spike_box,collider_rb):
     global game
-    s = game.arena.find_spike(spike_box)
+
+    if spike_box == game.tutorial.spikes[0].box:
+        s = game.tutorial.spikes[0]
+        if collider_rb == game.tutorial.enemy.rb:
+            print("enemy hit tutorial spike")
+            game.tutorial.enemy.take_damage(5,s.kd[0],s.kd[1])
+            return
+        
+    else:
+        s = game.arena.find_spike(spike_box)
     clayer = engine.get_rigid_body_layer(collider_rb)
     if clayer == Layer.PLAYER and not game.player.invincible:
         game.player.take_damage(3, 400.0*s.kd[0], 400.0*s.kd[1])
@@ -178,16 +216,25 @@ def on_spike_collision(spike_box,collider_rb):
         sposx, sposy = engine.get_rigid_body_position(collider_rb)
         game.p_handler.spawn_classic(sposx, sposy)
 
+def on_tutorial_start(start_box,player_rb):
+    global game
+    print("Arena Start callback")
+    if engine.get_rigid_body_layer(player_rb) == Layer.PLAYER:
+        game.tutorial.trigger_hit = True
+        game.tutorial.spikes[0].set_trigger(True)
+        engine.set_box_trigger(game.tutorial.spike_t,False)
 
 def on_arena_start(start_box,player_rb):
     global game
     print("Arena Start callback")
     if engine.get_rigid_body_layer(player_rb) == Layer.PLAYER:
         game.arena.start()
+        engine.play_music(game.music)
 
 def on_arena_win(win_box, player_rb):
-    global game, state
+    global game, state, happy
     print("game won!")
     if engine.get_rigid_body_layer(player_rb) == Layer.PLAYER:
         game.free_game()
         state = 3
+        engine.play_music(happy)

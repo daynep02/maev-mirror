@@ -11,8 +11,11 @@ class Platform:
         engine.set_rigid_body_layer(self.rb, Layer.PLATFORM)
 
         self.sprite = engine.create_rect((w,h))
-        engine.set_rect_fill_color(self.sprite,(128,128,128,255))
+        self.set_color((128,128,128,255))
         engine.set_rect_position(self.sprite, (x,y))
+
+    def set_color(self,color):
+        engine.set_rect_fill_color(self.sprite,color)
 
     def set_position(self,x,y):
         engine.set_rigid_body_position(self.rb, (x,y))
