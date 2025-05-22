@@ -389,7 +389,7 @@ int main(int argc, char *argv[]) {
     pErr = PyErr_Occurred();
     // catch-all for errors that game causes
     if (pErr) {
-      printf("An error occurred!\n");
+      printf("An error occurred during update()!\n");
       g_window->close();
       break;
     }
@@ -412,7 +412,7 @@ int main(int argc, char *argv[]) {
     pErr = PyErr_Occurred();
     // catch-all for errors that game causes
     if (pErr) {
-      printf("An error has occurred\n");
+      printf("An error has occurred during draw()!\n");
       g_window->close();
       break;
     }

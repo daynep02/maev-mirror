@@ -4,15 +4,15 @@ from enemy import Enemy
 from title import Title
 from particles import ParticleHandler
 from layers import Layer
+from platform import Platform
+
+from arena import Arena
 
 class Game:
     def __init__(self):
         self.player = Player(on_hitbox_collision)
         engine.set_rigid_body_callback(self.player.rb,on_player_collision)
-        self.enemy = Enemy()
-
-        # collision layer settings
-        engine.set_collision_layer_value(Layer.PLATFORM,Layer.PLATFORM,False)
+        #self.enemy = Enemy()
 
         # particle handler
         self.p_handler = ParticleHandler()
@@ -20,27 +20,9 @@ class Game:
         # starting camera
         self.set_camera_size(600,400)
 
-        #The platform to collide with
-        self.bottom_platform = engine.create_rigid_body((25,300),(700,20))
-        engine.set_rigid_body_static(self.bottom_platform,True)
-        engine.set_rigid_body_gravity(self.bottom_platform,False)
-        engine.set_rigid_body_layer(self.bottom_platform, Layer.PLATFORM)
-
-        #self.top_platform = engine.create_rigid_body((25,0),(500,20))
-        #engine.set_rigid_body_static(self.top_platform,True)
-        #engine.set_rigid_body_gravity(self.top_platform,False)
-        self.left_platform = engine.create_rigid_body((20,10),(10,280))
-        engine.set_rigid_body_static(self.left_platform,True)
-        engine.set_rigid_body_gravity(self.left_platform,False)
-        engine.set_rigid_body_layer(self.left_platform, Layer.PLATFORM)
-        self.right_platform = engine.create_rigid_body((720,10),(10,280))
-        engine.set_rigid_body_static(self.right_platform,True)
-        engine.set_rigid_body_gravity(self.right_platform,False)
-        engine.set_rigid_body_layer(self.right_platform, Layer.PLATFORM)
+        self.arena = Arena(self.player, on_arena_start)
 
         engine.set_gravity(0.0, 1463.0) # 2.48 before delta, 1463.0? after
-        engine.print_collision_layer_matrix()
-        
     
     def update_game(self):
         #global my_list
@@ -48,23 +30,17 @@ class Game:
         #my_list.append(engine.delta_time())
         engine.set_camera_position(engine.get_rigid_body_position(self.player.rb))
         self.player.update()
-        self.enemy.update()
+        self.arena.update()
         self.p_handler.update()
     
     def draw_game(self):
         self.player.draw()
-        self.enemy.draw()
+        self.arena.draw()
         self.p_handler.draw()
-
-        #draw platforms
-        engine.draw_rigid_body_collider(self.bottom_platform)
-        #engine.draw_rigid_body_collider(self.top_platform)
-        engine.draw_rigid_body_collider(self.left_platform)
-        engine.draw_rigid_body_collider(self.right_platform)
+        
     
     def set_camera_size(self, width, height):
         engine.set_camera_size((width,height))
-
 
 game = None
 title = None
@@ -72,15 +48,22 @@ state = 0
 
 # Key Functions for Game
 def init():
-    global game, title, state
+    global title
 
+    # collision layer settings
+    engine.set_collision_layer_value(Layer.PLATFORM,Layer.PLATFORM,False)
+    engine.set_collision_layer_value(Layer.ENEMY,Layer.ENEMY,False)
+    engine.set_collision_layer_value(Layer.TRIGGER,Layer.PLATFORM, False)
+    engine.set_collision_layer_value(Layer.TRIGGER,Layer.TRIGGER, False)
+    engine.set_collision_layer_value(Layer.DEAD,Layer.DEAD, False)
+    engine.set_collision_layer_value(Layer.DEAD,Layer.PLAYER, False)
+    engine.set_collision_layer_value(Layer.DEAD,Layer.ENEMY, False)
+    engine.print_collision_layer_matrix()
+    
     engine.set_on_close(on_close)
     engine.set_framerate_limit(240)
-    
-    if state == 0:
-        title = Title()
-    if state == 1:
-        game = Game()
+
+    title = Title()
 
 def update():
     global game, title, state
@@ -115,32 +98,46 @@ def on_player_collision(player_rb,collider_rb):
     p_pos = engine.get_rigid_body_position(player_rb)
 
     if engine.get_rigid_body_layer(collider_rb) == Layer.PLATFORM:
-        if collider_rb == game.bottom_platform:
+        plat_pos = engine.get_rigid_body_position(collider_rb)
+        plat_size = engine.get_rigid_body_size(collider_rb)
+        if p_pos[1]+23.0 < plat_pos[1]:
             game.player.grounded = True
+        elif p_pos[1] > plat_pos[1]+plat_size[1]-2:
+            # headbump
+            # print("headbump")
+            velocity = engine.get_rigid_body_velocity(player_rb)
+            engine.set_rigid_body_velocity(player_rb, (velocity[0],10.0))
+            game.player.jumping = False
 
-    if collider_rb == game.enemy.rb and not game.player.invincible:
+
+    if engine.get_rigid_body_layer(collider_rb) == Layer.ENEMY and not game.player.invincible:
         e_pos = engine.get_rigid_body_position(collider_rb)
         px = p_pos[0] - e_pos[0]
         py = p_pos[1] - e_pos[1]
         
         direction = engine.normalize(engine.create_vector(px, py))
-        game.player.take_damage(game.enemy.damage, 500.0*engine.x(direction), 500.0*engine.y(direction))
+        game.player.take_damage(game.arena.get_enemy_damage(collider_rb), 500.0*engine.x(direction), 500.0*engine.y(direction))
         #print(direction)
 
         engine.cleanse_vectors()
 
 def on_hitbox_collision(hit_bc,collider_rb):
     global game
-
-    if collider_rb == game.enemy.rb:
+    clayer = engine.get_rigid_body_layer(collider_rb)
+    if clayer == Layer.ENEMY or clayer == Layer.DEAD:
         if collider_rb not in game.player.boxes_hit:
             #print(f"hit {hit_bc} collided with {collider_rb} with direction {game.player.attack_direction}")
             game.player.boxes_hit.append(collider_rb)
             # launch player
             game.player.launch(250.0*game.player.attack_direction[0]*-1, 400.0*game.player.attack_direction[1]*-1)
             # launch enemy
-            game.enemy.take_damage(game.player.damage, game.player.attack_direction[0], game.player.attack_direction[1])
+            #game.enemy.take_damage(game.player.damage, game.player.attack_direction[0], game.player.attack_direction[1])
+            game.arena.deal_damage_to_enemy(collider_rb,game.player.damage,game.player.attack_direction[0], game.player.attack_direction[1])
 
             # start particles
             sposx, sposy = engine.get_rigid_body_position(collider_rb)
             game.p_handler.spawn_classic(sposx, sposy)
+
+def on_arena_start(start_box,player_rb):
+    if engine.get_rigid_body_layer(player_rb) == Layer.PLAYER:
+        game.arena.start()

@@ -6,9 +6,10 @@ class Enemy:
     kb_time = 0.0
     kb_decay_rate = 0.5
     kb_factor = (250.0,250.0)
+    dead = False
 
-    def __init__(self):
-        self.rb = engine.create_rigid_body((400,50),(25,35))
+    def __init__(self,x,y):
+        self.rb = engine.create_rigid_body((x,y),(25,35))
         print(f"creating enemy rigid: {self.rb}" )
         engine.set_terminal_velo(self.rb, 0.0, 400.0)
         engine.set_rigid_body_static(self.rb, False)
@@ -30,9 +31,10 @@ class Enemy:
         self.decay_knockback()
 
         #patrol in a direction
-        velocity = engine.get_rigid_body_velocity(self.rb)
-        if velocity[0] < self.speed + 10.0 and velocity[0] > -self.speed - 10.0:
-            engine.set_rigid_body_velocity(self.rb, (self.speed*self.direction,velocity[1]))
+        if not self.dead:
+            velocity = engine.get_rigid_body_velocity(self.rb)
+            if velocity[0] < self.speed + 10.0 and velocity[0] > -self.speed - 10.0:
+                engine.set_rigid_body_velocity(self.rb, (self.speed*self.direction,velocity[1]))
 
     def draw(self) -> None:
         engine.draw_rigid_body_collider(self.rb)
@@ -47,7 +49,13 @@ class Enemy:
             engine.set_rigid_body_velocity(self.rb, (kbx, kby))
 
     def take_damage(self,amount, lx, ly):
+        if self.dead:
+            return
         self.hp -= amount
+        if self.hp < 0:
+            self.dead = True
+            engine.set_rigid_body_layer(self.rb,Layer.DEAD)
+
         print(f"Enemy: took {amount} damage! Now at {self.hp} HP.")
         self.knockback = (lx*self.kb_factor[0],ly*self.kb_factor[1])
         self.kb_time = engine.current_time()

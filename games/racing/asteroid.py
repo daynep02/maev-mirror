@@ -70,7 +70,6 @@ class AsteroidList:
 
             # keep track of the position here so it can be changed later
             self.positon = position
-            self.reset_position = position
 
             # create the sprite and get the id
             self.sprite :int = engine.create_sprite(name)
@@ -87,20 +86,19 @@ class AsteroidList:
             engine.set_rigid_body_velocity(self.rigid_body, (1.0, 100.0))
             engine.set_rigid_body_layer(self.rigid_body, 1)
 
+            engine.set_rigid_body_velocity(self.rigid_body, (1.0, 100.0))
+
+
+
 
         def draw(self):
             engine.draw_sprite(self.sprite)
             pass
 
         def update(self):
+
             self.position = engine.get_rigid_body_position(self.rigid_body)
 
             engine.set_sprite_position(self.sprite, self.position)
 
-
-        def free(self):
-            engine.free_rigid_body(self.rigid_body)
-            engine.free_sprite(self.sprite)
-
-        def reset(self):
-            self.position = engine.set_rigid_body_position(self.rigid_body, self.reset_position)
+            pass

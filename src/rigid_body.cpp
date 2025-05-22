@@ -105,7 +105,7 @@ void RigidBody::SetTerminalVelo(const sf::Vector2f &terminalVelo) {
 }
 
 bool RigidBody::GetFaceCollisionNormal(const RigidBody* r1, const RigidBody *r2,
-                                       sf::Vector2f &normal) {
+                                       sf::Vector2i &normal) {
 
   const auto &pos = r1->GetPosition();
   const auto &size = r1->GetSize();
@@ -132,7 +132,6 @@ bool RigidBody::GetFaceCollisionNormal(const RigidBody* r1, const RigidBody *r2,
     }
     return true;
   }
-  // printf("x = %f y = %f\n", normal.x, normal.y);
   return false;
 }
 
@@ -225,14 +224,14 @@ void RigidBody::Collide(RigidBody *other, const sf::Vector2f &gravity,
     return;
   }
 
-  sf::Vector2f normal = {0,0};
+  sf::Vector2i normal = {0,0};
   if (!GetFaceCollisionNormal(this, other, normal)) return;
-  if (normal.y != 0.0f) {
+  if (normal.y != 0) {
     this->SetPosition({this->GetPosition().x, this->previousPosition.y});
     other->SetPosition({other->GetPosition().x, other->previousPosition.y});
   }
 
-  if (normal.x != 0.0) {
+  if (normal.x != 0) {
     this->SetPosition({this->previousPosition.x, this->GetPosition().y});
     other->SetPosition({other->previousPosition.x, other->GetPosition().y});
   }
@@ -243,14 +242,20 @@ void RigidBody::Collide(RigidBody *other, const sf::Vector2f &gravity,
 
 void RigidBody::StaticCollide(RigidBody *moving, RigidBody *r_static,
                               float delta, const sf::Vector2f& gravity) {
-  sf::Vector2f normal = {0,0};
+  sf::Vector2i normal = {0,0};
   if (!GetFaceCollisionNormal(moving, r_static, normal)) return;
-  if (normal.y != 0.0f)
-    moving->SetPosition({moving->GetPosition().x, moving->previousPosition.y});
-
-  if (normal.x != 0.0)
-    moving->SetPosition({moving->previousPosition.x, moving->GetPosition().y});
-
+  // Checking vertical
+  if (normal.y == 1) {
+    moving->SetPosition({moving->GetPosition().x, r_static->GetPosition().y+r_static->GetSize().y});
+  } else if (normal.y == -1) {
+    moving->SetPosition({moving->GetPosition().x, r_static->GetPosition().y-moving->GetSize().y});
+  }
+  // Checking horizontal
+  if (normal.x == 1) {
+    moving->SetPosition({r_static->GetPosition().x+r_static->GetSize().x, moving->GetPosition().y});
+  } else if (normal.x == -1) {
+    moving->SetPosition({r_static->GetPosition().x-moving->GetSize().x, moving->GetPosition().y});
+  }
   return;
 
   // Below code is NOT utilized

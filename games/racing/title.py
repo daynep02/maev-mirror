@@ -42,6 +42,10 @@ class Title:
         self.state_cooldown = 0
         pass
 
+
+    def start(self):
+        pass
+
     def move_states(self):
 
         if engine.current_time()-self.state_cooldown < 0.20:

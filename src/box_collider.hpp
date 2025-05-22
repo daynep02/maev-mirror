@@ -29,7 +29,10 @@ class BoxCollider {
         PyObject* GetCallback();
         void SetCallback(PyObject *new_callback);
 
-        static const sf::Vector2f topNormal, bottomNormal, leftNormal, rightNormal;
+        static const sf::Vector2i topNormal, bottomNormal, leftNormal, rightNormal;
+
+        bool isTrigger = true;
+        bool freed = false;
 
         bool isTrigger = true;
         bool freed = false;

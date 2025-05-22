@@ -2,6 +2,7 @@ import engine
 
 class Camera:
     def __init__(self, position_x: float, position_y: float, width: float, height: float):
+
         #engine.set_screen_size(width, height)
         self.w, self.h = engine.get_screen_width(), engine.get_screen_height()
 
