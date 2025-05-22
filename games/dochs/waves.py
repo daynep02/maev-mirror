@@ -19,7 +19,7 @@ class Wave:
 
     def free_wave(self):
         for e in self.enemies:
-            engine.free_rigid_body(e.rb)
+            e.free()
 
     def update(self):
         num_alive = 0

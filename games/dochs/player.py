@@ -23,6 +23,7 @@ class Player:
     # game variables
     max_hp = 10
     hp = 10
+    dead = False
     damage = 2
     face_direction = 1
     invincible = False
@@ -47,18 +48,29 @@ class Player:
             engine.set_box_trigger(self.hitboxes[key], False)
             engine.set_box_callback(self.hitboxes[key], self.hit_callback)
 
+        self.sprite = engine.create_rect((25,25))
+        self.color = (255,107,4,255)
+        engine.set_rect_fill_color(self.sprite,self.color)
+        engine.set_rect_position(self.sprite, player_position)
+
         self.speed = 200.0
         self.jump_speed = -480.0
     
+    def free(self):
+        engine.free_rigid_body(self.rb)
+
     def draw(self) -> None:
-        engine.draw_rigid_body_collider(self.rb)
+        engine.draw_rect(self.sprite)
+        #engine.draw_rigid_body_collider(self.rb)
+
         for key in self.hitboxes.keys():
             if engine.get_box_trigger(self.hitboxes[key]):
                 engine.draw_box(self.hitboxes[key])
 
-    def launch(self,lx,ly):
+    def launch(self,lx,ly,decay):
         self.knockback = (lx,ly)
         self.kb_time = engine.current_time()
+        self.kb_decay_rate = decay
         engine.set_rigid_body_velocity(self.rb, self.knockback)
         self.jumping = False
 
@@ -67,10 +79,20 @@ class Player:
             return
         self.hp -= amount
         print(f"Player: took {amount} damage! Now at {self.hp} HP.")
-        self.launch(lx,ly)
+        self.launch(lx,ly,0.3)
 
+        if self.hp <= 0:
+            self.hp = 0
+            self.dead = True
+            engine.set_rigid_body_layer(self.rb,Layer.DEAD)
         self.invincible = True
         self.invincible_time = engine.current_time()
+
+    def heal(self, amount):
+        self.hp += amount
+        if self.hp > self.max_hp:
+            self.hp = self.max_hp
+        print(f"Player: healed {amount} HP! Now at {self.hp} HP.")
 
     def update(self):
         
@@ -78,6 +100,7 @@ class Player:
         self.attack()
 
         px, py = engine.get_rigid_body_position(self.rb)
+        engine.set_rect_position(self.sprite, (px,py))
         engine.set_box_position(self.hitboxes["up"], (px-5,py-45))
         engine.set_box_position(self.hitboxes["down"], (px,py+25))
         engine.set_box_position(self.hitboxes["left"], (px-45,py-5))
@@ -162,31 +185,33 @@ class Player:
             self.jump_time = engine.current_time()
 
         # decay knockback
+        kb_lock = False
         velocity = engine.get_rigid_body_velocity(self.rb)
         decay_mult = 1.0-((engine.current_time()-self.kb_time)/self.kb_decay_rate)
         if engine.current_time()-self.kb_time < self.kb_decay_rate:
             kbx = self.knockback[0]*decay_mult
             kby = velocity[1]
             engine.set_rigid_body_velocity(self.rb, (kbx, kby))
+            kb_lock = True
 
         # normal logic
-        
-        velocity = engine.get_rigid_body_velocity(self.rb)
-        direction = 0
-        if engine.key_is_pressed("Left") or engine.key_is_pressed("A"):
-            direction += -1
-        if engine.key_is_pressed("Right") or engine.key_is_pressed("D"):
-            direction += 1
-        #print(direction)
-        if direction != 0:
-            self.face_direction = direction
+        if not kb_lock:
+            velocity = engine.get_rigid_body_velocity(self.rb)
+            direction = 0
+            if engine.key_is_pressed("Left") or engine.key_is_pressed("A"):
+                direction += -1
+            if engine.key_is_pressed("Right") or engine.key_is_pressed("D"):
+                direction += 1
+            #print(direction)
+            if direction != 0:
+                self.face_direction = direction
 
-        if velocity[0] < self.speed + 10.0 and velocity[0] > -self.speed - 10.0:
-            engine.set_rigid_body_velocity(self.rb, (self.speed*direction,velocity[1]))
-        else:
-            pass
-            #engine.apply_force(self.rb, 10.0*direction,0.0)
-            #print("Shouldn't be called")
+            if velocity[0] < self.speed + 10.0 and velocity[0] > -self.speed - 10.0:
+                engine.set_rigid_body_velocity(self.rb, (self.speed*direction,velocity[1]))
+            else:
+                pass
+                #engine.apply_force(self.rb, 10.0*direction,0.0)
+                #print("Shouldn't be called")
 
         if self.grounded:
             velocity = engine.get_rigid_body_velocity(self.rb)
@@ -197,3 +222,7 @@ class Player:
         if engine.current_time()-self.invincible_time>1 and self.invincible:
             self.invincible_time = 0.0
             self.invincible = False
+            engine.set_rect_fill_color(self.sprite, self.color)
+        elif self.invincible:
+            percent = 1-(1.0-(engine.current_time() - self.invincible_time))/1.0
+            engine.set_rect_fill_color(self.sprite, (255,255,255,55+(200*percent)))
