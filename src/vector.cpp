@@ -1,8 +1,15 @@
 #include "vector.h"
+#include "common_helpers.h"
 #include <vector>
 #include <cmath>
+#include <algorithm>
 
 std::vector<sf::Vector2<float>*> vectors;
+
+Vector::~Vector() {
+	std::for_each(vectors.begin(), vectors.end(), delete_ptr());
+  	vectors.clear();
+}
 
 // Makes either empty or x, y Vector based on whether or not arguments are given
 PyObject* Vector::create_vector(PyObject* self, PyObject* args) {
@@ -44,7 +51,8 @@ PyObject* Vector::destroy_vector(PyObject* self, PyObject* args) {
 	PyObject* ido = PyTuple_GetItem(args, 0);
 
 	long id = PyLong_AsLong(ido);
-
+	
+	// This could cause a memory leak if you use it too much, since it is a vector of pointers
 	vectors.erase(vectors.begin() + id);
 	Py_RETURN_NONE;
 }
@@ -57,7 +65,10 @@ PyObject* Vector::cleanse_vectors(PyObject* self, PyObject* args) {
 		PyErr_BadArgument();
 	}
 
-	std::vector<sf::Vector2<float>*>().swap(vectors);   // like vectors.clear(), but guarantees reallocating
+	std::for_each(vectors.begin(), vectors.end(), delete_ptr());
+  	vectors.clear();
+
+	//std::vector<sf::Vector2<float>*>().swap(vectors);   // like vectors.clear(), but guarantees reallocating
 	Py_RETURN_NONE;
 }
 

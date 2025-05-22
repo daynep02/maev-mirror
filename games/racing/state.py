@@ -1,5 +1,7 @@
 TITLE = 0
 CONTROLS = 1
 RUN = 2
+GAME_OVER = 3
+QUIT = 4
 NO_CHANGE = -1
 

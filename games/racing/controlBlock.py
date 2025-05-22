@@ -1,10 +1,17 @@
 import engine
+from state import *
 
 class ControlBlock:
     controlled = True
     sprite = None
+    collided = False
 
-    def __init__(self, min_x: float, min_y: float, size_x: float, size_y: float, sprite = None) -> None:
+    @staticmethod
+    def collision_callback():
+        collided = True
+        return GAME_OVER
+
+    def __init__(self, min_x: float, min_y: float, size_x: float, size_y: float, collision_callback, sprite = None) -> None:
 
         self.position = (min_x, min_y)
         self.size = (size_x, size_y)
@@ -19,9 +26,11 @@ class ControlBlock:
         self.edge_y = 100
 
         if sprite:
-            #   print("Setting sprite")
             self.set_sprite(sprite)
-        #   print("Sprite = ", self.sprite)
+
+        self.callback = collision_callback
+
+        engine.set_rigid_body_callback(self.id, collision_callback)
 
     def set_terminal_velo(self, x: float, y: float) -> None:
         engine.set_terminal_velo(self.id, x, y)
@@ -84,7 +93,6 @@ class ControlBlock:
 
         if  self.velocity[0] < self.max_x and engine.key_is_pressed("Right"):
             engine.apply_force(self.id, 5.0, 0.0)
-
         return
 
 

@@ -28,6 +28,7 @@ RigidBodyHandler *g_rigid_body_handler;
 CameraHandler *g_camera_handler;
 TextHandler *g_text_handler;
 CallbackHandler *g_callback_handler;
+Vector *g_vector_handler;
 float g_gravity = 50.0f;
 
 /**
@@ -67,6 +68,7 @@ static PyMethodDef EngineMethods[] = {
      METH_VARARGS, engine_set_circle_outline_color_doc},
     {"draw_circle", ObjectHandler::DrawCircle, METH_VARARGS,
      engine_draw_circle_doc},
+     {"free_circle", ObjectHandler::FreeCircle, METH_VARARGS, engine_free_circle_doc},
     {"create_rect", ObjectHandler::CreateRect, METH_VARARGS,
      engine_create_rect_doc},
     {"set_rect_fill_color", ObjectHandler::SetRectFillColor, METH_VARARGS,
@@ -99,6 +101,17 @@ static PyMethodDef EngineMethods[] = {
      engine_create_box_collider_doc},
     {"free_box_collider", BoxColliderHandler::freeBoxCollider, METH_VARARGS,
      engine_free_box_collider_doc},
+    {"get_box_position", BoxColliderHandler::GetBoxPosition, METH_VARARGS, engine_get_box_position_doc},
+    {"set_box_position", BoxColliderHandler::SetBoxPosition, METH_VARARGS, engine_set_box_position_doc},
+    {"get_box_size", BoxColliderHandler::GetBoxSize, METH_VARARGS, engine_get_box_size_doc},
+    {"set_box_size", BoxColliderHandler::SetBoxSize, METH_VARARGS, engine_set_box_size_doc},
+    {"get_box_trigger", BoxColliderHandler::GetBoxTrigger, METH_VARARGS, engine_get_box_trigger_doc},
+    {"set_box_trigger", BoxColliderHandler::SetBoxTrigger, METH_VARARGS, engine_set_box_trigger_doc},
+    {"get_box_layer", BoxColliderHandler::GetBoxLayer,METH_VARARGS,engine_get_box_layer_doc},
+    {"set_box_layer", BoxColliderHandler::SetBoxLayer,METH_VARARGS,engine_set_box_layer_doc},
+    {"set_box_callback", BoxColliderHandler::SetBoxCallback, METH_VARARGS, engine_set_box_callback_doc},
+    {"draw_box", BoxColliderHandler::DrawBox, METH_VARARGS, engine_draw_box_doc},
+
     {"current_time", RigidBodyHandler::GetCurrentTime, METH_VARARGS,
      engine_current_time_doc},
     {"delta_time", RigidBodyHandler::GetDeltaTime, METH_VARARGS,
@@ -113,6 +126,8 @@ static PyMethodDef EngineMethods[] = {
      METH_VARARGS, engine_is_rigid_body_gravity_doc},
     {"set_rigid_body_gravity", RigidBodyHandler::SetRigidBodyGravity,
      METH_VARARGS, engine_set_rigid_body_gravity_doc},
+    {"get_rigid_body_layer", RigidBodyHandler::GetRigidBodyLayer,METH_VARARGS,engine_get_rigid_body_layer_doc},
+    {"set_rigid_body_layer", RigidBodyHandler::SetRigidBodyLayer,METH_VARARGS,engine_set_rigid_body_layer_doc},
     {"set_rigid_body_velocity", RigidBodyHandler::SetRigidBodyVelocity,
      METH_VARARGS, engine_set_rigid_body_velocity_doc},
     {"get_rigid_body_position", RigidBodyHandler::GetRigidBodyPosition,
@@ -191,6 +206,13 @@ static PyMethodDef EngineMethods[] = {
     {"get_screen_height", WindowHandler::GetScreenHeight, METH_VARARGS,
      engine_get_screen_height_doc},
     {"exit", WindowHandler::Exit, METH_VARARGS, engine_exit_doc},
+    {"set_framerate_limit", WindowHandler::SetFramerateLimit, METH_VARARGS, engine_set_framerate_limit_doc},
+    
+    {"set_collision_layer_value", CollisionLayerHandler::SetCollisionLayerValue, METH_VARARGS, engine_set_collision_layer_value_doc},
+    {"get_collision_layer_value", CollisionLayerHandler::GetCollisionLayerValue, METH_VARARGS, engine_get_collision_layer_value_doc},
+    {"enable_all_collision_layers", CollisionLayerHandler::EnableAllCollisionLayers, METH_VARARGS, engine_enable_all_collision_layers_doc},
+    {"disable_all_collision_layers", CollisionLayerHandler::DisableAllCollisionLayers, METH_VARARGS, engine_disable_all_collision_layers_doc},
+    {"print_collision_layer_matrix", CollisionLayerHandler::PrintCollisionLayerMatrix, METH_VARARGS, engine_print_collision_layer_matrix_doc},
 
     createVector,
     destroyVector,
@@ -325,6 +347,10 @@ int main(int argc, char *argv[]) {
   g_camera_handler = new CameraHandler(g_window);
   g_text_handler = new TextHandler(g_window);
   g_callback_handler = new CallbackHandler();
+  g_vector_handler = new Vector();
+
+  // Setting this to default all layers to collide
+  EnableAllLayers();
 
   // Doing this so things don't fly off the screen in the first frame
   g_rigid_body_handler->UpdateCurrentAndTimeDelta();
@@ -396,13 +422,13 @@ int main(int argc, char *argv[]) {
   }
 
   delete g_window;
-  // delete g_camera;
   delete g_window_handler;
   delete g_object_handler;
   delete g_box_collider_handler;
   delete g_rigid_body_handler;
   delete g_camera_handler;
   delete g_text_handler;
+  delete g_vector_handler;
 
   printf("engine: Tearing Down\n");
 

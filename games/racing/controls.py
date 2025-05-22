@@ -15,7 +15,7 @@ class Controls:
 
         self.options = []
         modi = 0
-        for name in ["^ up", "< left", "> right"]:
+        for name in ["^ up", "<- left", "-> right", "[space] shoot"]:
             opt = engine.create_text(self.font)
             self.options.append(opt)
             engine.set_text(opt, name)

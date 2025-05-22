@@ -1,15 +1,17 @@
+
 import engine #type: ignore
 from state import *
 
-class Title:
+class GameOver:
+
     def __init__(self, camera):
         self.camera = camera
 
         self.font = engine.create_font("../games/racing/assets/MesloLGS_NF_Regular.ttf")
         self.select_color = (255,255,255,255)
         self.deselect_color = (255,255,255,128)
-
-
+        self.state_cooldown = 0
+        self.state = 0
 
     def start(self):
         w = engine.get_screen_width()
@@ -18,7 +20,7 @@ class Title:
         engine.set_camera_size((w,h))
 
         self.title_text = engine.create_text(self.font)
-        engine.set_text(self.title_text, "Roid Rage")
+        engine.set_text(self.title_text, "Game Over!")
 
         engine.set_text_size(self.title_text, 50)
         engine.set_text_color(self.title_text, (255,0,0,255))
@@ -26,10 +28,11 @@ class Title:
         tx, ty = engine.get_text_position(self.title_text)
 
         self.camera.set_position((tx, ty+200))
+
         self.options = []
 
         modi = 0
-        for name in ["Play", "Controls", "Quit"]:
+        for name in ["Yes", "No"]:
             opt = engine.create_text(self.font)
             self.options.append(opt)
             engine.set_text(opt, name)
@@ -37,10 +40,21 @@ class Title:
             engine.set_text_color(opt, self.deselect_color)
             engine.set_text_position(opt, (tx/2,100+modi))
             modi+=50
-        
+
         self.state = 0
         self.state_cooldown = 0
+
         pass
+
+    def make_play_again(self):
+        self.play_again = engine.create_text(self.font)
+        engine.set_text(self.play_again, "Play Again?")
+
+        engine.set_text_size(self.title_text, 50)
+        engine.set_text_color(self.title_text, (255,0,0,255))
+
+        
+
 
     def move_states(self):
 
@@ -65,7 +79,7 @@ class Title:
             return RUN
 
         if self.state == 1 and engine.key_is_pressed("ENTER"):
-            return CONTROLS
+            return QUIT
 
         else:
             return NO_CHANGE
@@ -86,3 +100,4 @@ class Title:
         engine.draw_text(self.title_text)
         for opt in self.options:
             engine.draw_text(opt)
+

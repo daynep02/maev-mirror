@@ -6,6 +6,9 @@
 
 class Vector {
 	public:
+	Vector() = default;
+	~Vector();
+
 	// Constructors, destructors, etc.
 	static PyObject* create_vector(PyObject* self, PyObject* args);
 	static PyObject* destroy_vector(PyObject* self, PyObject* args);

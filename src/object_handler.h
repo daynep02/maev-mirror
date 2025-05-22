@@ -38,6 +38,7 @@ public:
   static PyObject *SetCircleOutlineThickness(PyObject *self, PyObject *args);
   static PyObject *SetCircleOutlineColor(PyObject *self, PyObject *args);
   static PyObject *DrawCircle(PyObject *self, PyObject *args);
+  static PyObject *FreeCircle(PyObject *self, PyObject *args);
 
   static PyObject *CreateRect(PyObject *self, PyObject *args);
   static PyObject *SetRectFillColor(PyObject *self, PyObject *args);
@@ -171,6 +172,15 @@ PyDoc_STRVAR(engine_draw_circle_doc, ".. function:: draw_circle(id)\n"
                                      "  Draws the circle with the given id.\n"
                                      "\n"
                                      "  :return: Nothing.\n");
+
+// corresponding documentation for engine_free_circle
+PyDoc_STRVAR(engine_free_circle_doc,
+             ".. function:: free_circle(id)\n"
+             "\n"
+             "  Frees the circle with the given id, allowing the id to be "
+             "initialized to something else when calling create_circle\n"
+             "\n"
+             "  :return: Nothing.\n");
 
 PyDoc_STRVAR(engine_collides_with_doc,
              ".. function:: collides_with(id1, id2)\n"

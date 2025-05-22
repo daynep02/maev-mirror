@@ -6,7 +6,10 @@ BoxCollider::BoxCollider(const sf::Vector2f &position,
                          const sf::Vector2f &size) {
   box = new sf::RectangleShape(size);
   box->setPosition(position);
-  box->setFillColor(sf::Color::Red);
+
+  box->setFillColor(sf::Color::Transparent);
+  box->setOutlineColor(sf::Color::Blue);
+  box->setOutlineThickness(2);
 }
 
 BoxCollider::~BoxCollider() { delete box; }
@@ -21,7 +24,26 @@ sf::Vector2f BoxCollider::getSize() { return box->getSize(); }
 
 void BoxCollider::setSize(float w, float h) { box->setSize({w, h}); }
 
+void BoxCollider::Draw(sf::RenderWindow* window) {
+  if (isTrigger) {box->setOutlineColor(sf::Color::Blue);}
+  else {box->setOutlineColor(sf::Color::Red);}
+  window->draw(*box);
+}
+
+PyObject* BoxCollider::GetCallback() {return callback;}
+void BoxCollider::SetCallback(PyObject *new_callback) { callback = new_callback; }
+
+CollisionLayer BoxCollider::GetCollisionLayer() {return layer;}
+void BoxCollider::SetCollisionLayer(CollisionLayer new_layer) {layer = new_layer;}
+
 bool BoxCollider::CollidesWith(BoxCollider *other) {
+  if (!GetLayerAt(layer,other->GetCollisionLayer())) {
+    return false;
+  }
+  if (freed || other->freed) {
+    return false;
+  }
+
   sf::RectangleShape *other_box = other->getRect();
   sf::Vector2f pos1 = box->getPosition();
   sf::Vector2f pos2 = other_box->getPosition();
