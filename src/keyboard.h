@@ -55,11 +55,20 @@ public:
 
 PyDoc_STRVAR(key_is_pressed_doc,
 
-             ".. function:: key_is_Pressed\n"
+             ".. function:: key_is_pressed(button)\n"
              "\n"
-             "  Reports if a specific key has been pressed\n"
+             "  Reports if the given key has been pressed.\n"
              "\n"
              ":return: bool.\n");
+
+PyDoc_STRVAR(mouse_button_is_pressed_doc,
+
+             ".. function:: mouse_button_is_pressed(button)\n"
+             "\n"
+             "  Reports if a given mouse button has been clicked. Returns a new vector object with the location if true.\n"
+             "\n"
+             ":return: a vector object id with the mouse location, -1 if false.\n");
+
 /**
   * @brief gives the definiton of the function available in python
   */
@@ -67,6 +76,6 @@ static PyMethodDef keyPressed = {"key_is_pressed", Keyboard::key_is_pressed,
                                  METH_VARARGS, key_is_pressed_doc};
 
 static PyMethodDef mousePressed = {"mouse_button_is_pressed", Keyboard::mouse_button_is_pressed,
-                                  METH_VARARGS, key_is_pressed_doc};
+                                  METH_VARARGS, mouse_button_is_pressed_doc};
 
 #endif // keyboard_h
