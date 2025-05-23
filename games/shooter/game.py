@@ -119,14 +119,19 @@ class Game:
 
 
 def init():
-	engine.set_screen_size(NEW_SCREEN_SIZE[0], NEW_SCREEN_SIZE[1])
-	global game
-	game = Game()
+    engine.set_screen_size(NEW_SCREEN_SIZE[0], NEW_SCREEN_SIZE[1])
+    global game
+    global l
+    global bullet
+    
+    game = Game()
 
 
 def update():
     # TODO: fire vectors
     global game
+    global l
+    global bullet
      
     # player movement
     if engine.key_is_pressed("W"):
@@ -159,22 +164,35 @@ def update():
         # ensure mouse click is within screen bounds
         if 0 <= engine.x(l) <= NEW_SCREEN_SIZE[0] and 0 <= engine.y(l) <= NEW_SCREEN_SIZE[1]:
             bullet = engine.create_vector(engine.x(l), engine.y(l))
-
-            # can't be in draw function: bullet is destroyed in same update frame its created
-            engine.draw_vector(bullet, (game.player.x, game.player.y), (engine.x(l), engine.y(l)))
-            
-            # bullet calculations here
-            
-            engine.destroy_vector(bullet)
-            # TODO: how to draw vector as line?
+            game.player.fire(l)
+    
+    else:
+        engine.cleanse_vectors()
 
 
 def draw():
     global game
+    global l
+    global bullet
+
     engine.draw_circle(game.player.body)
 
+    # fired bullets
+    if l > 0:
+        ratio_w = NEW_SCREEN_SIZE[0] / ORIG_SCREEN_SIZE[0]
+        ratio_h = NEW_SCREEN_SIZE[1] / ORIG_SCREEN_SIZE[1]
+    
+        
+        cx, cy = (game.player.x + 5.0 * ratio_w), (game.player.y + 5.0 * ratio_h)
+        # keeps end of Vector proportional to both mouse and player positions
+        mx, my = cx + ((engine.x(l) - NEW_SCREEN_SIZE[0] / 2) * ratio_w), cy + ((engine.y(l) - NEW_SCREEN_SIZE[1] /2) * ratio_h)
+        
+        engine.draw_vector(bullet, (cx, cy), (mx, my))
+
+    # enemies
     for i in game.enemies:
         engine.draw_rigid_body_collider(i.body)
 
+    # walls
     for i in game.walls:
         engine.draw_rigid_body_collider(i)
