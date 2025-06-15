@@ -1,6 +1,5 @@
 # ignore build/run artifacts, except the Makefile
-build/*
-!build/Makefile
+./build/*
 
 # miscellaneous
 .vscode/*
@@ -9,3 +8,4 @@ build/*
 *.out
 docs
 helloworld
+build

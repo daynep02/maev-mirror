@@ -8,6 +8,15 @@ Check out our [wiki on Gitlab](https://repo.cse.taylor.edu/dpefley/maev/-/wikis/
 
 ## Building and Running the Engine
 
+#### For newest version of source
+
+```
+mkdir build && cd build
+cmake ..
+cmake --build .
+```
+#### The following instructions for the build process is obsolete.
+
 The process to build and run the engine should be completely automated by the Makefile in the `build` directory.
 How you run the Makefile will change depending on what computer you are building it on. Our engine uses Python 3.12, SFML 3.0.0, and FLAC 12 which coincidentally the CSE machines do not have installed. In light of that situation, we have manually included those dependencies and added a way to run the make command for Python 3.10 (which the CSE machines do have).
 
@@ -32,6 +41,8 @@ LD_LIBRARY_PATH="/full_path_to/FLAC/lib:$LD_LIBRARY_PATH" ./engine /full_path_to
 ```
 
 > It's not the best solution we have, but is the only way we found to get it to work on the CSE lab machines.
+
+#### End section of obsolete instructions
 
 ## Integrate with your tools
 - [ ] [Set up project integrations](https://repo.cse.taylor.edu/dpefley/maev/-/settings/integrations)
