@@ -1,4 +1,5 @@
 import engine #type: ignore
+from state import *
 
 class Controls:
     def __init__(self):
@@ -30,8 +31,8 @@ class Controls:
     def update(self):
         
         if engine.key_is_pressed("ESCAPE"):
-            return 2
-        return 0
+            return TITLE
+        return NO_CHANGE
     
     def draw(self):
         engine.draw_text(self.title_text)

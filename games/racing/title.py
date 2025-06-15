@@ -8,6 +8,7 @@ class Title:
         self.font = engine.create_font("../games/racing/assets/MesloLGS_NF_Regular.ttf")
         self.select_color = (255,255,255,255)
         self.deselect_color = (255,255,255,128)
+        self.state = 0
 
 
 
@@ -47,8 +48,8 @@ class Title:
 
     def move_states(self):
 
-        if engine.current_time()-self.state_cooldown < 0.20:
-            return 0
+        if engine.current_time()-self.state_cooldown < .2:
+            return NO_CHANGE
 
         if engine.key_is_pressed("Up"):
             self.state-=1
@@ -70,8 +71,7 @@ class Title:
         if self.state == 1 and engine.key_is_pressed("ENTER"):
             return CONTROLS
 
-        else:
-            return NO_CHANGE
+        return NO_CHANGE
 
     def update(self):
         
@@ -82,7 +82,6 @@ class Title:
                 engine.set_text_color(self.options[i],self.select_color)
             else:
                 engine.set_text_color(self.options[i],self.deselect_color)
-
         return val
     
     def draw(self):

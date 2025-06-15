@@ -37,12 +37,13 @@ class GameOver:
         modi = 0
 
         for name in ["Yes", "No"]:
+
             opt = engine.create_text(self.font)
             self.options.append(opt)
             engine.set_text(opt, name)
             engine.set_text_size(opt, 30)
             engine.set_text_color(opt, self.deselect_color)
-            engine.set_text_position(opt, (tx/2,100+modi))
+            engine.set_text_position(opt, (tx/2,150+modi))
             modi+=50
 
         self.state = 0
@@ -58,9 +59,8 @@ class GameOver:
         engine.set_text_color(self.title_text, (255,0,0,255))
 
     def move_states(self):
-
         if engine.current_time()-self.state_cooldown < 0.20:
-            return 0
+            return NO_CHANGE
 
         if engine.key_is_pressed("Up"):
             self.state-=1
@@ -77,21 +77,18 @@ class GameOver:
             self.state = len(self.options)-1
 
         if self.state == 0 and engine.key_is_pressed("ENTER"):
-            return RUN
+            return TITLE
 
         if self.state == 1 and engine.key_is_pressed("ENTER"):
             return QUIT
 
-        else:
-            return NO_CHANGE
+        return NO_CHANGE
+
 
     def update(self):
-        
         val = self.move_states()
-
         for i in range(0,len(self.options)):
             if i == self.state:
-                print(i)
                 engine.set_text_color(self.options[i],self.select_color)
             else:
                 engine.set_text_color(self.options[i],self.deselect_color)
